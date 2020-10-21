@@ -23,7 +23,7 @@ class Subscriptions extends StatelessWidget {
       body: ListView.builder(
           itemCount: subscriptions.length,
           itemBuilder: (context, i) =>
-              SubscriptionListItem(i, subscription: subscriptions[i])),
+              SubscriptionListItem(subscription: subscriptions[i])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => null,

@@ -22,6 +22,6 @@ class ArticleList extends StatelessWidget {
         child: ListView.builder(
             itemCount: articles.length,
             itemBuilder: (context, i) =>
-                ArticleListItem(i, article: articles[i])));
+                ArticleListItem(article: articles[i])));
   }
 }
