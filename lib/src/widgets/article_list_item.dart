@@ -13,7 +13,7 @@ class ArticleListItem extends StatelessWidget {
       : _article = article,
         super(key: key);
 
-  void readArticle(BuildContext context) {
+  void goToArticle(BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -26,7 +26,7 @@ class ArticleListItem extends StatelessWidget {
     var ago = timeago.format(_article.date);
 
     return InkWell(
-        onTap: () => readArticle(context),
+        onTap: () => goToArticle(context),
         child: Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
             child: Column(

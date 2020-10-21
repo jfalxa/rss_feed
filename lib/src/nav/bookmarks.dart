@@ -20,7 +20,7 @@ class Bookmarks extends StatelessWidget {
     return Scaffold(
         appBar: TopBar(title: "Bookmarks"),
         body: ArticleList(
-          store: _store,
+          articles: _store.getArticles(),
           onRefresh: _onRefresh,
         ));
   }

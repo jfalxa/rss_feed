@@ -14,6 +14,13 @@ class Article {
   String link;
   String description;
   DateTime date;
+  String subscriptionUrl;
 
-  Article({this.guid, this.title, this.link, this.description, this.date});
+  Article(
+      {this.guid,
+      this.title,
+      this.link,
+      this.description,
+      this.date,
+      this.subscriptionUrl});
 }

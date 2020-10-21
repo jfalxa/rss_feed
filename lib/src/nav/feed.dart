@@ -19,7 +19,7 @@ class Feed extends StatelessWidget {
     return Scaffold(
         appBar: TopBar(title: "Feed"),
         body: ArticleList(
-          store: _store,
+          articles: _store.getArticles(),
           onRefresh: _onRefresh,
         ));
   }

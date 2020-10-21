@@ -22,8 +22,11 @@ class Subscriptions extends StatelessWidget {
       appBar: TopBar(title: "Subscriptions"),
       body: ListView.builder(
           itemCount: subscriptions.length,
-          itemBuilder: (context, i) =>
-              SubscriptionListItem(subscription: subscriptions[i])),
+          itemBuilder: (context, i) => SubscriptionListItem(
+                subscription: subscriptions[i],
+                store: _store,
+                onRefresh: _onRefresh,
+              )),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => null,

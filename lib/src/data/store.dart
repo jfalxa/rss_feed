@@ -15,8 +15,14 @@ class Store {
     return _articles.any((b) => b.guid == a.guid);
   }
 
-  void addSubscription(String url, Subscription addedSubscription) {
-    _subscriptions[url] = addedSubscription;
+  bool hasSubscription(Subscription s) {
+    return _subscriptions.containsKey(s.url);
+  }
+
+  void addSubscription(Subscription addedSubscription) {
+    if (!hasSubscription(addedSubscription)) {
+      _subscriptions[addedSubscription.url] = addedSubscription;
+    }
   }
 
   void addArticles(List<Article> articles) {
@@ -31,6 +37,16 @@ class Store {
     return _articles;
   }
 
+  List<Article> getSubscriptionArticles(Subscription s) {
+    var articles = _articles.where((a) => a.subscriptionUrl == s.url).toList();
+
+    if (articles.length >= 2) {
+      articles.sort((a, b) => b.date.compareTo(a.date));
+    }
+
+    return articles;
+  }
+
   List<Subscription> getSubscriptions() {
     var subscriptions = _subscriptions.values.toList();
     subscriptions.removeWhere((s) => s == null);
@@ -43,7 +59,7 @@ class Store {
     var documents = await Future.wait(futures);
 
     documents.forEach((document) {
-      addSubscription(document.url, document.subscription);
+      addSubscription(document.subscription);
       addArticles(document.articles);
     });
   }

@@ -17,31 +17,31 @@ DateTime parseDate(String dateString) {
 }
 
 class FeedDocument {
-  String url;
   Subscription subscription;
   List<Article> articles;
 
-  FeedDocument({this.url, this.subscription, this.articles});
+  FeedDocument({this.subscription, this.articles});
 
   static FeedDocument _parseRss(String url, XmlElement root) {
     var channel = root.getElement('channel');
 
     var subscription = Subscription(
+      url: url,
       title: channel.getElement('title').text,
       link: channel.getElement('link').text,
       description: channel.getElement('description').text,
     );
 
     var articles = channel.findElements('item').map((item) => Article(
-          guid: item.getElement('guid').text,
-          title: item.getElement('title').text,
-          link: item.getElement('link').text,
-          description: item.getElement('description').text,
-          date: parseDate(item.getElement('pubDate').text),
-        ));
+        guid: item.getElement('guid').text,
+        title: item.getElement('title').text,
+        link: item.getElement('link').text,
+        description: item.getElement('description').text,
+        date: parseDate(item.getElement('pubDate').text),
+        subscriptionUrl: subscription.url));
 
     return FeedDocument(
-        url: url, subscription: subscription, articles: articles.toList());
+        subscription: subscription, articles: articles.toList());
   }
 
   static FeedDocument parse(String url, String xml) {
