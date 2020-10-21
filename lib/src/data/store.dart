@@ -16,7 +16,7 @@ class Store {
   }
 
   bool hasSubscription(Subscription s) {
-    return _subscriptions.containsKey(s.url);
+    return _subscriptions.containsKey(s.url) && _subscriptions[s.url] != null;
   }
 
   void addSubscription(Subscription addedSubscription) {

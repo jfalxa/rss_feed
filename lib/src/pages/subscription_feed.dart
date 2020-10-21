@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rss_feed/src/data/models.dart';
 
 import '../data/store.dart';
+import '../widgets/top_bar.dart';
 import '../widgets/article_list.dart';
 
 class SubscriptionFeed extends StatelessWidget {
@@ -20,14 +21,7 @@ class SubscriptionFeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(_subscription.title),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-          centerTitle: true,
-        ),
+        appBar: PopTopBar(title: _subscription.title),
         body: ArticleList(
           articles: _store.getSubscriptionArticles(_subscription),
           onRefresh: _onRefresh,

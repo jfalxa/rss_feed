@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rss_feed/src/pages/subscription_adder.dart';
 import 'package:rss_feed/src/widgets/top_bar.dart';
 
 import '../data/store.dart';
@@ -13,6 +14,13 @@ class Subscriptions extends StatelessWidget {
       : _store = store,
         _onRefresh = onRefresh,
         super(key: key);
+
+  void goToSubscriptionAdder(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SubscriptionAdder(store: _store)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class Subscriptions extends StatelessWidget {
               )),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => null,
+        onPressed: () => goToSubscriptionAdder(context),
       ),
     );
   }

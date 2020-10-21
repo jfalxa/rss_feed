@@ -38,3 +38,26 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+
+class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
+  final String _title;
+
+  PopTopBar({Key key, String title})
+      : _title = title,
+        super(key: key);
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(_title),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () => Navigator.pop(context),
+      ),
+      centerTitle: true,
+    );
+  }
+}
