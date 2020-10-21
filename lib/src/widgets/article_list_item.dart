@@ -15,11 +15,7 @@ class ArticleListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var uri = Uri.parse(_article.link);
-
     var ago = timeago.format(_article.date);
-    // var ago = "10min ago";
-
-    print(_article.date);
 
     return Container(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
@@ -48,7 +44,7 @@ class ArticleListItem extends StatelessWidget {
                   height: 72.0),
             ]),
             Container(
-                margin: EdgeInsets.only(top: 16.0),
+                margin: EdgeInsets.only(top: 8.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -56,7 +52,10 @@ class ArticleListItem extends StatelessWidget {
                         ago,
                         style: Theme.of(context).textTheme.caption,
                       ),
-                      Icon(Icons.star_border)
+                      IconButton(
+                          icon: Icon(Icons.bookmark_border),
+                          color: Colors.black38,
+                          onPressed: () => print('bookmarked!'))
                     ])),
             Divider()
           ],

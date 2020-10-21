@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rss_feed/src/widgets/top_bar.dart';
 
 import '../data/store.dart';
+import '../widgets/top_bar.dart';
 import '../widgets/article_list.dart';
 
 class Bookmarks extends StatelessWidget {
@@ -16,9 +18,7 @@ class Bookmarks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("articles"),
-        ),
+        appBar: TopBar(title: "Bookmarks"),
         body: ArticleList(
           store: _store,
           future: _future,

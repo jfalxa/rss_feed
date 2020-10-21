@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../data/store.dart';
 import '../widgets/article_list.dart';
+import '../widgets/top_bar.dart';
 
 class Feed extends StatelessWidget {
   final Store _store;
@@ -16,9 +17,7 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Feed"),
-        ),
+        appBar: TopBar(title: "Feed"),
         body: ArticleList(
           store: _store,
           future: _future,
