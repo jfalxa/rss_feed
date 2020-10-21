@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:rss_feed/src/pages/article_web_view.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../data/models.dart';
+import '../routes/article_web_view.dart';
 
 class ArticleListItem extends StatelessWidget {
   final Article _article;
@@ -14,10 +14,7 @@ class ArticleListItem extends StatelessWidget {
         super(key: key);
 
   void goToArticle(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ArticleWebView(article: _article)));
+    Navigator.pushNamed(context, ArticleWebView.routeName, arguments: _article);
   }
 
   @override

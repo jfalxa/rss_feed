@@ -1,32 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:rss_feed/src/routes/subscription_feed.dart';
 
 import '../data/models.dart';
-import '../data/store.dart';
-import '../pages/subscription_feed.dart';
+import '../routes/subscription_feed.dart';
 
 class SubscriptionListItem extends StatelessWidget {
-  final Store _store;
   final Subscription _subscription;
-  final Function _onRefresh;
 
-  SubscriptionListItem(
-      {Key key, Store store, Subscription subscription, Function onRefresh})
+  SubscriptionListItem({Key key, Subscription subscription})
       : _subscription = subscription,
-        _store = store,
-        _onRefresh = onRefresh,
         super(key: key);
 
   void goToSubscription(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SubscriptionFeed(
-                  subscription: _subscription,
-                  store: _store,
-                  onRefresh: _onRefresh,
-                )));
+    Navigator.pushNamed(context, SubscriptionFeed.routeName,
+        arguments: _subscription);
   }
 
   @override

@@ -7,23 +7,24 @@ import '../widgets/top_bar.dart';
 import '../widgets/article_list.dart';
 
 class SubscriptionFeed extends StatelessWidget {
+  static final String routeName = '/subscription-feed';
+
   final Store _store;
-  final Subscription _subscription;
   final Function _onRefresh;
 
-  SubscriptionFeed(
-      {Key key, Store store, Subscription subscription, Function onRefresh})
+  SubscriptionFeed({Key key, Store store, Function onRefresh})
       : _store = store,
-        _subscription = subscription,
         _onRefresh = onRefresh,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Subscription subscription = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
-        appBar: PopTopBar(title: _subscription.title),
+        appBar: PopTopBar(title: subscription.title),
         body: ArticleList(
-          articles: _store.getSubscriptionArticles(_subscription),
+          articles: _store.getSubscriptionArticles(subscription),
           onRefresh: _onRefresh,
         ));
   }

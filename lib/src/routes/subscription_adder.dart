@@ -6,9 +6,14 @@ import '../data/parser.dart';
 import '../widgets/top_bar.dart';
 
 class SubscriptionAdder extends StatefulWidget {
-  final Store store;
+  static final String routeName = '/add-subscription';
 
-  SubscriptionAdder({Key key, this.store}) : super(key: key);
+  final Store store;
+  final Function _onRefresh;
+
+  SubscriptionAdder({Key key, this.store, Function onRefresh})
+      : _onRefresh = onRefresh,
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SubscriptionAdderState();

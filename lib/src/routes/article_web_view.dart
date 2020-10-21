@@ -8,18 +8,20 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../data/models.dart';
 
 class ArticleWebView extends StatelessWidget {
-  final Article _article;
+  static final String routeName = '/article-web-view';
 
-  ArticleWebView({Article article}) : _article = article {
+  ArticleWebView({Key key}) : super(key: key) {
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
   Widget build(BuildContext context) {
+    Article article = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
-      appBar: PopTopBar(title: _article.title),
+      appBar: PopTopBar(title: article.title),
       body: WebView(
-        initialUrl: _article.link,
+        initialUrl: article.link,
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );

@@ -1,25 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rss_feed/src/pages/subscription_adder.dart';
-import 'package:rss_feed/src/widgets/top_bar.dart';
 
 import '../data/store.dart';
+import '../widgets/top_bar.dart';
 import '../widgets/subscription_list_item.dart';
+import '../routes/subscription_adder.dart';
 
 class Subscriptions extends StatelessWidget {
   final Store _store;
-  final Function _onRefresh;
 
-  Subscriptions({Key key, Store store, Function onRefresh})
+  Subscriptions({Key key, Store store})
       : _store = store,
-        _onRefresh = onRefresh,
         super(key: key);
 
   void goToSubscriptionAdder(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SubscriptionAdder(store: _store)));
+    Navigator.pushNamed(context, SubscriptionAdder.routeName);
   }
 
   @override
@@ -30,11 +25,8 @@ class Subscriptions extends StatelessWidget {
       appBar: TopBar(title: "Subscriptions"),
       body: ListView.builder(
           itemCount: subscriptions.length,
-          itemBuilder: (context, i) => SubscriptionListItem(
-                subscription: subscriptions[i],
-                store: _store,
-                onRefresh: _onRefresh,
-              )),
+          itemBuilder: (context, i) =>
+              SubscriptionListItem(subscription: subscriptions[i])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => goToSubscriptionAdder(context),
