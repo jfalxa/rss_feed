@@ -30,9 +30,9 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ])
       ],
-      elevation: 0,
+      elevation: 1.0,
       centerTitle: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       textTheme: Theme.of(context).textTheme,
       actionsIconTheme: Theme.of(context).iconTheme,
     );

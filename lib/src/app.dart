@@ -55,9 +55,9 @@ class _AppState extends State<App> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _navIndex,
         onTap: navigate,
+        backgroundColor: Colors.white,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.rss_feed), label: 'Articles'),
+          BottomNavigationBarItem(icon: Icon(Icons.rss_feed), label: 'Feed'),
           BottomNavigationBarItem(
               icon: Icon(Icons.menu_book), label: 'Subscriptions'),
           BottomNavigationBarItem(

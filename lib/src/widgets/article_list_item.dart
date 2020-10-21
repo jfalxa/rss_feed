@@ -7,18 +7,21 @@ import '../data/models.dart';
 
 class ArticleListItem extends StatelessWidget {
   final Article _article;
+  final int _index;
 
-  ArticleListItem({Key key, Article article})
+  ArticleListItem(int index, {Key key, Article article})
       : _article = article,
+        _index = index,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var uri = Uri.parse(_article.link);
     var ago = timeago.format(_article.date);
+    var top = _index == 0 ? 20.0 : 8.0;
 
     return Container(
-        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: top),
         child: Column(
           children: [
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -45,8 +48,8 @@ class ArticleListItem extends StatelessWidget {
             ]),
             Container(
                 margin: EdgeInsets.only(top: 8.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         ago,
@@ -55,7 +58,7 @@ class ArticleListItem extends StatelessWidget {
                       IconButton(
                           icon: Icon(Icons.bookmark_border),
                           color: Colors.black38,
-                          onPressed: () => print('bookmarked!'))
+                          onPressed: () => null)
                     ])),
             Divider()
           ],

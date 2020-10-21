@@ -19,7 +19,7 @@ class Subscriptions extends StatelessWidget {
     return ListView.builder(
         itemCount: subscriptions.length,
         itemBuilder: (context, i) =>
-            SubscriptionListItem(subscription: subscriptions[i]));
+            SubscriptionListItem(i, subscription: subscriptions[i]));
   }
 
   @override
