@@ -11,14 +11,16 @@ class Store {
       : _subscriptions = Map.from(subscriptions),
         _articles = articles;
 
-  void initSubscription(String url) {}
+  bool hasArticle(Article a) {
+    return _articles.any((b) => b.guid == a.guid);
+  }
 
   void addSubscription(String url, Subscription addedSubscription) {
     _subscriptions[url] = addedSubscription;
   }
 
-  void addArticles(List<Article> addedArticles) {
-    _articles.addAll(addedArticles);
+  void addArticles(List<Article> articles) {
+    _articles.addAll(articles.where((a) => !hasArticle(a)));
   }
 
   List<Article> getArticles() {
