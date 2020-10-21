@@ -13,18 +13,12 @@ const Map<String, Subscription> DEMO = {
 };
 
 class App extends StatefulWidget {
-  final String title;
-
-  App({Key key, this.title}) : super(key: key);
-
   @override
   _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App> {
   Store _store;
-
-  Future _future;
   int _navIndex = 0;
 
   @override
@@ -32,7 +26,14 @@ class _AppState extends State<App> {
     super.initState();
 
     _store = Store(DEMO, []);
-    _future = _store.fetchAll();
+    refresh();
+  }
+
+  Future refresh() async {
+    await _store.refresh();
+    setState(() {
+      _store = _store;
+    });
   }
 
   void navigate(int index) {
@@ -47,9 +48,9 @@ class _AppState extends State<App> {
       body: IndexedStack(
         index: _navIndex,
         children: [
-          Feed(store: _store, future: _future),
-          Subscriptions(store: _store, future: _future),
-          Bookmarks(store: _store, future: _future),
+          Feed(store: _store, onRefresh: refresh),
+          Subscriptions(store: _store, onRefresh: refresh),
+          Bookmarks(store: _store, onRefresh: refresh),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

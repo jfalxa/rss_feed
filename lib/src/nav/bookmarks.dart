@@ -8,11 +8,11 @@ import '../widgets/article_list.dart';
 
 class Bookmarks extends StatelessWidget {
   final Store _store;
-  final Future _future;
+  final Function _onRefresh;
 
-  Bookmarks({Key key, Store store, Future future})
-      : _future = future,
-        _store = store,
+  Bookmarks({Key key, Store store, Function onRefresh})
+      : _store = store,
+        _onRefresh = onRefresh,
         super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class Bookmarks extends StatelessWidget {
         appBar: TopBar(title: "Bookmarks"),
         body: ArticleList(
           store: _store,
-          future: _future,
+          onRefresh: _onRefresh,
         ));
   }
 }

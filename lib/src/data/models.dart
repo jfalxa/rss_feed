@@ -5,6 +5,7 @@ class Subscription {
   String description;
 
   Subscription({this.url, this.title, this.link, this.description});
+  Subscription.empty();
 }
 
 class Article {

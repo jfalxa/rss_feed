@@ -7,39 +7,26 @@ import '../widgets/subscription_list_item.dart';
 
 class Subscriptions extends StatelessWidget {
   final Store _store;
-  final Future _future;
+  final Function _onRefresh;
 
-  Subscriptions({Key key, Store store, Future future})
-      : _future = future,
-        _store = store,
+  Subscriptions({Key key, Store store, Function onRefresh})
+      : _store = store,
+        _onRefresh = onRefresh,
         super(key: key);
-
-  Widget _buildSubscriptionList() {
-    var subscriptions = _store.subscriptions.values.toList();
-    return ListView.builder(
-        itemCount: subscriptions.length,
-        itemBuilder: (context, i) =>
-            SubscriptionListItem(i, subscription: subscriptions[i]));
-  }
 
   @override
   Widget build(BuildContext context) {
+    var subscriptions = _store.getSubscriptions();
+
     return Scaffold(
       appBar: TopBar(title: "Subscriptions"),
-      body: FutureBuilder(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return _buildSubscriptionList();
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-
-            return CircularProgressIndicator();
-          }),
+      body: ListView.builder(
+          itemCount: subscriptions.length,
+          itemBuilder: (context, i) =>
+              SubscriptionListItem(i, subscription: subscriptions[i])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => print('add subscription'),
+        onPressed: () => null,
       ),
     );
   }

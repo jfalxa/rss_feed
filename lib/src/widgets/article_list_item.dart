@@ -48,8 +48,8 @@ class ArticleListItem extends StatelessWidget {
             ]),
             Container(
                 margin: EdgeInsets.only(top: 8.0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.end,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         ago,

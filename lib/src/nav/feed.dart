@@ -7,11 +7,11 @@ import '../widgets/top_bar.dart';
 
 class Feed extends StatelessWidget {
   final Store _store;
-  final Future _future;
+  final Function _onRefresh;
 
-  Feed({Key key, Store store, Future future})
+  Feed({Key key, Store store, Function onRefresh})
       : _store = store,
-        _future = future,
+        _onRefresh = onRefresh,
         super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class Feed extends StatelessWidget {
         appBar: TopBar(title: "Feed"),
         body: ArticleList(
           store: _store,
-          future: _future,
+          onRefresh: _onRefresh,
         ));
   }
 }

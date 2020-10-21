@@ -6,36 +6,22 @@ import 'article_list_item.dart';
 
 class ArticleList extends StatelessWidget {
   final Store _store;
-  final Future _future;
+  final Function _onRefresh;
 
-  ArticleList({Key key, Store store, Future future})
+  ArticleList({Key key, Store store, Function onRefresh})
       : _store = store,
-        _future = future,
+        _onRefresh = onRefresh,
         super(key: key);
-
-  Widget _buildArticleList() {
-    return RefreshIndicator(
-        onRefresh: () async {
-          return _store.fetchAll();
-        },
-        child: ListView.builder(
-            itemCount: _store.articles.length,
-            itemBuilder: (context, i) =>
-                ArticleListItem(i, article: _store.articles[i])));
-  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildArticleList();
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
+    var articles = _store.getArticles();
 
-          return CircularProgressIndicator();
-        });
+    return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: ListView.builder(
+            itemCount: articles.length,
+            itemBuilder: (context, i) =>
+                ArticleListItem(i, article: articles[i])));
   }
 }
