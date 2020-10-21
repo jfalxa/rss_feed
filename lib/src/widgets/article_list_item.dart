@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:rss_feed/src/pages/article_web_view.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../data/models.dart';
@@ -12,13 +13,20 @@ class ArticleListItem extends StatelessWidget {
       : _article = article,
         super(key: key);
 
+  void readArticle(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ArticleWebView(article: _article)));
+  }
+
   @override
   Widget build(BuildContext context) {
     var uri = Uri.parse(_article.link);
     var ago = timeago.format(_article.date);
 
     return InkWell(
-        onTap: () => print("go to ${_article.link}"),
+        onTap: () => readArticle(context),
         child: Container(
             padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
             child: Column(
