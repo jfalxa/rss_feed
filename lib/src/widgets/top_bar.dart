@@ -14,20 +14,27 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        title: Text(_title),
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () => null,
+      title: Text(_title),
+      leading: IconButton(
+        icon: Icon(
+          Icons.search,
+          color: Colors.black87,
         ),
-        actions: [
-          PopupMenuButton(
-              itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                    PopupMenuItem(
-                      child: Text('Settings'),
-                    ),
-                  ])
-        ]);
+        onPressed: () => null,
+      ),
+      actions: [
+        PopupMenuButton(
+            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                  PopupMenuItem(
+                    child: Text('Settings'),
+                  ),
+                ])
+      ],
+      elevation: 0,
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      textTheme: Theme.of(context).textTheme,
+      actionsIconTheme: Theme.of(context).iconTheme,
+    );
   }
 }
