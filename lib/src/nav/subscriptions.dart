@@ -11,14 +11,6 @@ import '../widgets/subscription_list.dart';
 import '../search/subscription_api_search.dart';
 
 class Subscriptions extends StatelessWidget {
-  final Store _store;
-  final Function _onRefresh;
-
-  Subscriptions({Key key, Store store, Function onRefresh})
-      : _store = store,
-        _onRefresh = onRefresh,
-        super(key: key);
-
   void goToSubscriptionFeed(BuildContext context, Subscription subscription) {
     Navigator.pushNamed(context, SubscriptionFeed.routeName,
         arguments: subscription);
@@ -39,13 +31,13 @@ class Subscriptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
+    return Consumer<Store>(
         builder: (context, store, child) => Scaffold(
-              appBar: TopBar(title: "Subscriptions"),
+              appBar: TopBar(title: 'Subscriptions'),
               body: Loader(
                   future: store.loader,
-                  error: "Error loading subscriptions",
-                  builder: (context, _) => SubscriptionList(
+                  error: 'Error loading subscriptions',
+                  builder: (context, _) => FutureSubscriptionList(
                         subscriptions: store.getSubscriptions(),
                         onTap: (subscription) =>
                             goToSubscriptionFeed(context, subscription),

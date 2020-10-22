@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/store.dart';
-import '../widgets/article_list.dart';
+import '../widgets/loader.dart';
 import '../widgets/top_bar.dart';
+import '../widgets/article_list.dart';
 
 class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Store>(
         builder: (context, store, child) => Scaffold(
-            appBar: TopBar(title: "Feed"),
-            body: ArticleList(
-              loader: store.loader,
-              articles: store.getArticles(),
-              onRefresh: store.refreshAllSubscriptions,
-            )));
+            appBar: TopBar(title: 'Feed'),
+            body: Loader(
+                future: store.loader,
+                error: 'Error refreshing articles',
+                builder: (context, data) => FutureArticleList(
+                      articles: store.getArticles(),
+                      onRefresh: store.refreshAllSubscriptions,
+                    ))));
   }
 }

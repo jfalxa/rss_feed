@@ -30,32 +30,33 @@ class Store extends ChangeNotifier {
     _articles.addAll(articles.where((a) => !hasArticle(a)));
   }
 
-  List<Article> getArticles() {
+  Future<List<Article>> getArticles() {
     if (_articles.length >= 2) {
       _articles.sort((a, b) => b.date.compareTo(a.date));
     }
 
-    return _articles;
+    return Future.delayed(Duration(seconds: 1), () => _articles);
   }
 
-  List<Article> getSubscriptionArticles(Subscription s) {
-    var articles = _articles.where((a) => a.subscriptionUrl == s.url).toList();
+  Future<List<Article>> getSubscriptionArticles(Subscription s) {
+    var subscriptionArticles =
+        _articles.where((a) => a.subscriptionUrl == s.url).toList();
 
-    if (articles.length >= 2) {
-      articles.sort((a, b) => b.date.compareTo(a.date));
+    if (subscriptionArticles.length >= 2) {
+      subscriptionArticles.sort((a, b) => b.date.compareTo(a.date));
     }
 
-    return articles;
+    return Future.delayed(Duration(seconds: 1), () => subscriptionArticles);
   }
 
-  List<Subscription> getSubscriptions() {
+  Future<List<Subscription>> getSubscriptions() {
     _subscriptions.removeWhere((s) => s == null);
 
     if (_subscriptions.length >= 2) {
-      _subscriptions.sort((a, b) => b.title?.compareTo(a.title) ?? 0);
+      _subscriptions.sort((a, b) => b.title.compareTo(a.title) ?? 0);
     }
 
-    return _subscriptions;
+    return Future.delayed(Duration(seconds: 1), () => _subscriptions);
   }
 
   Future refreshSubscription(Subscription subscription) async {

@@ -8,13 +8,13 @@ class Loader<T> extends StatelessWidget {
 
   Loader(
       {Key key,
-      Future future,
-      Widget Function(BuildContext, T) builder,
+      @required Future future,
+      @required Widget Function(BuildContext, T) builder,
       String error,
       Function onRefresh})
       : _future = future,
         _builder = builder,
-        _error = error,
+        _error = error ?? 'Error',
         super(key: key);
 
   @override

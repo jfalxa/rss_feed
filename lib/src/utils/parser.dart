@@ -3,7 +3,7 @@ import 'package:xml/xml.dart';
 
 import '../data/models.dart';
 
-var formatter = DateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+var formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
 
 DateTime parseDate(String dateString) {
   try {
@@ -39,7 +39,7 @@ class FeedDocument {
   static FeedDocument parse(String url, String xml) {
     try {
       var document = XmlDocument.parse(xml);
-      var root = document.getElement("rss");
+      var root = document.getElement('rss');
 
       if (root != null) {
         return _parseRss(url, root);

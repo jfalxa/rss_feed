@@ -17,8 +17,7 @@ class SubscriptionFeed extends StatelessWidget {
     return Consumer<Store>(
         builder: (context, store, child) => Scaffold(
             appBar: PopTopBar(title: subscription.title),
-            body: ArticleList(
-                loader: store.loader,
+            body: FutureArticleList(
                 articles: store.getSubscriptionArticles(subscription),
                 onRefresh: store.refreshAllSubscriptions)));
   }

@@ -5,12 +5,12 @@ import '../data/models.dart';
 import 'redirects.dart';
 
 class Api {
-  static final String root = "https://cloud.feedly.com/v3";
+  static final String root = 'https://cloud.feedly.com/v3';
 
   static Future<List<Subscription>> searchSubscriptions(String query) async {
     if (query == '') return Future.value([]);
 
-    var response = await http.get("$root/search/feeds?query=$query");
+    var response = await http.get('$root/search/feeds?query=$query');
     var json = convert.jsonDecode(response.body);
 
     List<dynamic> results = json['results'];

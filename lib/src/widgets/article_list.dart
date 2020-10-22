@@ -7,27 +7,41 @@ import 'article_list_item.dart';
 
 class ArticleList extends StatelessWidget {
   final List<Article> _articles;
-  final Future _loader;
   final Function _onRefresh;
 
-  ArticleList(
-      {Key key, List<Article> articles, Future loader, Function onRefresh})
+  ArticleList({Key key, List<Article> articles, Function onRefresh})
       : _articles = articles,
-        _loader = loader,
         _onRefresh = onRefresh,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Loader(
-        future: _loader,
-        error: 'Error loading articles',
-        builder: (context, data) => RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: ListView.separated(
-                itemCount: _articles.length,
-                separatorBuilder: (context, index) => Divider(height: 1),
-                itemBuilder: (context, i) =>
-                    ArticleListItem(article: _articles[i]))));
+    return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: ListView.separated(
+            itemCount: _articles.length,
+            separatorBuilder: (context, index) => Divider(height: 1),
+            itemBuilder: (context, i) =>
+                ArticleListItem(article: _articles[i])));
+  }
+}
+
+class FutureArticleList extends StatelessWidget {
+  final Future<List<Article>> _articles;
+  final Function _onRefresh;
+
+  FutureArticleList(
+      {Key key, Future<List<Article>> articles, Function onRefresh})
+      : _articles = articles,
+        _onRefresh = onRefresh,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Loader<List<Article>>(
+        future: _articles,
+        error: 'Error loading articles from database',
+        builder: (context, articles) =>
+            ArticleList(articles: articles, onRefresh: _onRefresh));
   }
 }
