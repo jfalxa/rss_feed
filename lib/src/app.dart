@@ -34,11 +34,18 @@ class _AppState extends State<App> {
         onTap: navigate,
         backgroundColor: Colors.white,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.rss_feed), label: 'Feed'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book), label: 'Subscriptions'),
+            icon: Icon(Icons.rss_feed),
+            label: 'Feed',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bookmarks), label: 'Bookmarks'),
+            icon: Icon(Icons.menu_book),
+            label: 'Subscriptions',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmarks),
+            label: 'Bookmarks',
+          ),
         ],
       ),
     );

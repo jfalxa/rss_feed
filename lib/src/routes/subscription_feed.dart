@@ -15,10 +15,13 @@ class SubscriptionFeed extends StatelessWidget {
     Subscription subscription = ModalRoute.of(context).settings.arguments;
 
     return Consumer<Store>(
-        builder: (context, store, child) => Scaffold(
-            appBar: PopTopBar(title: subscription.title),
-            body: FutureArticleList(
-                articles: store.getSubscriptionArticles(subscription),
-                onRefresh: store.refreshAllSubscriptions)));
+      builder: (context, store, child) => Scaffold(
+        appBar: PopTopBar(title: subscription.title),
+        body: FutureArticleList(
+          articles: store.getSubscriptionArticles(subscription),
+          onRefresh: store.refreshAllSubscriptions,
+        ),
+      ),
+    );
   }
 }

@@ -17,10 +17,13 @@ class SubscriptionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        itemCount: _subscriptions.length,
-        separatorBuilder: (context, index) => Divider(height: 1),
-        itemBuilder: (context, i) => SubscriptionListItem(
-            subscription: _subscriptions[i], onTap: _onTap));
+      itemCount: _subscriptions.length,
+      separatorBuilder: (context, index) => Divider(height: 1),
+      itemBuilder: (context, i) => SubscriptionListItem(
+        subscription: _subscriptions[i],
+        onTap: _onTap,
+      ),
+    );
   }
 }
 
@@ -37,12 +40,17 @@ class FutureSubscriptionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader<List<Subscription>>(
-        future: _subscriptions,
-        error: 'Error getting subscriptions from database',
-        builder: (context, subscriptions) => ListView.separated(
-            itemCount: subscriptions.length,
-            separatorBuilder: (context, index) => Divider(height: 1),
-            itemBuilder: (context, i) => SubscriptionListItem(
-                subscription: subscriptions[i], onTap: _onTap)));
+      future: _subscriptions,
+      error: 'Error getting subscriptions from database',
+      builder: (context, subscriptions) => ListView.separated(
+        itemCount: subscriptions.length,
+        separatorBuilder: (context, index) =>
+            Divider(height: 1, indent: 16, endIndent: 16),
+        itemBuilder: (context, i) => SubscriptionListItem(
+          subscription: subscriptions[i],
+          onTap: _onTap,
+        ),
+      ),
+    );
   }
 }

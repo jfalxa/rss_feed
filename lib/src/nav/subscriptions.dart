@@ -32,20 +32,22 @@ class Subscriptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Store>(
-        builder: (context, store, child) => Scaffold(
-              appBar: TopBar(title: 'Subscriptions'),
-              body: Loader(
-                  future: store.loader,
-                  error: 'Error loading subscriptions',
-                  builder: (context, _) => FutureSubscriptionList(
-                        subscriptions: store.getSubscriptions(),
-                        onTap: (subscription) =>
-                            goToSubscriptionFeed(context, subscription),
-                      )),
-              floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: () => goToSubscriptionSearch(context),
-              ),
-            ));
+      builder: (context, store, child) => Scaffold(
+        appBar: TopBar(title: 'Subscriptions'),
+        body: Loader(
+          future: store.loader,
+          error: 'Error loading subscriptions',
+          builder: (context, _) => FutureSubscriptionList(
+            subscriptions: store.getSubscriptions(),
+            onTap: (subscription) =>
+                goToSubscriptionFeed(context, subscription),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => goToSubscriptionSearch(context),
+        ),
+      ),
+    );
   }
 }

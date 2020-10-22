@@ -12,14 +12,17 @@ class Bookmarks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Store>(
-        builder: (context, store, child) => Scaffold(
-            appBar: TopBar(title: 'Bookmarks'),
-            body: Loader(
-                future: store.loader,
-                error: 'Error refreshing bookmarks',
-                builder: (context, data) => FutureArticleList(
-                      articles: store.getArticles(),
-                      onRefresh: store.refreshAllSubscriptions,
-                    ))));
+      builder: (context, store, child) => Scaffold(
+        appBar: TopBar(title: 'Bookmarks'),
+        body: Loader(
+          future: store.loader,
+          error: 'Error refreshing bookmarks',
+          builder: (context, data) => FutureArticleList(
+            articles: store.getArticles(),
+            onRefresh: store.refreshAllSubscriptions,
+          ),
+        ),
+      ),
+    );
   }
 }

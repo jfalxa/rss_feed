@@ -11,14 +11,17 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Store>(
-        builder: (context, store, child) => Scaffold(
-            appBar: TopBar(title: 'Feed'),
-            body: Loader(
-                future: store.loader,
-                error: 'Error refreshing articles',
-                builder: (context, data) => FutureArticleList(
-                      articles: store.getArticles(),
-                      onRefresh: store.refreshAllSubscriptions,
-                    ))));
+      builder: (context, store, child) => Scaffold(
+        appBar: TopBar(title: 'Feed'),
+        body: Loader(
+          future: store.loader,
+          error: 'Error refreshing articles',
+          builder: (context, data) => FutureArticleList(
+            articles: store.getArticles(),
+            onRefresh: store.refreshAllSubscriptions,
+          ),
+        ),
+      ),
+    );
   }
 }

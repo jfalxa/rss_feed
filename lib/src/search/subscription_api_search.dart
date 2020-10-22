@@ -37,9 +37,12 @@ class SubscriptionApiSearch extends SearchDelegate<Subscription> {
   @override
   Widget buildResults(BuildContext context) {
     return Loader<List<Subscription>>(
-        future: Api.searchSubscriptions(this.query),
-        error: 'Error searching for subscriptions',
-        builder: (context, subscriptions) => SubscriptionList(
-            subscriptions: subscriptions, onTap: (s) => close(context, s)));
+      future: Api.searchSubscriptions(this.query),
+      error: 'Error searching for subscriptions',
+      builder: (context, subscriptions) => SubscriptionList(
+        subscriptions: subscriptions,
+        onTap: (s) => close(context, s),
+      ),
+    );
   }
 }

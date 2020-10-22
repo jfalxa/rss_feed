@@ -24,11 +24,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         PopupMenuButton(
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                  PopupMenuItem(
-                    child: Text('Settings'),
-                  ),
-                ])
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            PopupMenuItem(
+              child: Text('Settings'),
+            ),
+          ],
+        )
       ],
       elevation: 1.0,
       centerTitle: true,

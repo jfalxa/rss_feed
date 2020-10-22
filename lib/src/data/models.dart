@@ -21,11 +21,12 @@ class Subscription {
         : json['feedId'].substring(5);
 
     return Subscription(
-        url: url,
-        website: json['website'],
-        title: json['title'],
-        description: json['description'],
-        icon: json['iconUrl']);
+      url: url,
+      website: json['website'],
+      title: json['title'],
+      description: json['description'],
+      icon: json['iconUrl'],
+    );
   }
 }
 

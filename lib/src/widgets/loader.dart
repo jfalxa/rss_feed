@@ -20,15 +20,16 @@ class Loader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<T>(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _builder(context, snapshot.data);
-          } else if (snapshot.hasError) {
-            return Center(child: Text(_error));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _builder(context, snapshot.data);
+        } else if (snapshot.hasError) {
+          return Center(child: Text(_error));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }

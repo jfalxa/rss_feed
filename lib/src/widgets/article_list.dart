@@ -17,12 +17,14 @@ class ArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: ListView.separated(
-            itemCount: _articles.length,
-            separatorBuilder: (context, index) => Divider(height: 1),
-            itemBuilder: (context, i) =>
-                ArticleListItem(article: _articles[i])));
+      onRefresh: _onRefresh,
+      child: ListView.separated(
+        itemCount: _articles.length,
+        separatorBuilder: (context, index) =>
+            Divider(height: 1, indent: 16, endIndent: 16),
+        itemBuilder: (context, i) => ArticleListItem(article: _articles[i]),
+      ),
+    );
   }
 }
 
@@ -39,9 +41,10 @@ class FutureArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader<List<Article>>(
-        future: _articles,
-        error: 'Error loading articles from database',
-        builder: (context, articles) =>
-            ArticleList(articles: articles, onRefresh: _onRefresh));
+      future: _articles,
+      error: 'Error loading articles from database',
+      builder: (context, articles) =>
+          ArticleList(articles: articles, onRefresh: _onRefresh),
+    );
   }
 }
