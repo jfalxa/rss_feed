@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'src/data/api.dart';
 import 'src/data/store.dart';
-import 'src/data/models.dart';
 
 import 'src/app.dart';
 import 'src/routes/article_web_view.dart';
-import 'src/routes/subscription_adder.dart';
 import 'src/routes/subscription_feed.dart';
 
-const Map<String, Subscription> DEMO = {
-  "https://www.lemonde.fr/rss/une.xml": null,
-  "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml": null
-};
+const DEMO_FEEDS = [
+  "https://www.lemonde.fr/rss/une.xml",
+  "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
+];
 
 void main() {
   runApp(RssFeed());
@@ -30,12 +29,25 @@ class _AppState extends State<RssFeed> {
   void initState() {
     super.initState();
 
-    _store = Store(DEMO, []);
+    _store = Store([], []);
+
+    initDemo();
+  }
+
+  void initDemo() async {
+    var subscriptions =
+        await Future.wait(DEMO_FEEDS.map((url) => Api.getSubscription(url)));
+
+    subscriptions.forEach((subscription) {
+      _store.addSubscription(subscription);
+    });
+
     refresh();
   }
 
   Future refresh() async {
-    await _store.refresh();
+    await _store.refreshSubscriptions();
+
     setState(() {
       _store = _store;
     });
@@ -63,10 +75,6 @@ class _AppState extends State<RssFeed> {
               onNavigate: navigate,
               onRefresh: refresh),
           ArticleWebView.routeName: (context) => ArticleWebView(),
-          SubscriptionAdder.routeName: (context) => SubscriptionAdder(
-                store: _store,
-                onRefresh: refresh,
-              ),
           SubscriptionFeed.routeName: (context) => SubscriptionFeed(
                 store: _store,
                 onRefresh: refresh,

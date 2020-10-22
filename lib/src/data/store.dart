@@ -1,14 +1,11 @@
-import 'package:http/http.dart' as http;
-
 import 'models.dart';
-import 'parser.dart';
 
 class Store {
-  Map<String, Subscription> _subscriptions;
+  List<Subscription> _subscriptions;
   List<Article> _articles;
 
-  Store(Map<String, Subscription> subscriptions, List<Article> articles)
-      : _subscriptions = Map.from(subscriptions),
+  Store(List<Subscription> subscriptions, List<Article> articles)
+      : _subscriptions = subscriptions,
         _articles = articles;
 
   bool hasArticle(Article a) {
@@ -16,12 +13,12 @@ class Store {
   }
 
   bool hasSubscription(Subscription s) {
-    return _subscriptions.containsKey(s.url) && _subscriptions[s.url] != null;
+    return _subscriptions.any((b) => b.url == s.url);
   }
 
   void addSubscription(Subscription addedSubscription) {
     if (!hasSubscription(addedSubscription)) {
-      _subscriptions[addedSubscription.url] = addedSubscription;
+      _subscriptions.add(addedSubscription);
     }
   }
 
@@ -48,29 +45,23 @@ class Store {
   }
 
   List<Subscription> getSubscriptions() {
-    var subscriptions = _subscriptions.values.toList();
-    subscriptions.removeWhere((s) => s == null);
-    subscriptions.sort((a, b) => b.title.compareTo(a.title));
-    return subscriptions;
+    _subscriptions.removeWhere((s) => s == null);
+
+    if (_subscriptions.length >= 2) {
+      _subscriptions.sort((a, b) => b.title?.compareTo(a.title) ?? 0);
+    }
+
+    return _subscriptions;
   }
 
-  Future refresh() async {
-    var futures = _subscriptions.keys.map(fetch);
+  Future refreshSubscriptions() async {
+    var futures = _subscriptions.map((s) => s.fetch());
     var documents = await Future.wait(futures);
 
     documents.forEach((document) {
-      addSubscription(document.subscription);
-      addArticles(document.articles);
+      if (document != null) {
+        addArticles(document.articles);
+      }
     });
-  }
-
-  Future<FeedDocument> fetch(String url) async {
-    final response = await http.get(url);
-
-    if (response.statusCode != 200) {
-      return null;
-    }
-
-    return FeedDocument.parse(url, response.body);
   }
 }

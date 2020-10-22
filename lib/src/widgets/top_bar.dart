@@ -55,9 +55,12 @@ class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(_title),
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
+        color: Colors.black87,
         onPressed: () => Navigator.pop(context),
       ),
       centerTitle: true,
+      backgroundColor: Colors.white,
+      textTheme: Theme.of(context).textTheme,
     );
   }
 }

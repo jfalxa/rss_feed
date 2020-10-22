@@ -1,27 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:rss_feed/src/routes/subscription_feed.dart';
 
 import '../data/models.dart';
-import '../routes/subscription_feed.dart';
 
 class SubscriptionListItem extends StatelessWidget {
   final Subscription _subscription;
+  final Function _onTap;
 
-  SubscriptionListItem({Key key, Subscription subscription})
+  SubscriptionListItem({Key key, Subscription subscription, Function onTap})
       : _subscription = subscription,
+        _onTap = onTap,
         super(key: key);
-
-  void goToSubscription(BuildContext context) {
-    Navigator.pushNamed(context, SubscriptionFeed.routeName,
-        arguments: _subscription);
-  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () => goToSubscription(context),
+        onTap: () => _onTap(_subscription),
         child: Container(
             padding: EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
             child: Row(
@@ -34,11 +29,11 @@ class SubscriptionListItem extends StatelessWidget {
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_subscription.title,
+                    Text(_subscription.title ?? 'Title',
                         style: Theme.of(context).textTheme.headline6),
                     Container(
                         margin: EdgeInsets.only(top: 4.0, bottom: 16.0),
-                        child: Text(_subscription.link,
+                        child: Text(_subscription.url,
                             style: Theme.of(context).textTheme.caption)),
                     Divider(height: 1)
                   ],

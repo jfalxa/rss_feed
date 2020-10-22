@@ -31,7 +31,7 @@ class App extends StatelessWidget {
         index: _navIndex,
         children: [
           Feed(store: _store, onRefresh: _onRefresh),
-          Subscriptions(store: _store),
+          Subscriptions(store: _store, onRefresh: _onRefresh),
           Bookmarks(store: _store, onRefresh: _onRefresh),
         ],
       ),
