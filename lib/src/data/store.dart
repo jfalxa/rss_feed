@@ -84,6 +84,7 @@ class Store extends ChangeNotifier {
   Future refreshAllSubscriptions() async {
     loader = Future.wait(_subscriptions.map(refreshSubscription));
     notifyListeners();
-    return await loader;
+    await loader;
+    return true;
   }
 }

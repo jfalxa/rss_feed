@@ -23,7 +23,7 @@ class Subscriptions extends StatelessWidget {
     );
 
     if (subscription != null) {
-      var store = Provider.of<Store>(context);
+      var store = Provider.of<Store>(context, listen: false);
       store.addSubscription(subscription);
       store.refreshAllSubscriptions();
     }
