@@ -1,66 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'src/utils/api.dart';
 import 'src/data/store.dart';
 
 import 'src/app.dart';
 import 'src/routes/article_web_view.dart';
 import 'src/routes/subscription_feed.dart';
 
-const DEMO_FEEDS = [
-  "https://www.lemonde.fr/rss/une.xml",
-  "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml"
-];
-
 void main() {
-  runApp(RssFeed());
+  ChangeNotifierProvider(
+    create: (context) => Store([], []),
+    child: RssFeed(),
+  );
 }
 
-class RssFeed extends StatefulWidget {
-  @override
-  _AppState createState() => _AppState();
-}
-
-class _AppState extends State<RssFeed> {
-  Store _store;
-  int _navIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _store = Store([], []);
-
-    initDemo();
-  }
-
-  void initDemo() async {
-    var subscriptions =
-        await Future.wait(DEMO_FEEDS.map((url) => Api.getSubscription(url)));
-
-    subscriptions.forEach((subscription) {
-      _store.addSubscription(subscription);
-    });
-
-    refresh();
-  }
-
-  Future refresh() async {
-    var future = _store.refreshSubscriptions();
-
-    setState(() {
-      _store.loader = future;
-    });
-
-    await future;
-  }
-
-  void navigate(int index) {
-    setState(() {
-      _navIndex = index;
-    });
-  }
-
+class RssFeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -71,16 +25,9 @@ class _AppState extends State<RssFeed> {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => App(
-              store: _store,
-              navIndex: _navIndex,
-              onNavigate: navigate,
-              onRefresh: refresh),
+          '/': (context) => App(),
           ArticleWebView.routeName: (context) => ArticleWebView(),
-          SubscriptionFeed.routeName: (context) => SubscriptionFeed(
-                store: _store,
-                onRefresh: refresh,
-              ),
+          SubscriptionFeed.routeName: (context) => SubscriptionFeed()
         });
   }
 }

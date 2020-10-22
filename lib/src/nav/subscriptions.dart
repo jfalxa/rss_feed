@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/store.dart';
 import '../data/models.dart';
@@ -30,28 +31,29 @@ class Subscriptions extends StatelessWidget {
     );
 
     if (subscription != null) {
-      _store.addSubscription(subscription);
-      _onRefresh();
+      var store = Provider.of<Store>(context);
+      store.addSubscription(subscription);
+      store.refreshAllSubscriptions();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopBar(title: "Subscriptions"),
-      body: Loader(
-          future: _store.loader,
-          error: "Error loading subscriptions",
-          builder: (context, _) => SubscriptionList(
-                loader: _store.loader,
-                subscriptions: _store.getSubscriptions(),
-                onTap: (subscription) =>
-                    goToSubscriptionFeed(context, subscription),
-              )),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => goToSubscriptionSearch(context),
-      ),
-    );
+    return Consumer(
+        builder: (context, store, child) => Scaffold(
+              appBar: TopBar(title: "Subscriptions"),
+              body: Loader(
+                  future: store.loader,
+                  error: "Error loading subscriptions",
+                  builder: (context, _) => SubscriptionList(
+                        subscriptions: store.getSubscriptions(),
+                        onTap: (subscription) =>
+                            goToSubscriptionFeed(context, subscription),
+                      )),
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () => goToSubscriptionSearch(context),
+              ),
+            ));
   }
 }

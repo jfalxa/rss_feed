@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'data/store.dart';
-
 import 'nav/feed.dart';
 import 'nav/subscriptions.dart';
 import 'nav/bookmarks.dart';
 
-class App extends StatelessWidget {
-  final Store _store;
-  final int _navIndex;
-  final Function _onRefresh;
-  final Function _onNavigate;
+class App extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _AppState();
+}
 
-  App(
-      {Key key,
-      Store store,
-      int navIndex,
-      Function onRefresh,
-      Function onNavigate})
-      : _store = store,
-        _navIndex = navIndex,
-        _onRefresh = onRefresh,
-        _onNavigate = onNavigate,
-        super(key: key);
+class _AppState extends State<App> {
+  int _navIndex = 0;
+
+  void navigate(int index) {
+    setState(() {
+      _navIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +24,14 @@ class App extends StatelessWidget {
       body: IndexedStack(
         index: _navIndex,
         children: [
-          Feed(store: _store, onRefresh: _onRefresh),
-          Subscriptions(store: _store, onRefresh: _onRefresh),
-          Bookmarks(store: _store, onRefresh: _onRefresh),
+          Feed(),
+          Subscriptions(),
+          Bookmarks(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _navIndex,
-        onTap: _onNavigate,
+        onTap: navigate,
         backgroundColor: Colors.white,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.rss_feed), label: 'Feed'),

@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
+
 import 'models.dart';
 
-class Store {
+class Store extends ChangeNotifier {
   Future loader;
 
   List<Subscription> _subscriptions;
@@ -18,9 +20,9 @@ class Store {
     return _subscriptions.any((b) => b.url == s.url);
   }
 
-  void addSubscription(Subscription addedSubscription) {
-    if (!hasSubscription(addedSubscription)) {
-      _subscriptions.add(addedSubscription);
+  void addSubscription(Subscription subscription) async {
+    if (!hasSubscription(subscription)) {
+      _subscriptions.add(subscription);
     }
   }
 
@@ -56,16 +58,21 @@ class Store {
     return _subscriptions;
   }
 
-  Future refreshSubscriptions() async {
-    var futures = _subscriptions.map((s) => s.fetch());
-    var documents = await Future.wait(futures);
+  Future refreshSubscription(Subscription subscription) async {
+    var document = await subscription.fetch();
 
-    documents.forEach((document) {
-      if (document != null) {
-        addArticles(document.articles);
-      }
-    });
+    if (document != null) {
+      addArticles(document.articles);
+      return true;
+    }
 
-    return documents;
+    return false;
+  }
+
+  Future refreshAllSubscriptions() async {
+    loader = Future.wait(_subscriptions.map(refreshSubscription));
+    var results = await loader;
+    notifyListeners();
+    return results;
   }
 }

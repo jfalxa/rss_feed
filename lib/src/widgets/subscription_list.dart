@@ -8,11 +8,7 @@ class SubscriptionList extends StatelessWidget {
   final List<Subscription> _subscriptions;
   final Function _onTap;
 
-  SubscriptionList(
-      {Key key,
-      List<Subscription> subscriptions,
-      Future loader,
-      Function onTap})
+  SubscriptionList({Key key, List<Subscription> subscriptions, Function onTap})
       : _subscriptions = subscriptions,
         _onTap = onTap,
         super(key: key);
