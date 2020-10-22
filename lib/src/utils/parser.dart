@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
+import 'package:http/http.dart' as http;
 
 import '../data/models.dart';
 
@@ -49,5 +52,15 @@ class FeedDocument {
     }
 
     return null;
+  }
+
+  static Future<FeedDocument> fetchAndParse(String url) async {
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    return FeedDocument.parse(url, utf8.decode(response.bodyBytes));
   }
 }
