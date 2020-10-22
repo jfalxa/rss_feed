@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../data/store.dart';
 import '../data/models.dart';
 import '../routes/subscription_feed.dart';
+import '../widgets/loader.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/subscription_list.dart';
 import '../search/subscription_api_search.dart';
@@ -38,12 +39,17 @@ class Subscriptions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(title: "Subscriptions"),
-      body: SubscriptionList(
-        subscriptions: _store.getSubscriptions(),
-        onTap: (subscription) => goToSubscriptionFeed(context, subscription),
-      ),
+      body: Loader(
+          future: _store.loader,
+          error: "Error loading subscriptions",
+          builder: (context, _) => SubscriptionList(
+                loader: _store.loader,
+                subscriptions: _store.getSubscriptions(),
+                onTap: (subscription) =>
+                    goToSubscriptionFeed(context, subscription),
+              )),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
+        child: Icon(Icons.add),
         onPressed: () => goToSubscriptionSearch(context),
       ),
     );

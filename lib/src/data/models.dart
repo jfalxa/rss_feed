@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'parser.dart';
+import '../utils/parser.dart';
 
 var feedRx = RegExp(r'rss|xml');
 

@@ -35,7 +35,6 @@ class SubscriptionListItem extends StatelessWidget {
                         margin: EdgeInsets.only(top: 4.0, bottom: 16.0),
                         child: Text(_subscription.url,
                             style: Theme.of(context).textTheme.caption)),
-                    Divider(height: 1)
                   ],
                 ))
               ],

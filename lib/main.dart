@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'src/data/api.dart';
+import 'src/utils/api.dart';
 import 'src/data/store.dart';
 
 import 'src/app.dart';
@@ -46,11 +46,13 @@ class _AppState extends State<RssFeed> {
   }
 
   Future refresh() async {
-    await _store.refreshSubscriptions();
+    var future = _store.refreshSubscriptions();
 
     setState(() {
-      _store = _store;
+      _store.loader = future;
     });
+
+    await future;
   }
 
   void navigate(int index) {

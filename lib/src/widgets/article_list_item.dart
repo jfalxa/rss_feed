@@ -64,7 +64,6 @@ class ArticleListItem extends StatelessWidget {
                               color: Colors.black38,
                               onPressed: () => null)
                         ])),
-                Divider(height: 1)
               ],
             )));
   }

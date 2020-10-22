@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../data/api.dart';
+import '../utils/api.dart';
 import '../data/models.dart';
+import '../widgets/loader.dart';
 import '../widgets/subscription_list.dart';
 
 class SubscriptionApiSearch extends SearchDelegate<Subscription> {
@@ -35,17 +36,10 @@ class SubscriptionApiSearch extends SearchDelegate<Subscription> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder<List<Subscription>>(
+    return Loader<List<Subscription>>(
         future: Api.searchSubscriptions(this.query),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SubscriptionList(
-                subscriptions: snapshot.data, onTap: (s) => close(context, s));
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error searching for subsciptions'));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+        error: 'Error searching for subscriptions',
+        builder: (context, subscriptions) => SubscriptionList(
+            subscriptions: subscriptions, onTap: (s) => close(context, s)));
   }
 }

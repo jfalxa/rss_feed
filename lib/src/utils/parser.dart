@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
-import 'models.dart';
+import '../data/models.dart';
 
 var formatter = DateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 

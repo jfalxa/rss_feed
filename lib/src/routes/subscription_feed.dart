@@ -24,6 +24,7 @@ class SubscriptionFeed extends StatelessWidget {
     return Scaffold(
         appBar: PopTopBar(title: subscription.title),
         body: ArticleList(
+          loader: _store.loader,
           articles: _store.getSubscriptionArticles(subscription),
           onRefresh: _onRefresh,
         ));

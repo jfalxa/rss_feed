@@ -1,6 +1,8 @@
 import 'models.dart';
 
 class Store {
+  Future loader;
+
   List<Subscription> _subscriptions;
   List<Article> _articles;
 
@@ -63,5 +65,7 @@ class Store {
         addArticles(document.articles);
       }
     });
+
+    return documents;
   }
 }
