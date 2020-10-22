@@ -1,6 +1,3 @@
-import 'package:http/http.dart' as http;
-import '../utils/parser.dart';
-
 var feedRx = RegExp(r'rss|xml');
 
 class Subscription {
@@ -10,8 +7,13 @@ class Subscription {
   String description;
   String icon;
 
-  Subscription(
-      {this.url, this.title, this.website, this.description, this.icon});
+  Subscription({
+    this.url,
+    this.title,
+    this.website,
+    this.description,
+    this.icon,
+  });
 
   factory Subscription.fromJson(Map<String, dynamic> json) {
     var url = json['website'].contains(feedRx)
@@ -25,16 +27,6 @@ class Subscription {
         description: json['description'],
         icon: json['iconUrl']);
   }
-
-  Future<FeedDocument> fetch() async {
-    final response = await http.get(url);
-
-    if (response.statusCode != 200) {
-      return null;
-    }
-
-    return FeedDocument.parse(url, response.body);
-  }
 }
 
 class Article {
@@ -43,13 +35,19 @@ class Article {
   String link;
   String description;
   DateTime date;
-  String subscriptionUrl;
 
-  Article(
-      {this.guid,
-      this.title,
-      this.link,
-      this.description,
-      this.date,
-      this.subscriptionUrl});
+  Article({
+    this.guid,
+    this.title,
+    this.link,
+    this.description,
+    this.date,
+  });
+}
+
+class SubscriptionAndArticle {
+  String subscriptionUrl;
+  String articleGuid;
+
+  SubscriptionAndArticle(this.subscriptionUrl, this.articleGuid);
 }

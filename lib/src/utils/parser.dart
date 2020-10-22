@@ -20,10 +20,9 @@ DateTime parseDate(String dateString) {
 }
 
 class FeedDocument {
-  String url;
   List<Article> articles;
 
-  FeedDocument({this.url, this.articles});
+  FeedDocument({this.articles});
 
   static FeedDocument _parseRss(String url, XmlElement root) {
     var channel = root.getElement('channel');
@@ -33,10 +32,9 @@ class FeedDocument {
         title: item.getElement('title').text,
         link: item.getElement('link').text,
         description: item.getElement('description').text,
-        date: parseDate(item.getElement('pubDate').text),
-        subscriptionUrl: url));
+        date: parseDate(item.getElement('pubDate').text)));
 
-    return FeedDocument(url: url, articles: articles.toList());
+    return FeedDocument(articles: articles.toList());
   }
 
   static FeedDocument parse(String url, String xml) {

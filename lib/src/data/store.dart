@@ -1,16 +1,14 @@
 import 'package:flutter/foundation.dart';
+import 'package:rss_feed/src/utils/parser.dart';
 
 import 'models.dart';
 
 class Store extends ChangeNotifier {
   Future loader;
 
-  List<Subscription> _subscriptions;
-  List<Article> _articles;
-
-  Store(List<Subscription> subscriptions, List<Article> articles)
-      : _subscriptions = subscriptions,
-        _articles = articles;
+  List<Subscription> _subscriptions = [];
+  List<Article> _articles = [];
+  List<SubscriptionAndArticle> _subscriptionsAndArticles = [];
 
   bool hasArticle(Article a) {
     return _articles.any((b) => b.guid == a.guid);
@@ -20,14 +18,27 @@ class Store extends ChangeNotifier {
     return _subscriptions.any((b) => b.url == s.url);
   }
 
-  void addSubscription(Subscription subscription) async {
-    if (!hasSubscription(subscription)) {
-      _subscriptions.add(subscription);
+  bool hasSubscriptionAndArticle(Subscription s, Article a) {
+    return _subscriptionsAndArticles
+        .any((sa) => sa.subscriptionUrl == s.url && sa.articleGuid == a.guid);
+  }
+
+  void addSubscription(Subscription s) async {
+    if (!hasSubscription(s)) {
+      _subscriptions.add(s);
     }
   }
 
-  void addArticles(List<Article> articles) {
-    _articles.addAll(articles.where((a) => !hasArticle(a)));
+  void addArticle(Article a) {
+    if (!hasArticle(a)) {
+      _articles.add(a);
+    }
+  }
+
+  void addSubscriptionAndArticle(Subscription s, Article a) {
+    if (!hasSubscriptionAndArticle(s, a)) {
+      _subscriptionsAndArticles.add(SubscriptionAndArticle(s.url, a.guid));
+    }
   }
 
   Future<List<Article>> getArticles() {
@@ -39,8 +50,10 @@ class Store extends ChangeNotifier {
   }
 
   Future<List<Article>> getSubscriptionArticles(Subscription s) {
-    var subscriptionArticles =
-        _articles.where((a) => a.subscriptionUrl == s.url).toList();
+    var subscriptionArticles = _subscriptionsAndArticles
+        .where((sa) => sa.subscriptionUrl == s.url)
+        .map((sa) => _articles.firstWhere((a) => a.guid == sa.articleGuid))
+        .toList();
 
     if (subscriptionArticles.length >= 2) {
       subscriptionArticles.sort((a, b) => b.date.compareTo(a.date));
@@ -50,8 +63,6 @@ class Store extends ChangeNotifier {
   }
 
   Future<List<Subscription>> getSubscriptions() {
-    _subscriptions.removeWhere((s) => s == null);
-
     if (_subscriptions.length >= 2) {
       _subscriptions.sort((a, b) => b.title.compareTo(a.title) ?? 0);
     }
@@ -59,21 +70,20 @@ class Store extends ChangeNotifier {
     return Future.delayed(Duration(seconds: 1), () => _subscriptions);
   }
 
-  Future refreshSubscription(Subscription subscription) async {
-    var document = await subscription.fetch();
+  Future refreshSubscription(Subscription s) async {
+    var document = await FeedDocument.fetchAndParse(s.url);
 
     if (document != null) {
-      addArticles(document.articles);
-      return true;
+      document.articles.forEach((a) {
+        addArticle(a);
+        addSubscriptionAndArticle(s, a);
+      });
     }
-
-    return false;
   }
 
   Future refreshAllSubscriptions() async {
     loader = Future.wait(_subscriptions.map(refreshSubscription));
-    var results = await loader;
     notifyListeners();
-    return results;
+    return await loader;
   }
 }
