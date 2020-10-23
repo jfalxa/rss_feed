@@ -18,31 +18,62 @@ DateTime parseDate(String dateString) {
   return DateTime.now();
 }
 
+String parseImage(String html) {
+  try {
+    var document = XmlDocument.parse(html);
+    return document.getElement('img')?.getAttribute('src');
+  } catch (error) {
+    print(error);
+  }
+
+  return null;
+}
+
 class FeedDocument {
   List<Article> articles;
 
-  FeedDocument({this.articles});
-
-  static FeedDocument _parseRss(String url, XmlElement root) {
+  FeedDocument.parseRss(XmlElement root) {
     var channel = root.getElement('channel');
+    var items = channel.findElements('item').map(
+          (item) => Article(
+            guid: item.getElement('guid')?.text,
+            title: item.getElement('title')?.text,
+            link: item.getElement('link')?.text,
+            description: item.getElement('description')?.text,
+            image: item.getElement('media:content')?.getAttribute("url"),
+            date: parseDate(item.getElement('pubDate')?.text),
+          ),
+        );
 
-    var articles = channel.findElements('item').map((item) => Article(
-        guid: item.getElement('guid').text,
-        title: item.getElement('title').text,
-        link: item.getElement('link').text,
-        description: item.getElement('description').text,
-        date: parseDate(item.getElement('pubDate').text)));
-
-    return FeedDocument(articles: articles.toList());
+    articles = items.toList();
   }
 
-  static FeedDocument parse(String url, String xml) {
+  FeedDocument.parseAtom(XmlElement feed) {
+    var entries = feed.findElements('entry').map(
+          (entry) => Article(
+            guid: entry.getElement('id').text,
+            title: entry.getElement('title').text,
+            link: entry.getElement('link').getAttribute("href"),
+            description: entry.getElement('summary')?.text,
+            image: parseImage(entry.getElement('content')?.text),
+            date: DateTime.parse(entry.getElement('published').text),
+          ),
+        );
+
+    articles = entries.toList();
+  }
+
+  factory FeedDocument.parse(String xml) {
     try {
       var document = XmlDocument.parse(xml);
+
       var root = document.getElement('rss');
+      var feed = document.getElement('feed');
 
       if (root != null) {
-        return _parseRss(url, root);
+        return FeedDocument.parseRss(root);
+      } else if (feed != null) {
+        return FeedDocument.parseAtom(feed);
       }
     } catch (error) {
       print(error);
@@ -58,6 +89,7 @@ class FeedDocument {
       return null;
     }
 
-    return FeedDocument.parse(url, utf8.decode(response.bodyBytes));
+    var xml = utf8.decode(response.bodyBytes);
+    return FeedDocument.parse(xml);
   }
 }
