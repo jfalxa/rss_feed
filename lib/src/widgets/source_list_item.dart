@@ -31,7 +31,7 @@ class SourceListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _source.title ?? 'Source',
+                    _source.title,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   Container(
