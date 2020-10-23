@@ -7,9 +7,9 @@ import 'source_list_item.dart';
 
 class SourceList extends StatelessWidget {
   final List<Source> _sources;
-  final Function _onTap;
+  final Function(Source) _onTap;
 
-  SourceList({Key key, List<Source> sources, Function onTap})
+  SourceList({Key key, List<Source> sources, Function(Source) onTap})
       : _sources = sources,
         _onTap = onTap,
         super(key: key);
@@ -17,7 +17,7 @@ class SourceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_sources.length == 0) {
-      return Center(child: Text("No sources available."));
+      return Center(child: Text('No sources available.'));
     }
 
     return ListView.separated(

@@ -29,7 +29,7 @@ class Loader<T> extends StatelessWidget {
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else {
-          return Center(child: Text("No data yet."));
+          return Center(child: Text('No data yet.'));
         }
       },
     );

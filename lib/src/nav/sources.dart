@@ -8,14 +8,22 @@ import '../routes/source_feed.dart';
 import '../widgets/loader.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/source_list.dart';
+import '../search/source_search.dart';
 import '../search/source_api_search.dart';
 
 class Sources extends StatelessWidget {
-  void goToSourceFeed(BuildContext context, Source source) {
+  void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
   }
 
-  void goToSourceSearch(BuildContext context) async {
+  void _goToSourceSearch(BuildContext context) async {
+    await showSearch(
+      context: context,
+      delegate: SourceSearch(),
+    );
+  }
+
+  void _goToSourceApiSearch(BuildContext context) async {
     final Source source = await showSearch<Source>(
       context: context,
       delegate: SourceApiSearch(),
@@ -32,18 +40,21 @@ class Sources extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Repository>(
       builder: (context, repository, child) => Scaffold(
-        appBar: TopBar(title: 'Sources'),
+        appBar: TopBar(
+          title: 'Sources',
+          onSearch: () => _goToSourceSearch(context),
+        ),
         body: Loader(
           future: repository.loader,
           error: 'Error loading sources',
           builder: (context, _) => FutureSourceList(
             sources: repository.getSources(),
-            onTap: (source) => goToSourceFeed(context, source),
+            onTap: (source) => _goToSourceFeed(context, source),
           ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () => goToSourceSearch(context),
+          onPressed: () => _goToSourceApiSearch(context),
         ),
       ),
     );

@@ -32,8 +32,24 @@ class Repository extends ChangeNotifier {
     return _database.getSourceArticles(s);
   }
 
-  Future<List<Article>> getBookmarkedArticles() {
-    return _database.getBookmarkedArticles();
+  Future<List<Article>> getBookmarks() {
+    return _database.getBookmarks();
+  }
+
+  Future<List<Source>> findSources(String query) {
+    return _database.findSources(query);
+  }
+
+  Future<List<Article>> findArticles(String query) {
+    return _database.findArticles(query);
+  }
+
+  Future<List<Article>> findSourceArticles(Source s, String query) {
+    return _database.findSourceArticles(s, query);
+  }
+
+  Future<List<Article>> findBookmarks(String query) {
+    return _database.findBookmarks(query);
   }
 
   Future toggleBookmark(Article a) async {

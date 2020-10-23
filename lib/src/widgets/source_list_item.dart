@@ -6,9 +6,9 @@ import '../data/models.dart';
 
 class SourceListItem extends StatelessWidget {
   final Source _source;
-  final Function _onTap;
+  final Function(Source) _onTap;
 
-  SourceListItem({Key key, Source source, Function onTap})
+  SourceListItem({Key key, Source source, Function(Source) onTap})
       : _source = source,
         _onTap = onTap,
         super(key: key);

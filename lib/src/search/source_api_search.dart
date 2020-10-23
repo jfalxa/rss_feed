@@ -5,35 +5,9 @@ import '../utils/api.dart';
 import '../data/models.dart';
 import '../widgets/loader.dart';
 import '../widgets/source_list.dart';
+import 'search.dart';
 
-class SourceApiSearch extends SearchDelegate<Source> {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        color: Colors.black87,
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      color: Colors.black87,
-      onPressed: () => close(context, null),
-    );
-  }
-
+class SourceApiSearch extends Search<Source> {
   @override
   Widget buildResults(BuildContext context) {
     return Loader<List<Source>>(

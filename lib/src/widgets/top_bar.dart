@@ -1,11 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class SearchIcon extends StatelessWidget {
+  final Function _onSearch;
+
+  SearchIcon({Key key, Function onSearch})
+      : _onSearch = onSearch,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.search,
+        color: Colors.black87,
+      ),
+      onPressed: _onSearch,
+    );
+  }
+}
+
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
+  final Function _onSearch;
 
-  TopBar({Key key, String title})
+  TopBar({Key key, String title, Function onSearch})
       : _title = title,
+        _onSearch = onSearch,
         super(key: key);
 
   @override
@@ -15,16 +36,10 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(_title),
-      leading: IconButton(
-        icon: Icon(
-          Icons.search,
-          color: Colors.black87,
-        ),
-        onPressed: () => null,
-      ),
+      leading: SearchIcon(onSearch: _onSearch),
       actions: [
         PopupMenuButton(
-          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+          itemBuilder: (context) => <PopupMenuEntry>[
             PopupMenuItem(
               child: Text('Settings'),
             ),
@@ -42,9 +57,11 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
 
 class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
+  final Function _onSearch;
 
-  PopTopBar({Key key, String title})
+  PopTopBar({Key key, String title, Function onSearch})
       : _title = title,
+        _onSearch = onSearch,
         super(key: key);
 
   @override
@@ -59,6 +76,7 @@ class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
         color: Colors.black87,
         onPressed: () => Navigator.pop(context),
       ),
+      actions: _onSearch == null ? [] : [SearchIcon(onSearch: _onSearch)],
       centerTitle: true,
       backgroundColor: Colors.white,
       textTheme: Theme.of(context).textTheme,

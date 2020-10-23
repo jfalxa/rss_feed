@@ -7,10 +7,40 @@ import 'article_list_item.dart';
 
 class ArticleList extends StatelessWidget {
   final List<Article> _articles;
-  final Function _onRefresh;
   final Function(Article) _onToggleBookmark;
 
   ArticleList({
+    Key key,
+    List<Article> articles,
+    Function(Article) onToggleBookmark,
+  })  : _articles = articles,
+        _onToggleBookmark = onToggleBookmark,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (_articles.length == 0) {
+      return Center(child: Text('No articles found.'));
+    }
+
+    return ListView.separated(
+      itemCount: _articles.length,
+      separatorBuilder: (context, index) =>
+          Divider(height: 1, indent: 16, endIndent: 16),
+      itemBuilder: (context, i) => ArticleListItem(
+        article: _articles[i],
+        onToggleBookmark: _onToggleBookmark,
+      ),
+    );
+  }
+}
+
+class RefreshArticleList extends StatelessWidget {
+  final List<Article> _articles;
+  final Function _onRefresh;
+  final Function(Article) _onToggleBookmark;
+
+  RefreshArticleList({
     Key key,
     List<Article> articles,
     Function onRefresh,
@@ -23,19 +53,14 @@ class ArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_articles.length == 0) {
-      return Center(child: Text("No articles available."));
+      return Center(child: Text('No articles found.'));
     }
 
     return RefreshIndicator(
       onRefresh: _onRefresh,
-      child: ListView.separated(
-        itemCount: _articles.length,
-        separatorBuilder: (context, index) =>
-            Divider(height: 1, indent: 16, endIndent: 16),
-        itemBuilder: (context, i) => ArticleListItem(
-          article: _articles[i],
-          onToggleBookmark: _onToggleBookmark,
-        ),
+      child: ArticleList(
+        articles: _articles,
+        onToggleBookmark: _onToggleBookmark,
       ),
     );
   }
@@ -61,7 +86,7 @@ class FutureArticleList extends StatelessWidget {
     return Loader<List<Article>>(
       future: _articles,
       error: 'Error loading articles from database',
-      builder: (context, articles) => ArticleList(
+      builder: (context, articles) => RefreshArticleList(
         articles: articles,
         onRefresh: _onRefresh,
         onToggleBookmark: _onToggleBookmark,

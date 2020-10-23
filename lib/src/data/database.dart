@@ -57,7 +57,7 @@ class FeedDatabase {
   }
 
   Future _createSourceTable(Transaction txn) {
-    final query = '''
+    final sql = '''
       CREATE TABLE $SOURCE (
         $S_URL TEXT PRIMARY KEY,
         $S_WEBSITE TEXT,
@@ -67,11 +67,11 @@ class FeedDatabase {
       )
     ''';
 
-    return txn.execute(query);
+    return txn.execute(sql);
   }
 
   Future _createArticleTable(Transaction txn) {
-    final query = '''
+    final sql = '''
       CREATE TABLE $ARTICLE (
         $A_GUID TEXT PRIMARY KEY,
         $A_TITLE TEXT,
@@ -83,11 +83,11 @@ class FeedDatabase {
       )
     ''';
 
-    return txn.execute(query);
+    return txn.execute(sql);
   }
 
   Future _createSourceAndArticleTable(Transaction txn) {
-    final query = '''
+    final sql = '''
       CREATE TABLE $SOURCE_AND_ARTICLE (
         $S_A_SOURCE_URL TEXT,
         $S_A_ARTICLE_GUID TEXT,
@@ -97,23 +97,35 @@ class FeedDatabase {
       )
     ''';
 
-    return txn.execute(query);
+    return txn.execute(sql);
   }
 
   Future<List<Source>> getSources() async {
     final db = await database;
-    final sources = await db.query(SOURCE, orderBy: "$S_TITLE");
+    final sources = await db.query(SOURCE, orderBy: '$S_TITLE');
     return sources.map((s) => Source.fromMap(s)).toList();
   }
 
   Future<List<Article>> getArticles() async {
     final db = await database;
-    final articles = await db.query(ARTICLE, orderBy: "$A_DATE DESC");
+    final articles = await db.query(ARTICLE, orderBy: '$A_DATE DESC');
     return articles.map((a) => Article.fromMap(a)).toList();
   }
 
+  Future<List<Article>> getBookmarks() async {
+    final db = await database;
+
+    final bookmarkedArticles = await db.query(
+      ARTICLE,
+      where: '$A_IS_BOOKMARKED = 1',
+      orderBy: '$A_DATE DESC',
+    );
+
+    return bookmarkedArticles.map((a) => Article.fromMap(a)).toList();
+  }
+
   Future<List<Article>> getSourceArticles(Source s) async {
-    final query = '''
+    final sql = '''
       SELECT * 
       FROM $ARTICLE 
       WHERE $A_GUID IN (
@@ -125,15 +137,65 @@ class FeedDatabase {
     ''';
 
     final db = await database;
-    final sourceArticles = await db.rawQuery(query, [s.url]);
+    final sourceArticles = await db.rawQuery(sql, [s.url]);
     return sourceArticles.map((a) => Article.fromMap(a)).toList();
   }
 
-  Future<List<Article>> getBookmarkedArticles() async {
+  Future<List<Source>> findSources(String query) async {
     final db = await database;
-    final where = "$A_IS_BOOKMARKED = 1";
-    final bookmarkedArticles = await db.query(ARTICLE, where: where);
-    return bookmarkedArticles.map((a) => Article.fromMap(a)).toList();
+
+    final foundSources = await db.query(
+      SOURCE,
+      where: '$S_TITLE LIKE ?',
+      whereArgs: ['%$query%'],
+      orderBy: '$S_TITLE',
+    );
+
+    return foundSources.map((s) => Source.fromMap(s)).toList();
+  }
+
+  Future<List<Article>> findArticles(String query) async {
+    final db = await database;
+
+    final foundArticles = await db.query(
+      ARTICLE,
+      where: '$A_TITLE LIKE ?',
+      whereArgs: ['%$query%'],
+      orderBy: '$A_DATE DESC',
+    );
+
+    return foundArticles.map((a) => Article.fromMap(a)).toList();
+  }
+
+  Future<List<Article>> findBookmarks(String query) async {
+    final db = await database;
+
+    final foundArticles = await db.query(
+      ARTICLE,
+      where: '$A_TITLE LIKE ? AND $A_IS_BOOKMARKED = 1',
+      whereArgs: ['%$query%'],
+      orderBy: '$A_DATE DESC',
+    );
+
+    return foundArticles.map((a) => Article.fromMap(a)).toList();
+  }
+
+  Future<List<Article>> findSourceArticles(Source s, String query) async {
+    final sql = '''
+      SELECT * 
+      FROM $ARTICLE 
+      WHERE $A_TITLE LIKE ? 
+      AND $A_GUID IN (
+        SELECT $S_A_ARTICLE_GUID 
+        FROM $SOURCE_AND_ARTICLE 
+        WHERE $S_A_SOURCE_URL = ?
+      )
+      ORDER BY $A_DATE DESC
+    ''';
+
+    final db = await database;
+    final foundArticles = await db.rawQuery(sql, ['%$query%', s.url]);
+    return foundArticles.map((a) => Article.fromMap(a)).toList();
   }
 
   Future addSource(Source s) async {
