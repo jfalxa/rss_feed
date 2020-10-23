@@ -55,9 +55,21 @@ class ArticleListItem extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 16.0),
-                  child: Image.asset('assets/images/dummy-image.jpg'),
-                  width: 72.0,
-                  height: 72.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: _article.image == null
+                        ? Image.asset(
+                            'assets/images/dummy-image.jpg',
+                            width: 72.0,
+                            height: 72.0,
+                          )
+                        : Image.network(
+                            _article.image,
+                            width: 72.0,
+                            height: 72.0,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
                 ),
               ],
             ),

@@ -57,7 +57,7 @@ class SourceListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              child: CircleAvatar(),
+              child: CircleAvatar(backgroundImage: NetworkImage(_source.icon)),
               margin: EdgeInsets.only(right: 16.0),
             ),
             Flexible(
