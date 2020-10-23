@@ -25,8 +25,11 @@ class ArticleList extends StatelessWidget {
 
     return ListView.separated(
       itemCount: _articles.length,
-      separatorBuilder: (context, index) =>
-          Divider(height: 1, indent: 16, endIndent: 16),
+      separatorBuilder: (context, index) => Divider(
+        height: 1,
+        indent: 16,
+        endIndent: 16,
+      ),
       itemBuilder: (context, i) => ArticleListItem(
         article: _articles[i],
         onToggleBookmark: _onToggleBookmark,

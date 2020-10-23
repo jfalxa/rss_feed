@@ -48,9 +48,9 @@ class Sources extends StatelessWidget {
           future: repository.loader,
           error: 'Error loading sources',
           builder: (context, _) => FutureSourceList(
-            sources: repository.getSources(),
-            onTap: (source) => _goToSourceFeed(context, source),
-          ),
+              sources: repository.getSources(),
+              onTap: (source) => _goToSourceFeed(context, source),
+              onRemove: (source) => repository.removeSource(source)),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

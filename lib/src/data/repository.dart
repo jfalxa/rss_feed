@@ -52,6 +52,11 @@ class Repository extends ChangeNotifier {
     return _database.findBookmarks(query);
   }
 
+  Future removeSource(Source s) async {
+    await _database.removeSource(s);
+    notifyListeners();
+  }
+
   Future toggleBookmark(Article a) async {
     if (a.isBookmarked) {
       await _database.removeBookmark(a);

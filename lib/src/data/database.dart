@@ -226,4 +226,26 @@ class FeedDatabase {
     return (await database).update(ARTICLE, {A_IS_BOOKMARKED: 0},
         where: '$A_GUID = ?', whereArgs: [a.guid]);
   }
+
+  Future removeSource(Source s) async {
+    return (await database).transaction((txn) async {
+      await txn.delete(
+        SOURCE,
+        where: '$S_URL = ?',
+        whereArgs: [s.url],
+      );
+
+      await txn.delete(SOURCE_AND_ARTICLE,
+          where: '$S_A_SOURCE_URL = ?', whereArgs: [s.url]);
+
+      // remove orphan articles
+      await txn.rawDelete('''
+        DELETE FROM $ARTICLE
+        WHERE $A_GUID NOT IN (
+          SELECT $S_A_ARTICLE_GUID
+          FROM $SOURCE_AND_ARTICLE
+        )
+      ''');
+    });
+  }
 }
