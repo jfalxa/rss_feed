@@ -41,6 +41,7 @@ class Article {
   String image;
   String description;
   DateTime date;
+  bool isBookmarked = false;
 
   Article({
     this.guid,
@@ -58,6 +59,7 @@ class Article {
     image = map[A_IMAGE];
     description = map[A_DESCRIPTION];
     date = DateTime.parse(map[A_DATE]);
+    isBookmarked = map[A_IS_BOOKMARKED] == 1;
   }
 
   Map<String, dynamic> toMap() {
@@ -68,6 +70,7 @@ class Article {
       A_IMAGE: image,
       A_DESCRIPTION: description,
       A_DATE: date.toIso8601String(),
+      A_IS_BOOKMARKED: isBookmarked ? 1 : 0
     };
   }
 }
@@ -84,5 +87,3 @@ class SourceAndArticle {
     return {S_A_SOURCE_URL: sourceUrl, S_A_ARTICLE_GUID: articleGuid};
   }
 }
-
-class ArticleBookmark {}

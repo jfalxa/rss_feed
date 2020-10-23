@@ -18,8 +18,9 @@ class Bookmarks extends StatelessWidget {
           future: repository.loader,
           error: 'Error refreshing bookmarks',
           builder: (context, data) => FutureArticleList(
-            articles: repository.getArticles(),
+            articles: repository.getBookmarkedArticles(),
             onRefresh: repository.refreshAllSources,
+            onToggleBookmark: repository.toggleBookmark,
           ),
         ),
       ),

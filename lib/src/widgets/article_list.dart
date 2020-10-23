@@ -8,36 +8,52 @@ import 'article_list_item.dart';
 class ArticleList extends StatelessWidget {
   final List<Article> _articles;
   final Function _onRefresh;
+  final Function(Article) _onToggleBookmark;
 
-  ArticleList({Key key, List<Article> articles, Function onRefresh})
-      : _articles = articles,
+  ArticleList({
+    Key key,
+    List<Article> articles,
+    Function onRefresh,
+    Function(Article) onToggleBookmark,
+  })  : _articles = articles,
         _onRefresh = onRefresh,
+        _onToggleBookmark = onToggleBookmark,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (_articles.length == 0) {
+      return Center(child: Text("No articles available."));
+    }
+
     return RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: _articles.length == 0
-            ? Center(child: Text("No article available."))
-            : ListView.separated(
-                itemCount: _articles.length,
-                separatorBuilder: (context, index) =>
-                    Divider(height: 1, indent: 16, endIndent: 16),
-                itemBuilder: (context, i) =>
-                    ArticleListItem(article: _articles[i]),
-              ));
+      onRefresh: _onRefresh,
+      child: ListView.separated(
+        itemCount: _articles.length,
+        separatorBuilder: (context, index) =>
+            Divider(height: 1, indent: 16, endIndent: 16),
+        itemBuilder: (context, i) => ArticleListItem(
+          article: _articles[i],
+          onToggleBookmark: _onToggleBookmark,
+        ),
+      ),
+    );
   }
 }
 
 class FutureArticleList extends StatelessWidget {
   final Future<List<Article>> _articles;
   final Function _onRefresh;
+  final Function _onToggleBookmark;
 
-  FutureArticleList(
-      {Key key, Future<List<Article>> articles, Function onRefresh})
-      : _articles = articles,
+  FutureArticleList({
+    Key key,
+    Future<List<Article>> articles,
+    Function onRefresh,
+    Function(Article) onToggleBookmark,
+  })  : _articles = articles,
         _onRefresh = onRefresh,
+        _onToggleBookmark = onToggleBookmark,
         super(key: key);
 
   @override
@@ -45,8 +61,11 @@ class FutureArticleList extends StatelessWidget {
     return Loader<List<Article>>(
       future: _articles,
       error: 'Error loading articles from database',
-      builder: (context, articles) =>
-          ArticleList(articles: articles, onRefresh: _onRefresh),
+      builder: (context, articles) => ArticleList(
+        articles: articles,
+        onRefresh: _onRefresh,
+        onToggleBookmark: _onToggleBookmark,
+      ),
     );
   }
 }

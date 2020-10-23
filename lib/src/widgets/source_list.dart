@@ -17,7 +17,7 @@ class SourceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_sources.length == 0) {
-      return Center(child: Text("No source available"));
+      return Center(child: Text("No sources available."));
     }
 
     return ListView.separated(

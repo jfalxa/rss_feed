@@ -17,6 +17,7 @@ const A_LINK = 'link';
 const A_DESCRIPTION = 'description';
 const A_IMAGE = 'image';
 const A_DATE = 'date';
+const A_IS_BOOKMARKED = 'is_bookmarked';
 
 const S_A_SOURCE_URL = 'source_url';
 const S_A_ARTICLE_GUID = 'article_guid';
@@ -77,7 +78,8 @@ class FeedDatabase {
         $A_LINK TEXT,
         $A_DESCRIPTION TEXT,
         $A_IMAGE TEXT,
-        $A_DATE TEXT
+        $A_DATE TEXT,
+        $A_IS_BOOKMARKED INTEGER
       )
     ''';
 
@@ -123,8 +125,15 @@ class FeedDatabase {
     ''';
 
     final db = await database;
-    final dbSourceArticles = await db.rawQuery(query, [s.url]);
-    return dbSourceArticles.map((a) => Article.fromMap(a)).toList();
+    final sourceArticles = await db.rawQuery(query, [s.url]);
+    return sourceArticles.map((a) => Article.fromMap(a)).toList();
+  }
+
+  Future<List<Article>> getBookmarkedArticles() async {
+    final db = await database;
+    final where = "$A_IS_BOOKMARKED = 1";
+    final bookmarkedArticles = await db.query(ARTICLE, where: where);
+    return bookmarkedArticles.map((a) => Article.fromMap(a)).toList();
   }
 
   Future addSource(Source s) async {
@@ -144,5 +153,15 @@ class FeedDatabase {
 
       return batch.commit();
     });
+  }
+
+  Future addBookmark(Article a) async {
+    return (await database).update(ARTICLE, {A_IS_BOOKMARKED: 1},
+        where: '$A_GUID = ?', whereArgs: [a.guid]);
+  }
+
+  Future removeBookmark(Article a) async {
+    return (await database).update(ARTICLE, {A_IS_BOOKMARKED: 0},
+        where: '$A_GUID = ?', whereArgs: [a.guid]);
   }
 }

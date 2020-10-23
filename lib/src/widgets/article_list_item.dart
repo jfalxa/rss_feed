@@ -8,9 +8,12 @@ import '../routes/article_web_view.dart';
 
 class ArticleListItem extends StatelessWidget {
   final Article _article;
+  final Function(Article) _onToggleBookmark;
 
-  ArticleListItem({Key key, Article article})
+  ArticleListItem(
+      {Key key, Article article, Function(Article) onToggleBookmark})
       : _article = article,
+        _onToggleBookmark = onToggleBookmark,
         super(key: key);
 
   void goToArticle(BuildContext context) {
@@ -64,9 +67,10 @@ class ArticleListItem extends StatelessWidget {
                 children: [
                   Text(ago, style: Theme.of(context).textTheme.caption),
                   IconButton(
-                    icon: Icon(Icons.bookmark_border),
-                    color: Colors.black38,
-                    onPressed: () => null,
+                    icon: _article.isBookmarked
+                        ? Icon(Icons.bookmark, color: Colors.black87)
+                        : Icon(Icons.bookmark_border, color: Colors.black38),
+                    onPressed: () => _onToggleBookmark(_article),
                   ),
                 ],
               ),

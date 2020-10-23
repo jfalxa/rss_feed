@@ -32,6 +32,20 @@ class Repository extends ChangeNotifier {
     return _database.getSourceArticles(s);
   }
 
+  Future<List<Article>> getBookmarkedArticles() {
+    return _database.getBookmarkedArticles();
+  }
+
+  Future toggleBookmark(Article a) async {
+    if (a.isBookmarked) {
+      await _database.removeBookmark(a);
+    } else {
+      await _database.addBookmark(a);
+    }
+
+    notifyListeners();
+  }
+
   Future refreshSource(Source s) async {
     var document = await FeedDocument.fetchAndParse(s.url);
 

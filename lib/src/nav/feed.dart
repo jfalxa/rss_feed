@@ -19,6 +19,7 @@ class Feed extends StatelessWidget {
           builder: (context, data) => FutureArticleList(
             articles: repository.getArticles(),
             onRefresh: repository.refreshAllSources,
+            onToggleBookmark: repository.toggleBookmark,
           ),
         ),
       ),

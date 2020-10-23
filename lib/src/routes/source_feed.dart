@@ -20,6 +20,7 @@ class SourceFeed extends StatelessWidget {
         body: FutureArticleList(
           articles: repository.getSourceArticles(source),
           onRefresh: repository.refreshAllSources,
+          onToggleBookmark: repository.toggleBookmark,
         ),
       ),
     );
