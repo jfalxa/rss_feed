@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'src/data/store.dart';
+import 'src/data/repository.dart';
 import 'src/app.dart';
 import 'src/routes/article_web_view.dart';
 import 'src/routes/subscription_feed.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
-    create: (context) => Store(),
+    create: (context) => Repository(),
     child: RssFeed(),
   ));
 }

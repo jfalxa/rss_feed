@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../data/store.dart';
+import '../data/repository.dart';
 import '../data/models.dart';
 import '../routes/subscription_feed.dart';
 import '../widgets/loader.dart';
@@ -23,22 +23,22 @@ class Subscriptions extends StatelessWidget {
     );
 
     if (subscription != null) {
-      var store = Provider.of<Store>(context, listen: false);
-      store.addSubscription(subscription);
-      store.refreshAllSubscriptions();
+      var repository = Provider.of<Repository>(context, listen: false);
+      repository.addSubscription(subscription);
+      repository.refreshAllSubscriptions();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Store>(
-      builder: (context, store, child) => Scaffold(
+    return Consumer<Repository>(
+      builder: (context, repository, child) => Scaffold(
         appBar: TopBar(title: 'Subscriptions'),
         body: Loader(
-          future: store.loader,
+          future: repository.loader,
           error: 'Error loading subscriptions',
           builder: (context, _) => FutureSubscriptionList(
-            subscriptions: store.getSubscriptions(),
+            subscriptions: repository.getSubscriptions(),
             onTap: (subscription) =>
                 goToSubscriptionFeed(context, subscription),
           ),

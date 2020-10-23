@@ -5,7 +5,22 @@ import '../data/models.dart';
 import 'redirects.dart';
 
 class Api {
-  static final String root = 'https://cloud.feedly.com/v3';
+  static final feedRx = RegExp(r'rss|xml');
+  static final root = 'https://cloud.feedly.com/v3';
+
+  static Subscription toSubscription(Map<String, dynamic> json) {
+    var url = json['website'].contains(feedRx)
+        ? json['website']
+        : json['feedId'].substring(5);
+
+    return Subscription(
+      url: url,
+      website: json['website'],
+      title: json['title'],
+      description: json['description'],
+      icon: json['iconUrl'],
+    );
+  }
 
   static Future<List<Subscription>> searchSubscriptions(String query) async {
     if (query == '') return Future.value([]);
@@ -13,9 +28,8 @@ class Api {
     var response = await http.get('$root/search/feeds?query=$query');
     var json = convert.jsonDecode(response.body);
 
-    List<dynamic> results = json['results'];
-    List<Subscription> subscriptions =
-        results.map((data) => Subscription.fromJson(data)).toList();
+    var results = List<Map<String, dynamic>>.from(json['results']);
+    var subscriptions = results.map(toSubscription).toList();
 
     var resolving = subscriptions.map((s) async {
       s.url = await resolveRedirects(s.url);

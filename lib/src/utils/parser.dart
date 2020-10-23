@@ -10,8 +10,7 @@ var formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
 
 DateTime parseDate(String dateString) {
   try {
-    var date = formatter.parse(dateString);
-    return date;
+    return formatter.parse(dateString);
   } catch (error) {
     print(error);
   }

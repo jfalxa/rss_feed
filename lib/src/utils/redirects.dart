@@ -22,6 +22,7 @@ Future<String> resolveRedirects(String url) async {
     return redirectUrl;
   } catch (error) {
     print(error);
-    return null;
   }
+
+  return null;
 }
