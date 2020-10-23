@@ -18,7 +18,7 @@ class Api {
       website: json['website'],
       title: json['title'],
       description: json['description'],
-      icon: json['iconUrl'],
+      icon: json['visualUrl'],
     );
   }
 
