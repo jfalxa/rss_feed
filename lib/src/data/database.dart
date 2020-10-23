@@ -1,9 +1,9 @@
 import 'package:rss_feed/src/data/models.dart';
 import 'package:sqflite/sqflite.dart';
 
-const SUBSCRIPTION = 'subscription';
+const SOURCE = 'source';
 const ARTICLE = 'article';
-const SUBSCRIPTION_AND_ARTICLE = 'subscription_and_article';
+const SOURCE_AND_ARTICLE = 'source_and_article';
 
 const S_URL = 'url';
 const S_TITLE = 'title';
@@ -18,11 +18,11 @@ const A_DESCRIPTION = 'description';
 const A_IMAGE = 'image';
 const A_DATE = 'date';
 
-const S_A_SUBSCRIPTION_URL = 'subscription_url';
+const S_A_SOURCE_URL = 'source_url';
 const S_A_ARTICLE_GUID = 'article_guid';
 
-Map<String, dynamic> saMap(Subscription s, Article a) {
-  return SubscriptionAndArticle(s, a).toMap();
+Map<String, dynamic> saMap(Source s, Article a) {
+  return SourceAndArticle(s, a).toMap();
 }
 
 class FeedDatabase {
@@ -49,15 +49,15 @@ class FeedDatabase {
 
   Future _onCreate(Database db, int version) {
     return db.transaction((txn) async {
-      await _createSubscriptionTable(txn);
+      await _createSourceTable(txn);
       await _createArticleTable(txn);
-      await _createSubscriptionAndArticleTable(txn);
+      await _createSourceAndArticleTable(txn);
     });
   }
 
-  Future _createSubscriptionTable(Transaction txn) {
+  Future _createSourceTable(Transaction txn) {
     final query = '''
-      CREATE TABLE $SUBSCRIPTION (
+      CREATE TABLE $SOURCE (
         $S_URL TEXT PRIMARY KEY,
         $S_WEBSITE TEXT,
         $S_TITLE TEXT,
@@ -84,24 +84,24 @@ class FeedDatabase {
     return txn.execute(query);
   }
 
-  Future _createSubscriptionAndArticleTable(Transaction txn) {
+  Future _createSourceAndArticleTable(Transaction txn) {
     final query = '''
-      CREATE TABLE $SUBSCRIPTION_AND_ARTICLE (
-        $S_A_SUBSCRIPTION_URL TEXT,
+      CREATE TABLE $SOURCE_AND_ARTICLE (
+        $S_A_SOURCE_URL TEXT,
         $S_A_ARTICLE_GUID TEXT,
-        FOREIGN KEY ($S_A_SUBSCRIPTION_URL) REFERENCES $SUBSCRIPTION($S_URL),
+        FOREIGN KEY ($S_A_SOURCE_URL) REFERENCES $SOURCE($S_URL),
         FOREIGN KEY ($S_A_ARTICLE_GUID) REFERENCES $ARTICLE($A_GUID),
-        PRIMARY KEY ($S_A_SUBSCRIPTION_URL, $S_A_ARTICLE_GUID)
+        PRIMARY KEY ($S_A_SOURCE_URL, $S_A_ARTICLE_GUID)
       )
     ''';
 
     return txn.execute(query);
   }
 
-  Future<List<Subscription>> getSubscriptions() async {
+  Future<List<Source>> getSources() async {
     final db = await database;
-    final subscriptions = await db.query(SUBSCRIPTION, orderBy: "$S_TITLE");
-    return subscriptions.map((s) => Subscription.fromMap(s)).toList();
+    final sources = await db.query(SOURCE, orderBy: "$S_TITLE");
+    return sources.map((s) => Source.fromMap(s)).toList();
   }
 
   Future<List<Article>> getArticles() async {
@@ -110,36 +110,36 @@ class FeedDatabase {
     return articles.map((a) => Article.fromMap(a)).toList();
   }
 
-  Future<List<Article>> getSubscriptionArticles(Subscription s) async {
+  Future<List<Article>> getSourceArticles(Source s) async {
     final query = '''
       SELECT * 
       FROM $ARTICLE 
       WHERE $A_GUID IN (
         SELECT $S_A_ARTICLE_GUID 
-        FROM $SUBSCRIPTION_AND_ARTICLE 
-        WHERE $S_A_SUBSCRIPTION_URL = ?
+        FROM $SOURCE_AND_ARTICLE 
+        WHERE $S_A_SOURCE_URL = ?
       )
       ORDER BY $A_DATE DESC
     ''';
 
     final db = await database;
-    final dbSubscriptionArticles = await db.rawQuery(query, [s.url]);
-    return dbSubscriptionArticles.map((a) => Article.fromMap(a)).toList();
+    final dbSourceArticles = await db.rawQuery(query, [s.url]);
+    return dbSourceArticles.map((a) => Article.fromMap(a)).toList();
   }
 
-  Future addSubscription(Subscription s) async {
-    return (await database).insert(SUBSCRIPTION, s.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.ignore);
+  Future addSource(Source s) async {
+    return (await database)
+        .insert(SOURCE, s.toMap(), conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
-  Future addSubscriptionArticles(Subscription s, List<Article> aa) async {
+  Future addSourceArticles(Source s, List<Article> aa) async {
     return (await database).transaction((txn) async {
       var batch = txn.batch();
 
       aa.forEach((a) => batch.insert(ARTICLE, a.toMap(),
           conflictAlgorithm: ConflictAlgorithm.ignore));
 
-      aa.forEach((a) => batch.insert(SUBSCRIPTION_AND_ARTICLE, saMap(s, a),
+      aa.forEach((a) => batch.insert(SOURCE_AND_ARTICLE, saMap(s, a),
           conflictAlgorithm: ConflictAlgorithm.ignore));
 
       return batch.commit();

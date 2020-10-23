@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'nav/feed.dart';
-import 'nav/subscriptions.dart';
+import 'nav/sources.dart';
 import 'nav/bookmarks.dart';
 
 class App extends StatefulWidget {
@@ -25,7 +25,7 @@ class _AppState extends State<App> {
         index: _navIndex,
         children: [
           Feed(),
-          Subscriptions(),
+          Sources(),
           Bookmarks(),
         ],
       ),
@@ -40,7 +40,7 @@ class _AppState extends State<App> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
-            label: 'Subscriptions',
+            label: 'Sources',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmarks),

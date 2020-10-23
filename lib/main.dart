@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'src/data/repository.dart';
 import 'src/app.dart';
 import 'src/routes/article_web_view.dart';
-import 'src/routes/subscription_feed.dart';
+import 'src/routes/source_feed.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -26,7 +26,7 @@ class RssFeed extends StatelessWidget {
       routes: {
         '/': (context) => App(),
         ArticleWebView.routeName: (context) => ArticleWebView(),
-        SubscriptionFeed.routeName: (context) => SubscriptionFeed()
+        SourceFeed.routeName: (context) => SourceFeed()
       },
     );
   }

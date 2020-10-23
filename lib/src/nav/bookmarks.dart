@@ -19,7 +19,7 @@ class Bookmarks extends StatelessWidget {
           error: 'Error refreshing bookmarks',
           builder: (context, data) => FutureArticleList(
             articles: repository.getArticles(),
-            onRefresh: repository.refreshAllSubscriptions,
+            onRefresh: repository.refreshAllSources,
           ),
         ),
       ),

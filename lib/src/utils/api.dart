@@ -8,12 +8,12 @@ class Api {
   static final feedRx = RegExp(r'rss|xml');
   static final root = 'https://cloud.feedly.com/v3';
 
-  static Subscription toSubscription(Map<String, dynamic> json) {
+  static Source toSource(Map<String, dynamic> json) {
     var url = json['website'].contains(feedRx)
         ? json['website']
         : json['feedId'].substring(5);
 
-    return Subscription(
+    return Source(
       url: url,
       website: json['website'],
       title: json['title'],
@@ -22,26 +22,26 @@ class Api {
     );
   }
 
-  static Future<List<Subscription>> searchSubscriptions(String query) async {
+  static Future<List<Source>> searchSources(String query) async {
     if (query == '') return Future.value([]);
 
     var response = await http.get('$root/search/feeds?query=$query');
     var json = convert.jsonDecode(response.body);
 
     var results = List<Map<String, dynamic>>.from(json['results']);
-    var subscriptions = results.map(toSubscription).toList();
+    var sources = results.map(toSource).toList();
 
-    var resolving = subscriptions.map((s) async {
+    var resolving = sources.map((s) async {
       s.url = await resolveRedirects(s.url);
     });
 
     await Future.wait(resolving);
-    subscriptions.removeWhere((s) => s.url == null);
+    sources.removeWhere((s) => s.url == null);
 
-    return subscriptions;
+    return sources;
   }
 
-  static Future<Subscription> getSubscription(String url) async {
-    return searchSubscriptions(url).then((list) => list.first);
+  static Future<Source> getSource(String url) async {
+    return searchSources(url).then((list) => list.first);
   }
 }

@@ -4,19 +4,19 @@ import 'package:flutter/rendering.dart';
 
 import '../data/models.dart';
 
-class SubscriptionListItem extends StatelessWidget {
-  final Subscription _subscription;
+class SourceListItem extends StatelessWidget {
+  final Source _source;
   final Function _onTap;
 
-  SubscriptionListItem({Key key, Subscription subscription, Function onTap})
-      : _subscription = subscription,
+  SourceListItem({Key key, Source source, Function onTap})
+      : _source = source,
         _onTap = onTap,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _onTap(_subscription),
+      onTap: () => _onTap(_source),
       child: Container(
         padding: EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
         child: Row(
@@ -31,13 +31,13 @@ class SubscriptionListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _subscription.title ?? 'Subscription',
+                    _source.title ?? 'Source',
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 4.0, bottom: 16.0),
                     child: Text(
-                      _subscription.url,
+                      _source.url,
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ),

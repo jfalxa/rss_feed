@@ -18,7 +18,7 @@ class Feed extends StatelessWidget {
           error: 'Error refreshing articles',
           builder: (context, data) => FutureArticleList(
             articles: repository.getArticles(),
-            onRefresh: repository.refreshAllSubscriptions,
+            onRefresh: repository.refreshAllSources,
           ),
         ),
       ),

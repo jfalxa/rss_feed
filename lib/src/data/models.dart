@@ -1,13 +1,13 @@
 import 'database.dart';
 
-class Subscription {
+class Source {
   String url;
   String title;
   String website;
   String icon;
   String description;
 
-  Subscription({
+  Source({
     this.url,
     this.title,
     this.website,
@@ -15,7 +15,7 @@ class Subscription {
     this.description,
   });
 
-  Subscription.fromMap(Map<String, dynamic> map) {
+  Source.fromMap(Map<String, dynamic> map) {
     url = map[S_URL];
     title = map[S_TITLE];
     website = map[S_WEBSITE];
@@ -72,18 +72,17 @@ class Article {
   }
 }
 
-class SubscriptionAndArticle {
-  String subscriptionUrl;
+class SourceAndArticle {
+  String sourceUrl;
   String articleGuid;
 
-  SubscriptionAndArticle(Subscription s, Article a)
-      : subscriptionUrl = s.url,
+  SourceAndArticle(Source s, Article a)
+      : sourceUrl = s.url,
         articleGuid = a.guid;
 
   Map<String, dynamic> toMap() {
-    return {
-      S_A_SUBSCRIPTION_URL: subscriptionUrl,
-      S_A_ARTICLE_GUID: articleGuid
-    };
+    return {S_A_SOURCE_URL: sourceUrl, S_A_ARTICLE_GUID: articleGuid};
   }
 }
+
+class ArticleBookmark {}
