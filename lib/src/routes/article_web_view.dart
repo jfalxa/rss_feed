@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rss_feed/src/widgets/top_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
