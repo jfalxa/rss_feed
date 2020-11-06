@@ -24,11 +24,14 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Repository>(
-      builder: (context, repository, child) => Scaffold(
-        appBar: TopBar(
-          title: 'Feed',
-          onSearch: () => _goToArticleSearch(context),
-        ),
+      builder: (context, repository, child) => NestedScrollView(
+        controller: _scroll,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverTopBar(
+            title: 'Feed',
+            onSearch: () => _goToArticleSearch(context),
+          ),
+        ],
         body: Loader(
           future: repository.loader,
           error: 'Error refreshing articles',

@@ -16,6 +16,7 @@ class Sources extends StatelessWidget {
   Sources({Key key, ScrollController scroll})
       : _scroll = scroll,
         super(key: key);
+
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
   }
@@ -44,17 +45,22 @@ class Sources extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Repository>(
       builder: (context, repository, child) => Scaffold(
-        appBar: TopBar(
-          title: 'Sources',
-          onSearch: () => _goToSourceSearch(context),
-        ),
-        body: Loader(
-          future: repository.loader,
-          error: 'Error loading sources',
-          builder: (context, _) => FutureSourceList(
-              sources: repository.getSources(),
-              onTap: (source) => _goToSourceFeed(context, source),
-              onRemove: (source) => repository.removeSource(source)),
+        body: NestedScrollView(
+          controller: _scroll,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverTopBar(
+              title: 'Sources',
+              onSearch: () => _goToSourceSearch(context),
+            ),
+          ],
+          body: Loader(
+            future: repository.loader,
+            error: 'Error loading sources',
+            builder: (context, _) => FutureSourceList(
+                sources: repository.getSources(),
+                onTap: (source) => _goToSourceFeed(context, source),
+                onRemove: (source) => repository.removeSource(source)),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

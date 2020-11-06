@@ -23,14 +23,18 @@ class SourceFeed extends StatelessWidget {
 
     return Consumer<Repository>(
       builder: (context, repository, child) => Scaffold(
-        appBar: PopTopBar(
-          title: source.title,
-          onSearch: () => _goToSourceFeedSearch(context, source),
-        ),
-        body: FutureArticleList(
-          articles: repository.getSourceArticles(source),
-          onRefresh: repository.refreshAllSources,
-          onToggleBookmark: repository.toggleBookmark,
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverPopTopBar(
+              title: source.title,
+              onSearch: () => _goToSourceFeedSearch(context, source),
+            )
+          ],
+          body: FutureArticleList(
+            articles: repository.getSourceArticles(source),
+            onRefresh: repository.refreshAllSources,
+            onToggleBookmark: repository.toggleBookmark,
+          ),
         ),
       ),
     );

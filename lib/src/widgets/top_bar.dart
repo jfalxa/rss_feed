@@ -54,6 +54,40 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
+class SliverTopBar extends StatelessWidget implements PreferredSizeWidget {
+  final String _title;
+  final Function _onSearch;
+
+  SliverTopBar({Key key, String title, Function onSearch})
+      : _title = title,
+        _onSearch = onSearch,
+        super(key: key);
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      title: Text(_title),
+      leading: SearchIcon(onSearch: _onSearch),
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (context) => <PopupMenuEntry>[
+            PopupMenuItem(
+              child: Text('Settings'),
+            ),
+          ],
+        )
+      ],
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      textTheme: Theme.of(context).textTheme,
+      actionsIconTheme: Theme.of(context).iconTheme,
+    );
+  }
+}
+
 class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String _title;
   final Function _onSearch;
@@ -69,6 +103,35 @@ class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      title: Text(_title),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        color: Colors.black87,
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: _onSearch == null ? [] : [SearchIcon(onSearch: _onSearch)],
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      textTheme: Theme.of(context).textTheme,
+    );
+  }
+}
+
+class SliverPopTopBar extends StatelessWidget implements PreferredSizeWidget {
+  final String _title;
+  final Function _onSearch;
+
+  SliverPopTopBar({Key key, String title, Function onSearch})
+      : _title = title,
+        _onSearch = onSearch,
+        super(key: key);
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
       title: Text(_title),
       leading: IconButton(
         icon: Icon(Icons.arrow_back),

@@ -25,11 +25,14 @@ class Bookmarks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Repository>(
-      builder: (context, repository, child) => Scaffold(
-        appBar: TopBar(
-          title: 'Bookmarks',
-          onSearch: () => _goToBookmarkSearch(context),
-        ),
+      builder: (context, repository, child) => NestedScrollView(
+        controller: _scroll,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverTopBar(
+            title: 'Bookmarks',
+            onSearch: () => _goToBookmarkSearch(context),
+          ),
+        ],
         body: Loader(
           future: repository.loader,
           error: 'Error refreshing bookmarks',
