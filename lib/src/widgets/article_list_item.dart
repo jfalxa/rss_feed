@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/models.dart';
-import '../routes/article_web_view.dart';
 
 class ArticleListItem extends StatelessWidget {
   final Article _article;
@@ -15,8 +15,12 @@ class ArticleListItem extends StatelessWidget {
         _onToggleBookmark = onToggleBookmark,
         super(key: key);
 
-  void goToArticle(BuildContext context) {
-    Navigator.pushNamed(context, ArticleWebView.routeName, arguments: _article);
+  void goToArticle(BuildContext context) async {
+    if (await canLaunch(_article.link)) {
+      await launch(_article.link);
+    } else {
+      throw 'Could not launch ${_article.link}';
+    }
   }
 
   @override
