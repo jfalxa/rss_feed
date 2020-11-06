@@ -12,7 +12,7 @@ DateTime parseDate(String dateString) {
   try {
     return formatter.parse(dateString);
   } catch (error) {
-    print(error);
+    print('DATE PARSING ERROR: $error');
   }
 
   return DateTime.now();
@@ -20,10 +20,10 @@ DateTime parseDate(String dateString) {
 
 String parseImage(String html) {
   try {
-    var document = XmlDocument.parse(html);
-    return document.getElement('img')?.getAttribute('src');
+    var document = XmlDocument.parse('<html>$html</html>');
+    return document.getElement('html')?.getElement('img')?.getAttribute('src');
   } catch (error) {
-    print(error);
+    print('IMAGE PARSING ERROR: $error');
   }
 
   return null;
@@ -76,7 +76,7 @@ class FeedDocument {
         return FeedDocument.parseAtom(feed);
       }
     } catch (error) {
-      print(error);
+      print('COULD NOT PARSE XML: $error');
     }
 
     return null;

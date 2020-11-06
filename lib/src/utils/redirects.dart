@@ -21,7 +21,7 @@ Future<String> resolveRedirects(String url) async {
 
     return redirectUrl;
   } catch (error) {
-    print(error);
+    print('REDIRECT ERROR: $error');
   }
 
   return null;
