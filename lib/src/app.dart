@@ -11,8 +11,15 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _navIndex = 0;
+  ScrollController _scroll = ScrollController();
 
   void navigate(int index) {
+    _scroll.animateTo(
+      0,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.linear,
+    );
+
     setState(() {
       _navIndex = index;
     });
@@ -24,9 +31,9 @@ class _AppState extends State<App> {
       body: IndexedStack(
         index: _navIndex,
         children: [
-          Feed(),
-          Sources(),
-          Bookmarks(),
+          Feed(scroll: _scroll),
+          Sources(scroll: _scroll),
+          Bookmarks(scroll: _scroll),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

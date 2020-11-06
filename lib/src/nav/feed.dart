@@ -8,6 +8,12 @@ import '../widgets/article_list.dart';
 import '../search/article_search.dart';
 
 class Feed extends StatelessWidget {
+  final ScrollController _scroll;
+
+  Feed({Key key, ScrollController scroll})
+      : _scroll = scroll,
+        super(key: key);
+
   void _goToArticleSearch(BuildContext context) async {
     await showSearch(
       context: context,

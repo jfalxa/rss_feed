@@ -9,6 +9,12 @@ import '../widgets/article_list.dart';
 import '../search/bookmark_search.dart';
 
 class Bookmarks extends StatelessWidget {
+  final ScrollController _scroll;
+
+  Bookmarks({Key key, ScrollController scroll})
+      : _scroll = scroll,
+        super(key: key);
+
   void _goToBookmarkSearch(BuildContext context) async {
     await showSearch(
       context: context,

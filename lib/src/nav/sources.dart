@@ -11,6 +11,11 @@ import '../search/source_search.dart';
 import '../search/source_api_search.dart';
 
 class Sources extends StatelessWidget {
+  final ScrollController _scroll;
+
+  Sources({Key key, ScrollController scroll})
+      : _scroll = scroll,
+        super(key: key);
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
   }
