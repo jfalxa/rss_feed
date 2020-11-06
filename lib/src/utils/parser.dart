@@ -34,31 +34,46 @@ class FeedDocument {
 
   FeedDocument.parseRss(XmlElement root) {
     var channel = root.getElement('channel');
-    var items = channel.findElements('item').map(
-          (item) => Article(
-            guid: item.getElement('guid')?.text,
-            title: item.getElement('title')?.text,
-            link: item.getElement('link')?.text,
-            description: item.getElement('description')?.text,
-            image: item.getElement('media:content')?.getAttribute("url"),
-            date: parseDate(item.getElement('pubDate')?.text),
-          ),
-        );
+
+    var items = channel.findElements('item').map((item) {
+      var guid = item.getElement('guid')?.text;
+      var title = item.getElement('title')?.text;
+      var link = item.getElement('link')?.text;
+      var description = item.getElement('description')?.text;
+      var image = item.getElement('media:content')?.getAttribute("url");
+      var date = parseDate(item.getElement('pubDate')?.text);
+
+      return Article(
+        guid: guid ?? link,
+        title: title,
+        link: link,
+        description: description,
+        image: image,
+        date: date,
+      );
+    });
 
     articles = items.toList();
   }
 
   FeedDocument.parseAtom(XmlElement feed) {
-    var entries = feed.findElements('entry').map(
-          (entry) => Article(
-            guid: entry.getElement('id').text,
-            title: entry.getElement('title').text,
-            link: entry.getElement('link').getAttribute("href"),
-            description: entry.getElement('summary')?.text,
-            image: parseImage(entry.getElement('content')?.text),
-            date: DateTime.parse(entry.getElement('published').text),
-          ),
-        );
+    var entries = feed.findElements('entry').map((entry) {
+      var guid = entry.getElement('id').text;
+      var title = entry.getElement('title').text;
+      var link = entry.getElement('link').getAttribute("href");
+      var description = entry.getElement('summary')?.text;
+      var image = parseImage(entry.getElement('content')?.text);
+      var date = DateTime.parse(entry.getElement('published').text);
+
+      return Article(
+        guid: guid ?? link,
+        title: title,
+        link: link,
+        description: description,
+        image: image,
+        date: date,
+      );
+    });
 
     articles = entries.toList();
   }
