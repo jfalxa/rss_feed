@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/models.dart';
+
+var dateFormat = DateFormat('d/M/y');
 
 class ArticleListItem extends StatelessWidget {
   final Article _article;
@@ -26,7 +29,10 @@ class ArticleListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var uri = Uri.parse(_article.link);
-    var ago = timeago.format(_article.date);
+
+    var time = DateTime.now().difference(_article.date) > Duration(days: 1)
+        ? DateFormat.yMMMMd().format(_article.date)
+        : timeago.format(_article.date);
 
     return InkWell(
       onTap: () => goToArticle(context),
@@ -81,7 +87,7 @@ class ArticleListItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(ago, style: Theme.of(context).textTheme.caption),
+                  Text(time, style: Theme.of(context).textTheme.caption),
                   IconButton(
                     icon: _article.isBookmarked
                         ? Icon(Icons.bookmark, color: Colors.black87)
