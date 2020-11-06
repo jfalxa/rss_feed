@@ -24,6 +24,7 @@ class ArticleList extends StatelessWidget {
 
     return ListView.separated(
       itemCount: _articles.length,
+      padding: EdgeInsets.all(0),
       separatorBuilder: (context, index) => Divider(
         height: 1,
         indent: 16,

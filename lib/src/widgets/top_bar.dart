@@ -54,7 +54,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class SliverTopBar extends StatelessWidget implements PreferredSizeWidget {
+class SliverTopBar extends StatelessWidget {
   final String _title;
   final Function _onSearch;
 
@@ -62,9 +62,6 @@ class SliverTopBar extends StatelessWidget implements PreferredSizeWidget {
       : _title = title,
         _onSearch = onSearch,
         super(key: key);
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +114,7 @@ class PopTopBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class SliverPopTopBar extends StatelessWidget implements PreferredSizeWidget {
+class SliverPopTopBar extends StatelessWidget {
   final String _title;
   final Function _onSearch;
 
@@ -125,9 +122,6 @@ class SliverPopTopBar extends StatelessWidget implements PreferredSizeWidget {
       : _title = title,
         _onSearch = onSearch,
         super(key: key);
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
