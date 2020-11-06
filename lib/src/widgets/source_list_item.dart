@@ -26,6 +26,15 @@ class SourceListItem extends StatelessWidget {
     );
   }
 
+  Widget _buildDismissBackground(BuildContext context, Alignment alignment) {
+    return Container(
+      alignment: alignment,
+      color: Colors.red,
+      padding: EdgeInsets.symmetric(horizontal: 24.0),
+      child: Icon(Icons.delete_forever, color: Colors.white),
+    );
+  }
+
   Widget _buildAlert(BuildContext context) {
     return AlertDialog(
       title: Text('Remove source'),
@@ -91,13 +100,9 @@ class SourceListItem extends StatelessWidget {
 
     return Dismissible(
         key: Key(_source.url),
-        direction: DismissDirection.startToEnd,
-        background: Container(
-          alignment: Alignment.centerLeft,
-          color: Colors.red,
-          padding: EdgeInsets.only(left: 16.0),
-          child: Icon(Icons.delete_forever, color: Colors.white),
-        ),
+        background: _buildDismissBackground(context, Alignment.centerLeft),
+        secondaryBackground:
+            _buildDismissBackground(context, Alignment.centerRight),
         confirmDismiss: (direction) => _askToRemoveSource(context),
         onDismissed: (direction) => _onRemove(_source),
         child: _buildItem(context));
