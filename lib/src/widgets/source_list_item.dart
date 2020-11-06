@@ -26,9 +26,9 @@ class SourceListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildDismissBackground(BuildContext context, Alignment alignment) {
+  Widget _buildDismissBackground(BuildContext context, bool isMain) {
     return Container(
-      alignment: alignment,
+      alignment: isMain ? Alignment.centerLeft : Alignment.centerRight,
       color: Colors.red,
       padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Icon(Icons.delete_forever, color: Colors.white),
@@ -100,9 +100,8 @@ class SourceListItem extends StatelessWidget {
 
     return Dismissible(
         key: Key(_source.url),
-        background: _buildDismissBackground(context, Alignment.centerLeft),
-        secondaryBackground:
-            _buildDismissBackground(context, Alignment.centerRight),
+        background: _buildDismissBackground(context, true),
+        secondaryBackground: _buildDismissBackground(context, false),
         confirmDismiss: (direction) => _askToRemoveSource(context),
         onDismissed: (direction) => _onRemove(_source),
         child: _buildItem(context));
