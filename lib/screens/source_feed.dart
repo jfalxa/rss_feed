@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/source.dart';
+import '../services/repository.dart';
+import '../widgets/top_bar.dart';
+import '../widgets/article_list.dart';
+import './source_feed_search.dart';
+
+class SourceFeed extends StatelessWidget {
+  static final String routeName = '/source-feed';
+  final ScrollController _controller = ScrollController();
+
+  void _goToSourceFeedSearch(BuildContext context, Source source) async {
+    await showSearch(
+      context: context,
+      delegate: SourceFeedSearch(source: source),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Source source = ModalRoute.of(context).settings.arguments;
+
+    return Consumer<Repository>(
+      builder: (context, repository, child) => Scaffold(
+        body: NestedScrollView(
+          controller: _controller,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            PopTopBar(
+              title: source.title,
+              onSearch: () => _goToSourceFeedSearch(context, source),
+            )
+          ],
+          body: RefreshArticleList(
+            fetch: (limit, offset) => repository.getSourceArticles(source, limit, offset),
+            onRefresh: () => repository.fetchSource(source),
+            onToggleBookmark: repository.toggleBookmark,
+          ),
+        ),
+      ),
+    );
+  }
+}
