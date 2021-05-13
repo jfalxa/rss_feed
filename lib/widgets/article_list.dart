@@ -5,36 +5,25 @@ import '../models/article.dart';
 import '../services/repository.dart';
 import './article_list_item.dart';
 import './infinite_scroll.dart';
+import './separator.dart';
 
 class ArticleList extends StatelessWidget {
-  final List<Article> _articles;
-  final Function(Article) _onToggleBookmark;
+  final List<Article> articles;
 
-  ArticleList({
-    Key key,
-    List<Article> articles,
-    Function(Article) onToggleBookmark,
-  })  : _articles = articles,
-        _onToggleBookmark = onToggleBookmark,
-        super(key: key);
+  ArticleList({Key key, this.articles}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_articles.length == 0) {
+    if (articles.length == 0) {
       return Center(child: Text('No articles found.'));
     }
 
     return ListView.separated(
-      itemCount: _articles.length,
+      itemCount: articles.length,
       padding: EdgeInsets.all(0),
-      separatorBuilder: (context, index) => Divider(
-        height: 1,
-        indent: 16,
-        endIndent: 16,
-      ),
+      separatorBuilder: separatorBuilder,
       itemBuilder: (context, i) => ArticleListItem(
-        article: _articles[i],
-        onToggleBookmark: _onToggleBookmark,
+        article: articles[i],
       ),
     );
   }
@@ -42,12 +31,8 @@ class ArticleList extends StatelessWidget {
 
 class InfiniteArticleList extends StatelessWidget {
   final Future<List<Article>> Function(int, int) fetch;
-  final Function(Article) onToggleBookmark;
-  final ScrollController controller;
 
-  InfiniteArticleList(
-      {Key key, this.fetch, this.controller, this.onToggleBookmark})
-      : super(key: key);
+  InfiniteArticleList({Key key, this.fetch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +41,6 @@ class InfiniteArticleList extends StatelessWidget {
         fetch: fetch,
         itemBuilder: (context, article) => ArticleListItem(
           article: article,
-          onToggleBookmark: onToggleBookmark,
         ),
       ),
     );
@@ -81,7 +65,6 @@ class RefreshArticleList extends StatelessWidget {
       onRefresh: onRefresh,
       child: InfiniteArticleList(
         fetch: fetch,
-        onToggleBookmark: onToggleBookmark,
       ),
     );
   }

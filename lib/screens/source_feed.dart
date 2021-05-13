@@ -33,7 +33,6 @@ class SourceFeed extends StatelessWidget {
           body: RefreshArticleList(
             fetch: (limit, offset) => repository.getSourceArticles(source, limit, offset),
             onRefresh: () => repository.fetchSource(source),
-            onToggleBookmark: repository.toggleBookmark,
           ),
         ),
       ),

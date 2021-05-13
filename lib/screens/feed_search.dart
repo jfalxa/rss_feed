@@ -12,7 +12,6 @@ class FeedSearch extends Search<Article> {
     var repository = Provider.of<Repository>(context);
 
     return InfiniteArticleList(
-      onToggleBookmark: repository.toggleBookmark,
       fetch: (limit, offset) =>
           repository.findArticles(this.query, limit, offset),
     );

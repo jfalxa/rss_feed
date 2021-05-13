@@ -127,6 +127,11 @@ class Article {
         where: '$cGuid = ?', whereArgs: [a.guid]);
   }
 
+  static Future<Article> getArticle(Database db, String guid) async {
+    var articles = await db.query(tArticle, where: "$cGuid = ?", whereArgs: [guid]);
+    return articles.length == 1 ? Article.fromMap(articles[0]) : null;
+  }
+
   static Future<List<Article>> getArticles(
     Database db,
     int limit,

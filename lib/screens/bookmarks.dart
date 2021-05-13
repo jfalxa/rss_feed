@@ -32,8 +32,6 @@ class Bookmarks extends StatelessWidget {
         ],
         body: InfiniteArticleList(
           fetch: (limit, offset) => repository.getBookmarks(limit, offset),
-          controller: controller,
-          onToggleBookmark: repository.toggleBookmark,
         ),
       ),
     );

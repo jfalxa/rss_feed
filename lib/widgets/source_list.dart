@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/source.dart';
 import './source_list_item.dart';
+import './separator.dart';
 import './loader.dart';
 
 class SourceList extends StatelessWidget {
@@ -34,11 +35,7 @@ class SourceList extends StatelessWidget {
     return ListView.separated(
       itemCount: _sources.length,
       padding: EdgeInsets.all(0),
-      separatorBuilder: (context, index) => Divider(
-        height: 1,
-        indent: 72,
-        endIndent: 16,
-      ),
+      separatorBuilder: separatorBuilder,
       itemBuilder: (context, i) => SourceListItem(
         source: _sources[i],
         onTap: _onTap,

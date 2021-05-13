@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget separatorBuilder(BuildContext context, int index) {
-  return Divider(
-    height: 1,
-    indent: 16,
-    endIndent: 16,
-  );
-}
+import './separator.dart';
 
 class InfiniteScroll<T> extends StatefulWidget {
   final int limit;
@@ -31,7 +25,7 @@ class _InfiniteScrollState<T> extends State<InfiniteScroll<T>> {
     var items = await widget.fetch(widget.limit, _items.length);
 
     setState(() {
-      _items.addAll(items);
+      _items = List.from(_items)..addAll(items);
     });
   }
 
@@ -46,6 +40,7 @@ class _InfiniteScrollState<T> extends State<InfiniteScroll<T>> {
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       final controller = PrimaryScrollController.of(context);
+
       controller.addListener(() {
         if (controller.position.pixels == controller.position.maxScrollExtent) {
           var position = controller.position.pixels;

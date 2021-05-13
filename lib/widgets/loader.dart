@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class Loader<T> extends StatelessWidget {
   final Future _future;
   final Widget Function(BuildContext, T) _builder;
-  final String _error;
 
   Loader(
       {Key key,
@@ -13,7 +12,6 @@ class Loader<T> extends StatelessWidget {
       Function onRefresh})
       : _future = future,
         _builder = builder,
-        _error = error ?? 'Error',
         super(key: key);
 
   @override

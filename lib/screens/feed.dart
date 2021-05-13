@@ -32,7 +32,6 @@ class Feed extends StatelessWidget {
         body: RefreshArticleList(
           fetch: (limit, offset) => repository.getArticles(limit, offset),
           onRefresh: repository.fetchAllSources,
-          onToggleBookmark: repository.toggleBookmark,
         ),
       ),
     );

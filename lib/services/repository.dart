@@ -45,6 +45,10 @@ class Repository extends ChangeNotifier {
     return Source.getSources(await db, limit, offset);
   }
 
+  Future<Article> getArticle(String guid) async {
+    return Article.getArticle(await db, guid);
+  }
+
   Future<List<Article>> getArticles([int limit, int offset]) async {
     return Article.getArticles(await db, limit, offset);
   }
@@ -75,7 +79,8 @@ class Repository extends ChangeNotifier {
 
   Future<List<Article>> findSourceArticles(Source s, String query,
       [int limit, int offset]) async {
-    return SourceAndArticle.findSourceArticles(await db, s, query, limit, offset);
+    return SourceAndArticle.findSourceArticles(
+        await db, s, query, limit, offset);
   }
 
   Future removeSource(Source s) async {
@@ -88,11 +93,13 @@ class Repository extends ChangeNotifier {
     });
   }
 
-  Future toggleBookmark(Article a) async {
-    if (a.isBookmarked) {
-      await Article.removeBookmark(await db, a);
+  Future toggleBookmark(String guid) async {
+    Article article = await getArticle(guid);
+
+    if (article.isBookmarked) {
+      await Article.removeBookmark(await db, article);
     } else {
-      await Article.addBookmark(await db, a);
+      await Article.addBookmark(await db, article);
     }
 
     notifyListeners();

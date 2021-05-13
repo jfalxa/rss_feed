@@ -12,7 +12,6 @@ class BookmarkSearch extends Search<Article> {
     var repository = Provider.of<Repository>(context);
 
     return InfiniteArticleList(
-      onToggleBookmark: repository.toggleBookmark,
       fetch: (limit, offset) =>
           repository.findBookmarks(this.query, limit, offset),
     );

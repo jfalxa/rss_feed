@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:rss_feed/widgets/toggle_bookmark.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/article.dart';
+import './toggle_bookmark.dart';
 
 var dateFormat = DateFormat('d/M/y');
 
 class ArticleListItem extends StatelessWidget {
   final Article article;
-  final Function(Article) onToggleBookmark;
 
-  ArticleListItem({Key key, this.article, this.onToggleBookmark})
+  ArticleListItem({Key key, this.article})
       : super(key: key);
 
   void goToArticle(BuildContext context) async {
@@ -85,12 +86,7 @@ class ArticleListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(time, style: Theme.of(context).textTheme.caption),
-                  IconButton(
-                    icon: article.isBookmarked
-                        ? Icon(Icons.bookmark, color: Colors.black87)
-                        : Icon(Icons.bookmark_border, color: Colors.black38),
-                    onPressed: () => onToggleBookmark(article),
-                  ),
+                  ToggleBookmark(article: article)
                 ],
               ),
             ),
