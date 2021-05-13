@@ -9,7 +9,6 @@ import './source_feed_search.dart';
 
 class SourceFeed extends StatelessWidget {
   static final String routeName = '/source-feed';
-  final ScrollController _controller = ScrollController();
 
   void _goToSourceFeedSearch(BuildContext context, Source source) async {
     await showSearch(
@@ -25,7 +24,6 @@ class SourceFeed extends StatelessWidget {
     return Consumer<Repository>(
       builder: (context, repository, child) => Scaffold(
         body: NestedScrollView(
-          controller: _controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             PopTopBar(
               title: source.title,

@@ -16,13 +16,6 @@ class BookmarkSearch extends Search<Article> {
       fetch: (limit, offset) =>
           repository.findBookmarks(this.query, limit, offset),
     );
-    // return Loader<List<Article>>(
-    //   future: repository.findBookmarks(this.query),
-    //   error: "Error searching for articles",
-    //   builder: (context, articles) => ArticleList(
-    //     articles: articles,
-    //     onToggleBookmark: repository.toggleBookmark,
-    //   ),
-    // );
+
   }
 }

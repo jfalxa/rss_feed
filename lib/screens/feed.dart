@@ -9,13 +9,12 @@ import './feed_search.dart';
 class Feed extends StatelessWidget {
   final ScrollController controller;
 
-  Feed({Key key, this.controller})
-      : super(key: key);
+  Feed({Key key, this.controller}) : super(key: key);
 
   void _goToArticleSearch(BuildContext context) async {
     await showSearch(
       context: context,
-      delegate: ArticleSearch(),
+      delegate: FeedSearch(),
     );
   }
 

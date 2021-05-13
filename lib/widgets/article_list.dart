@@ -43,8 +43,10 @@ class ArticleList extends StatelessWidget {
 class InfiniteArticleList extends StatelessWidget {
   final Future<List<Article>> Function(int, int) fetch;
   final Function(Article) onToggleBookmark;
+  final ScrollController controller;
 
-  InfiniteArticleList({Key key, this.fetch, this.onToggleBookmark})
+  InfiniteArticleList(
+      {Key key, this.fetch, this.controller, this.onToggleBookmark})
       : super(key: key);
 
   @override

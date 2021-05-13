@@ -9,30 +9,27 @@ import '../models/article.dart';
 var dateFormat = DateFormat('d/M/y');
 
 class ArticleListItem extends StatelessWidget {
-  final Article _article;
-  final Function(Article) _onToggleBookmark;
+  final Article article;
+  final Function(Article) onToggleBookmark;
 
-  ArticleListItem(
-      {Key key, Article article, Function(Article) onToggleBookmark})
-      : _article = article,
-        _onToggleBookmark = onToggleBookmark,
-        super(key: key);
+  ArticleListItem({Key key, this.article, this.onToggleBookmark})
+      : super(key: key);
 
   void goToArticle(BuildContext context) async {
-    if (await canLaunch(_article.link)) {
-      await launch(_article.link);
+    if (await canLaunch(article.link)) {
+      await launch(article.link);
     } else {
-      throw 'Could not launch ${_article.link}';
+      throw 'Could not launch ${article.link}';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var uri = Uri.parse(_article.link);
+    var uri = Uri.parse(article.link);
 
-    var time = DateTime.now().difference(_article.date) > Duration(days: 1)
-        ? DateFormat.yMMMMd().format(_article.date)
-        : timeago.format(_article.date);
+    var time = DateTime.now().difference(article.date) > Duration(days: 1)
+        ? DateFormat.yMMMMd().format(article.date)
+        : timeago.format(article.date);
 
     return InkWell(
       onTap: () => goToArticle(context),
@@ -56,7 +53,7 @@ class ArticleListItem extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        _article.title,
+                        article.title,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ],
@@ -66,14 +63,14 @@ class ArticleListItem extends StatelessWidget {
                   margin: EdgeInsets.only(left: 16.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    child: _article.image == null
+                    child: article.image == null
                         ? Image.asset(
                             'assets/images/dummy-image.jpg',
                             width: 72.0,
                             height: 72.0,
                           )
                         : Image.network(
-                            _article.image,
+                            article.image,
                             width: 72.0,
                             height: 72.0,
                             fit: BoxFit.cover,
@@ -89,10 +86,10 @@ class ArticleListItem extends StatelessWidget {
                 children: [
                   Text(time, style: Theme.of(context).textTheme.caption),
                   IconButton(
-                    icon: _article.isBookmarked
+                    icon: article.isBookmarked
                         ? Icon(Icons.bookmark, color: Colors.black87)
                         : Icon(Icons.bookmark_border, color: Colors.black38),
-                    onPressed: () => _onToggleBookmark(_article),
+                    onPressed: () => onToggleBookmark(article),
                   ),
                 ],
               ),

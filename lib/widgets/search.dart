@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class Search<T> extends SearchDelegate<T> {
-  final ScrollController controller = ScrollController();
-
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(

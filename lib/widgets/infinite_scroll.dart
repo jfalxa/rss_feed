@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dart:developer' as dev;
-
 Widget separatorBuilder(BuildContext context, int index) {
   return Divider(
     height: 1,
@@ -28,12 +26,9 @@ class InfiniteScroll<T> extends StatefulWidget {
 
 class _InfiniteScrollState<T> extends State<InfiniteScroll<T>> {
   List<T> _items;
-  ScrollController _controller = ScrollController();
 
   void addItems() async {
-    dev.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA START FETCHIN");
     var items = await widget.fetch(widget.limit, _items.length);
-    dev.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB STOP FETCHIN");
 
     setState(() {
       _items.addAll(items);
@@ -43,33 +38,31 @@ class _InfiniteScrollState<T> extends State<InfiniteScroll<T>> {
   @override
   void initState() {
     super.initState();
-
     _items = [];
-
     addItems();
-
-    _controller.addListener(() {
-      var position = _controller.position.pixels;
-      var max = _controller.position.maxScrollExtent;
-
-      dev.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS SCROLLIN");
-      dev.log("$position | $max");
-
-      if (position == max) {
-
-        addItems();
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: _items.length,
-      controller: _controller,
-      padding: EdgeInsets.all(0),
-      separatorBuilder: separatorBuilder,
-      itemBuilder: (context, i) => widget.itemBuilder(context, _items[i]),
-    );
+    return Builder(builder: (context) {
+      final controller = PrimaryScrollController.of(context);
+      controller.addListener(() {
+        if (controller.position.pixels == controller.position.maxScrollExtent) {
+          var position = controller.position.pixels;
+          var max = controller.position.maxScrollExtent;
+
+          if (position == max) {
+            addItems();
+          }
+        }
+      });
+
+      return ListView.separated(
+        itemCount: _items.length,
+        padding: EdgeInsets.all(0),
+        separatorBuilder: separatorBuilder,
+        itemBuilder: (context, i) => widget.itemBuilder(context, _items[i]),
+      );
+    });
   }
 }
