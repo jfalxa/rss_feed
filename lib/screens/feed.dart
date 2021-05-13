@@ -20,8 +20,9 @@ class Feed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Repository>(
-      builder: (context, repository, child) => NestedScrollView(
+    var repository = context.read<Repository>();
+
+    return NestedScrollView(
         controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           TopBar(
@@ -30,10 +31,9 @@ class Feed extends StatelessWidget {
           ),
         ],
         body: RefreshArticleList(
-          fetch: (limit, offset) => repository.getArticles(limit, offset),
+          fetch: repository.getArticles,
           onRefresh: repository.fetchAllSources,
         ),
-      ),
     );
   }
 }

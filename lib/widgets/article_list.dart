@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/article.dart';
-import '../services/repository.dart';
 import './article_list_item.dart';
 import './infinite_scroll.dart';
 import './separator.dart';
@@ -36,13 +34,9 @@ class InfiniteArticleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Repository>(
-      builder: (context, repository, child) => InfiniteScroll(
-        fetch: fetch,
-        itemBuilder: (context, article) => ArticleListItem(
-          article: article,
-        ),
-      ),
+    return InfiniteScroll(
+      fetch: fetch,
+      itemBuilder: (context, article) => ArticleListItem(article: article),
     );
   }
 }
@@ -50,22 +44,18 @@ class InfiniteArticleList extends StatelessWidget {
 class RefreshArticleList extends StatelessWidget {
   final Future<List<Article>> Function(int, int) fetch;
   final Function onRefresh;
-  final Function(Article) onToggleBookmark;
 
   RefreshArticleList({
     Key key,
     this.fetch,
     this.onRefresh,
-    this.onToggleBookmark,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: InfiniteArticleList(
-        fetch: fetch,
-      ),
+      child: InfiniteArticleList(fetch: fetch),
     );
   }
 }

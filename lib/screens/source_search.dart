@@ -15,7 +15,7 @@ class SourceSearch extends Search<Source> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var repository = Provider.of<Repository>(context);
+    var repository = context.read<Repository>();
 
     return Loader<List<Source>>(
       future: repository.findSources(this.query),

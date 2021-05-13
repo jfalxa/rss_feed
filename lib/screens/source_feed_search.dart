@@ -16,7 +16,7 @@ class SourceFeedSearch extends Search<Article> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var repository = Provider.of<Repository>(context);
+    var repository = context.read<Repository>();
 
     return InfiniteArticleList(
       fetch: (limit, offset) =>

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:webfeed/webfeed.dart';
@@ -7,7 +6,7 @@ import '../models/article.dart';
 import '../models/source.dart';
 import '../models/source_article.dart';
 
-class Repository extends ChangeNotifier {
+class Repository {
   static Database _db;
 
   Future<Database> get db async {
@@ -88,12 +87,10 @@ class Repository extends ChangeNotifier {
       await Source.removeSource(tx, s);
       await SourceAndArticle.removeSourceAndArticle(tx, s);
       await Article.removeOrphans(tx);
-
-      notifyListeners();
     });
   }
 
-  Future toggleBookmark(String guid) async {
+  Future<bool> toggleBookmark(String guid) async {
     Article article = await getArticle(guid);
 
     if (article.isBookmarked) {
@@ -102,7 +99,7 @@ class Repository extends ChangeNotifier {
       await Article.addBookmark(await db, article);
     }
 
-    notifyListeners();
+    return !article.isBookmarked;
   }
 
   Future fetchSource(Source s) async {
@@ -133,8 +130,6 @@ class Repository extends ChangeNotifier {
     }
 
     await addSourceArticles(s, articles);
-
-    notifyListeners();
   }
 
   Future fetchAllSources() async {

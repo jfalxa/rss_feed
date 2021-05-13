@@ -19,21 +19,21 @@ class SourceFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var repository = context.read<Repository>();
     Source source = ModalRoute.of(context).settings.arguments;
 
-    return Consumer<Repository>(
-      builder: (context, repository, child) => Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            PopTopBar(
-              title: source.title,
-              onSearch: () => _goToSourceFeedSearch(context, source),
-            )
-          ],
-          body: RefreshArticleList(
-            fetch: (limit, offset) => repository.getSourceArticles(source, limit, offset),
-            onRefresh: () => repository.fetchSource(source),
-          ),
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          PopTopBar(
+            title: source.title,
+            onSearch: () => _goToSourceFeedSearch(context, source),
+          )
+        ],
+        body: RefreshArticleList(
+          fetch: (limit, offset) =>
+              repository.getSourceArticles(source, limit, offset),
+          onRefresh: () => repository.fetchSource(source),
         ),
       ),
     );

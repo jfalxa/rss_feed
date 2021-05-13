@@ -17,28 +17,25 @@ class ToggleBookmark<T> extends StatefulWidget {
 }
 
 class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
-  bool _isBookmarked = false;
+  bool _isBookmarked;
 
-  Future refreshBookmark(BuildContext context) async {
-    var repository = context.watch<Repository>();
-    var article = await repository.getArticle(widget.article.guid);
-
-    if (_isBookmarked != article.isBookmarked) {
-      setState(() {
-        _isBookmarked = article.isBookmarked;
-      });
-    }
+  @override
+  initState() {
+    super.initState();
+    _isBookmarked = widget.article.isBookmarked;
   }
 
   Future toggleBookmark(BuildContext context) async {
     var repository = context.read<Repository>();
-    await repository.toggleBookmark(widget.article.guid);
+    var isBookmarked = await repository.toggleBookmark(widget.article.guid);
+
+    setState(() {
+      _isBookmarked = isBookmarked;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    refreshBookmark(context);
-
     var icon = _isBookmarked
         ? Icon(Icons.bookmark, color: Colors.black87)
         : Icon(Icons.bookmark_border, color: Colors.black38);

@@ -12,8 +12,7 @@ import './source_feed.dart';
 class Sources extends StatelessWidget {
   final ScrollController controller;
 
-  Sources({Key key, this.controller})
-      : super(key: key);
+  Sources({Key key, this.controller}) : super(key: key);
 
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
@@ -33,34 +32,34 @@ class Sources extends StatelessWidget {
     );
 
     if (source != null) {
-      var repository = Provider.of<Repository>(context, listen: false);
-      repository.addSource(source);
-      repository.fetchAllSources();
+      var repository = context.read<Repository>();
+      await repository.addSource(source);
+      await repository.fetchSource(source);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Repository>(
-      builder: (context, repository, child) => Scaffold(
-        body: NestedScrollView(
-          controller: controller,
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            TopBar(
-              title: 'Sources',
-              onSearch: () => _goToSourceSearch(context),
-            ),
-          ],
-          body: FutureSourceList(
-            sources: repository.getSources(),
-            onTap: (source) => _goToSourceFeed(context, source),
-            onRemove: (source) => repository.removeSource(source),
+    var repository = context.read<Repository>();
+
+    return Scaffold(
+      body: NestedScrollView(
+        controller: controller,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          TopBar(
+            title: 'Sources',
+            onSearch: () => _goToSourceSearch(context),
           ),
+        ],
+        body: FutureSourceList(
+          sources: repository.getSources(),
+          onTap: (source) => _goToSourceFeed(context, source),
+          onRemove: (source) => repository.removeSource(source),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => _goToSourceApiSearch(context),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _goToSourceApiSearch(context),
       ),
     );
   }
