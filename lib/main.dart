@@ -8,7 +8,7 @@ import './screens/bookmarks.dart';
 import './screens/source_feed.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
+  runApp(Provider(
     create: (context) => Repository(),
     child: Main(),
   ));
@@ -39,34 +39,26 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _navIndex = 0;
-  final ScrollController _feedScroll = ScrollController();
-  final ScrollController _sourcesScroll = ScrollController();
-  final ScrollController _bookmarksScroll = ScrollController();
+  final ScrollController _feedController = ScrollController();
+  final ScrollController _sourcesController = ScrollController();
+  final ScrollController _bookmarksController = ScrollController();
 
   void navigate(int index) {
+    ScrollController controller;
+
     if (index == 0) {
-      _feedScroll.animateTo(
-        0,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.linear,
-      );
+      controller = _feedController;
+    } else if (index == 1) {
+      controller = _sourcesController;
+    } else if (index == 2) {
+      controller = _bookmarksController;
     }
 
-    if (index == 1) {
-      _sourcesScroll.animateTo(
-        0,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.linear,
-      );
-    }
-
-    if (index == 2) {
-      _bookmarksScroll.animateTo(
-        0,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.linear,
-      );
-    }
+    controller?.animateTo(
+      0,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.linear,
+    );
 
     setState(() {
       _navIndex = index;
@@ -79,9 +71,9 @@ class _AppState extends State<App> {
       body: IndexedStack(
         index: _navIndex,
         children: [
-          Feed(controller: _feedScroll),
-          Sources(controller: _sourcesScroll),
-          Bookmarks(controller: _bookmarksScroll),
+          Feed(controller: _feedController),
+          Sources(controller: _sourcesController),
+          Bookmarks(controller: _bookmarksController),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
