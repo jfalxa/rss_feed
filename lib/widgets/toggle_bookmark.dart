@@ -27,11 +27,16 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
 
   Future toggleBookmark(BuildContext context) async {
     var repository = context.read<Repository>();
-    var isBookmarked = await repository.toggleBookmark(widget.article.guid);
 
-    setState(() {
-      _isBookmarked = isBookmarked;
-    });
+    try {
+      var isBookmarked = await repository.toggleBookmark(widget.article.guid);
+
+      setState(() {
+        _isBookmarked = isBookmarked;
+      });
+    } catch (err) {
+      print("Error when bookmarking: $err");
+    }
   }
 
   @override

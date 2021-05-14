@@ -11,11 +11,10 @@ import './source_add.dart';
 import './source_feed.dart';
 
 class Sources extends StatelessWidget {
-  final ScrollController controller;
-  final PagingController<int, Source> pagingController =
+  final PagingController<int, Source> controller =
       PagingController(firstPageKey: 0);
 
-  Sources({Key key, this.controller}) : super(key: key);
+  Sources({Key key}) : super(key: key);
 
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
@@ -35,10 +34,14 @@ class Sources extends StatelessWidget {
     );
 
     if (source != null) {
-      var repository = context.read<Repository>();
-      await repository.addSource(source);
-      pagingController.refresh();
-      await repository.fetchSource(source);
+      try {
+        var repository = context.read<Repository>();
+        await repository.addSource(source);
+        controller.refresh();
+        await repository.fetchSource(source);
+      } catch (err) {
+        print("Error when adding a new source: $err");
+      }
     }
   }
 
@@ -48,7 +51,6 @@ class Sources extends StatelessWidget {
 
     return Scaffold(
       body: NestedScrollView(
-        controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           TopBar(
             title: 'Sources',
@@ -56,7 +58,7 @@ class Sources extends StatelessWidget {
           ),
         ],
         body: LazySourceList(
-          controller: pagingController,
+          controller: controller,
           onRequest: repository.getSources,
           onTap: (source) => _goToSourceFeed(context, source),
           onRemove: (source) => repository.removeSource(source),

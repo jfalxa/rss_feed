@@ -105,12 +105,18 @@ class Repository {
   }
 
   Future fetchSource(Source s) async {
-    var url = Uri.parse(s.url);
-    var response = await http.get(url);
-    var xml = utf8.decode(response.bodyBytes);
-
+    String xml = '';
     RssFeed rssFeed;
     AtomFeed atomFeed;
+
+    try {
+      var url = Uri.parse(s.url);
+      var response = await http.get(url);
+
+      xml = utf8.decode(response.bodyBytes);
+    } catch (err) {
+      print("Error reading source at ${s.url}: $err");
+    }
 
     try {
       rssFeed = RssFeed.parse(xml);
@@ -124,15 +130,18 @@ class Repository {
       atomFeed = null;
     }
 
-    List<Article> articles = [];
+    try {
+      List<Article> articles = [];
+      if (rssFeed != null) {
+        articles = rssFeed.items.map((a) => Article.fromRss(a)).toList();
+      } else if (atomFeed != null) {
+        articles = atomFeed.items.map((a) => Article.fromAtom(a)).toList();
+      }
 
-    if (rssFeed != null) {
-      articles = rssFeed.items.map((a) => Article.fromRss(a)).toList();
-    } else if (atomFeed != null) {
-      articles = atomFeed.items.map((a) => Article.fromAtom(a)).toList();
+      await addSourceArticles(s, articles);
+    } catch (err) {
+      print("Error adding articles to database: $err");
     }
-
-    await addSourceArticles(s, articles);
   }
 
   Future fetchAllSources() async {

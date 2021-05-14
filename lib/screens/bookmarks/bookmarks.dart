@@ -9,11 +9,10 @@ import '../../widgets/article_list.dart';
 import 'bookmark_search.dart';
 
 class Bookmarks extends StatelessWidget {
-  final ScrollController controller;
-  final PagingController<int, Article> pagingController =
+  final PagingController<int, Article> controller =
       PagingController(firstPageKey: 0);
 
-  Bookmarks({Key key, this.controller}) : super(key: key);
+  Bookmarks({Key key}) : super(key: key);
 
   void _goToBookmarkSearch(BuildContext context) async {
     await showSearch(
@@ -27,7 +26,6 @@ class Bookmarks extends StatelessWidget {
     var repository = context.read<Repository>();
 
     return NestedScrollView(
-      controller: controller,
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         TopBar(
           title: 'Bookmarks',
@@ -35,7 +33,7 @@ class Bookmarks extends StatelessWidget {
         ),
       ],
       body: LazyArticleList(
-        controller: pagingController,
+        controller: controller,
         onRequest: repository.getBookmarks,
       ),
     );

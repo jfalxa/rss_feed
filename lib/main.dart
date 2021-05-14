@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './services/repository.dart';
+import './widgets/nav_bar.dart';
 import './screens/feed/feed.dart';
 import './screens/bookmarks/bookmarks.dart';
 import './screens/sources/sources.dart';
@@ -38,62 +39,32 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  static final pages = [
+    () => Feed(),
+    () => Sources(),
+    () => Bookmarks(),
+  ];
+
   int _navIndex = 0;
-  final ScrollController _feedController = ScrollController();
-  final ScrollController _sourcesController = ScrollController();
-  final ScrollController _bookmarksController = ScrollController();
 
   void navigate(int index) {
-    ScrollController controller;
-
-    if (index == 0) {
-      controller = _feedController;
-    } else if (index == 1) {
-      controller = _sourcesController;
-    } else if (index == 2) {
-      controller = _bookmarksController;
+    if (index != _navIndex) {
+      setState(() {
+        _navIndex = index;
+      });
     }
-
-    controller?.animateTo(
-      0,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.linear,
-    );
-
-    setState(() {
-      _navIndex = index;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _navIndex,
-        children: [
-          Feed(controller: _feedController),
-          Sources(controller: _sourcesController),
-          Bookmarks(controller: _bookmarksController),
-        ],
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: pages[_navIndex](),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _navIndex,
+      bottomNavigationBar: NavBar(
+        index: _navIndex,
         onTap: navigate,
-        backgroundColor: Colors.white,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.rss_feed),
-            label: 'Feed',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Sources',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmarks),
-            label: 'Bookmarks',
-          ),
-        ],
       ),
     );
   }
