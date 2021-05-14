@@ -1,74 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:rss_feed/widgets/lazy_scroll_view.dart';
 
 import '../models/source.dart';
 import './source_list_item.dart';
 import './separator.dart';
-import './loader.dart';
 
 class SourceList extends StatelessWidget {
-  final List<Source> _sources;
-  final Function(Source) _onTap;
-  final Function(Source) _onRemove;
+  final List<Source> sources;
+  final Function(Source) onTap;
 
-  SourceList({
-    Key key,
-    List<Source> sources,
-    Function(Source) onTap,
-    Function(Source) onRemove,
-  })  : _sources = sources,
-        _onTap = onTap,
-        _onRemove = onRemove,
-        super(key: key);
-
-  // immediately remove source from list to avoid bugs with Dismissible widget
-  _removeSource(Source s) {
-    _sources.remove(s);
-    _onRemove(s);
-  }
+  SourceList({Key key, this.sources, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_sources.length == 0) {
+    if (sources.length == 0) {
       return Center(child: Text('No sources found.'));
     }
 
     return ListView.separated(
-      itemCount: _sources.length,
+      itemCount: sources.length,
       padding: EdgeInsets.all(0),
       separatorBuilder: separatorBuilder,
       itemBuilder: (context, i) => SourceListItem(
-        source: _sources[i],
-        onTap: _onTap,
-        onRemove: _onRemove == null ? null : _removeSource,
+        source: sources[i],
+        onTap: onTap,
       ),
     );
   }
 }
 
-class FutureSourceList extends StatelessWidget {
-  final Future<List<Source>> _sources;
-  final Function(Source) _onTap;
-  final Function(Source) _onRemove;
+class LazySourceList extends StatelessWidget {
+  static final int limit = 20;
+  final PagingController<int, Source> controller;
+  final Future<List<Source>> Function(int, int) onRequest;
+  final Function(Source) onTap;
+  final Function(Source) onRemove;
 
-  FutureSourceList({
+  LazySourceList({
     Key key,
-    Future<List<Source>> sources,
-    Function(Source) onTap,
-    Function(Source) onRemove,
-  })  : _sources = sources,
-        _onTap = onTap,
-        _onRemove = onRemove,
-        super(key: key);
+    this.controller,
+    this.onTap,
+    this.onRemove,
+    this.onRequest,
+  }) : super(key: key);
+
+  // immediately remove source from list to avoid bugs with Dismissible widget
+  removeSource(Source s) async {
+    await onRemove(s);
+    controller.refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Loader<List<Source>>(
-      future: _sources,
-      error: 'Error getting sources from database',
-      builder: (context, sources) => SourceList(
-        sources: sources,
-        onTap: _onTap,
-        onRemove: _onRemove,
+    return LazyScrollView<Source>(
+      controller: controller,
+      onRequest: onRequest,
+      itemBuilder: (context, item, i) => SourceListItem(
+        source: item,
+        onTap: onTap,
+        onRemove: removeSource,
       ),
     );
   }

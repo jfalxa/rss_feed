@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
-import '../services/repository.dart';
-import '../models/source.dart';
-import '../widgets/top_bar.dart';
-import '../widgets/source_list.dart';
+import '../../models/source.dart';
+import '../../services/repository.dart';
+import '../../widgets/top_bar.dart';
+import '../../widgets/source_list.dart';
 import './source_search.dart';
 import './source_add.dart';
 import './source_feed.dart';
 
 class Sources extends StatelessWidget {
   final ScrollController controller;
+  final PagingController<int, Source> pagingController =
+      PagingController(firstPageKey: 0);
 
   Sources({Key key, this.controller}) : super(key: key);
 
@@ -34,6 +37,7 @@ class Sources extends StatelessWidget {
     if (source != null) {
       var repository = context.read<Repository>();
       await repository.addSource(source);
+      pagingController.refresh();
       await repository.fetchSource(source);
     }
   }
@@ -51,8 +55,9 @@ class Sources extends StatelessWidget {
             onSearch: () => _goToSourceSearch(context),
           ),
         ],
-        body: FutureSourceList(
-          sources: repository.getSources(),
+        body: LazySourceList(
+          controller: pagingController,
+          onRequest: repository.getSources,
           onTap: (source) => _goToSourceFeed(context, source),
           onRemove: (source) => repository.removeSource(source),
         ),

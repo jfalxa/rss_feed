@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './services/repository.dart';
-import './screens/feed.dart';
-import './screens/sources.dart';
-import './screens/bookmarks.dart';
-import './screens/source_feed.dart';
+import './screens/feed/feed.dart';
+import './screens/bookmarks/bookmarks.dart';
+import './screens/sources/sources.dart';
+import './screens/sources/source_feed.dart';
 
 void main() {
   runApp(Provider(

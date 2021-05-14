@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 abstract class Search<T> extends SearchDelegate<T> {
+  final PagingController<int, T> controller = PagingController(firstPageKey: 0);
+
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
-import '../services/repository.dart';
-import '../widgets/top_bar.dart';
-import '../widgets/article_list.dart';
-import './bookmark_search.dart';
+import '../../models/article.dart';
+import '../../services/repository.dart';
+import '../../widgets/top_bar.dart';
+import '../../widgets/article_list.dart';
+import 'bookmark_search.dart';
 
 class Bookmarks extends StatelessWidget {
   final ScrollController controller;
+  final PagingController<int, Article> pagingController =
+      PagingController(firstPageKey: 0);
 
   Bookmarks({Key key, this.controller}) : super(key: key);
 
@@ -30,7 +34,10 @@ class Bookmarks extends StatelessWidget {
           onSearch: () => _goToBookmarkSearch(context),
         ),
       ],
-      body: InfiniteArticleList(fetch: repository.getBookmarks),
+      body: LazyArticleList(
+        controller: pagingController,
+        onRequest: repository.getBookmarks,
+      ),
     );
   }
 }

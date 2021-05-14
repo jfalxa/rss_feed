@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 
-import '../models/source.dart';
-import '../services/feedly.dart';
-import '../widgets/loader.dart';
-import '../widgets/source_list.dart';
-import '../widgets/search.dart';
+import '../../models/source.dart';
+import '../../services/feedly.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/source_list.dart';
+import '../../widgets/search.dart';
 
 class SourceAdd extends Search<Source> {
   @override

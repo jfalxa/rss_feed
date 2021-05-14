@@ -4,19 +4,16 @@ import 'package:flutter/rendering.dart';
 import '../models/source.dart';
 
 class SourceListItem extends StatelessWidget {
-  final Source _source;
-  final Function(Source) _onTap;
-  final Function(Source) _onRemove;
+  final Source source;
+  final Function(Source) onTap;
+  final Function(Source) onRemove;
 
   SourceListItem({
     Key key,
-    Source source,
-    Function(Source) onTap,
-    Function(Source) onRemove,
-  })  : _source = source,
-        _onTap = onTap,
-        _onRemove = onRemove,
-        super(key: key);
+    this.source,
+    this.onTap,
+    this.onRemove,
+  }) : super(key: key);
 
   Future<bool> _askToRemoveSource(BuildContext context) {
     return showDialog(
@@ -38,7 +35,7 @@ class SourceListItem extends StatelessWidget {
   Widget _buildAlert(BuildContext context) {
     return AlertDialog(
       title: Text('Remove source'),
-      content: Text('Do you want to remove "${_source.title}"?'),
+      content: Text('Do you want to remove "${source.title}"?'),
       actions: <Widget>[
         TextButton(
           child: Text('NO'),
@@ -57,12 +54,12 @@ class SourceListItem extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context) {
-    var image = _source.icon != null
-        ? CircleAvatar(backgroundImage: NetworkImage(_source.icon))
-        : CircleAvatar(child: Image.asset('assets/images/dummy-image.jpg', fit: BoxFit.cover));
+    var image = source.icon != null
+        ? CircleAvatar(backgroundImage: NetworkImage(source.icon))
+        : CircleAvatar(child: Text(source.title[0].toUpperCase()));
 
     return InkWell(
-      onTap: () => _onTap(_source),
+      onTap: () => onTap(source),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Row(
@@ -77,13 +74,13 @@ class SourceListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _source.title,
+                    source.title,
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 8.0),
                     child: Text(
-                      _source.url,
+                      source.url,
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ),
@@ -98,16 +95,16 @@ class SourceListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_onRemove == null) {
+    if (onRemove == null) {
       return _buildItem(context);
     }
 
     return Dismissible(
-      key: Key(_source.url),
+      key: Key(source.url),
       background: _buildDismissBackground(context, true),
       secondaryBackground: _buildDismissBackground(context, false),
       confirmDismiss: (direction) => _askToRemoveSource(context),
-      onDismissed: (direction) => _onRemove(_source),
+      onDismissed: (direction) => onRemove(source),
       child: _buildItem(context),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import 'package:webfeed/webfeed.dart';
@@ -105,18 +107,19 @@ class Repository {
   Future fetchSource(Source s) async {
     var url = Uri.parse(s.url);
     var response = await http.get(url);
+    var xml = utf8.decode(response.bodyBytes);
 
     RssFeed rssFeed;
     AtomFeed atomFeed;
 
     try {
-      rssFeed = RssFeed.parse(response.body);
+      rssFeed = RssFeed.parse(xml);
     } catch (err) {
       rssFeed = null;
     }
 
     try {
-      atomFeed = AtomFeed.parse(response.body);
+      atomFeed = AtomFeed.parse(xml);
     } catch (err) {
       atomFeed = null;
     }
