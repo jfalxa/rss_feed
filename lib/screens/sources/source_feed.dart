@@ -11,7 +11,8 @@ import './source_feed_search.dart';
 
 class SourceFeed extends StatelessWidget {
   static final String routeName = '/source-feed';
-  final PagingController<int, Article> controller =
+
+  final PagingController<int, Article> _controller =
       PagingController(firstPageKey: 0);
 
   void _goToSourceFeedSearch(BuildContext context, Source source) async {
@@ -35,7 +36,7 @@ class SourceFeed extends StatelessWidget {
           )
         ],
         body: ArticleRefreshLazyList(
-          controller: controller,
+          controller: _controller,
           onRefresh: () => repository.fetchSource(source),
           onRequest: (l, o) => repository.getSourceArticles(source, l, o),
         ),

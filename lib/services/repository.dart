@@ -8,7 +8,7 @@ import './scraper.dart';
 class Repository {
   static Database _db;
 
-  static Future<Database> initDatabase() {
+  static Future<Database> _initDatabase() {
     return openDatabase(
       'feed.db',
       version: 1,
@@ -22,7 +22,7 @@ class Repository {
 
   Future<Database> get db async {
     if (_db == null) {
-      _db = await initDatabase();
+      _db = await _initDatabase();
     }
 
     return _db;

@@ -8,9 +8,11 @@ import '../../widgets/article_lazy_list.dart';
 import '../../widgets/search.dart';
 
 class SourceFeedSearch extends Search<Article> {
-  final Source source;
+  final Source _source;
 
-  SourceFeedSearch({@required this.source}) : super();
+  SourceFeedSearch({@required Source source})
+      : _source = source,
+        super();
 
   @override
   Widget buildResults(BuildContext context) {
@@ -18,7 +20,7 @@ class SourceFeedSearch extends Search<Article> {
 
     return ArticleLazyList(
       controller: controller,
-      onRequest: (l, o) => repository.findSourceArticles(source, query, l, o),
+      onRequest: (l, o) => repository.findSourceArticles(_source, query, l, o),
     );
   }
 }

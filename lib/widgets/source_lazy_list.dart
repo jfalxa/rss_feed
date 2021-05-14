@@ -7,24 +7,28 @@ import './source_list_item.dart';
 
 class SourceLazyList extends StatelessWidget {
   static final int limit = 20;
-  final PagingController<int, Source> controller;
-  final Future<List<Source>> Function(int, int) onRequest;
-  final Function(Source) onTap;
-  final Function(Source) onRemove;
+  final PagingController<int, Source> _controller;
+  final Future<List<Source>> Function(int, int) _onRequest;
+  final Function(Source) _onTap;
+  final Function(Source) _onRemove;
 
   SourceLazyList({
     Key key,
-    this.controller,
-    this.onTap,
-    this.onRemove,
-    this.onRequest,
-  }) : super(key: key);
+    PagingController<int, Source> controller,
+    Future<List<Source>> Function(int, int) onRequest,
+    Function(Source) onTap,
+    Function(Source) onRemove,
+  })  : _controller = controller,
+        _onRequest = onRequest,
+        _onTap = onTap,
+        _onRemove = onRemove,
+        super(key: key);
 
   // immediately remove source from list to avoid bugs with Dismissible widget
-  removeSource(Source s) async {
+  _removeSource(Source s) async {
     try {
-      await onRemove(s);
-      controller.refresh();
+      await _onRemove(s);
+      _controller.refresh();
     } catch (err) {
       print("Error removing source: $err");
     }
@@ -33,12 +37,12 @@ class SourceLazyList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LazyScrollView<Source>(
-      controller: controller,
-      onRequest: onRequest,
+      controller: _controller,
+      onRequest: _onRequest,
       itemBuilder: (context, item, i) => SourceListItem(
         source: item,
-        onTap: onTap,
-        onRemove: removeSource,
+        onTap: _onTap,
+        onRemove: _removeSource,
       ),
     );
   }

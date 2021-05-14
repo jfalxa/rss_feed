@@ -9,7 +9,7 @@ import '../../widgets/article_lazy_list.dart';
 import './bookmark_search.dart';
 
 class Bookmarks extends StatelessWidget {
-  final PagingController<int, Article> controller =
+  final PagingController<int, Article> _controller =
       PagingController(firstPageKey: 0);
 
   Bookmarks({Key key}) : super(key: key);
@@ -33,7 +33,7 @@ class Bookmarks extends StatelessWidget {
         ),
       ],
       body: ArticleLazyList(
-        controller: controller,
+        controller: _controller,
         onRequest: repository.getBookmarks,
       ),
     );

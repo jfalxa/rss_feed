@@ -11,10 +11,8 @@ import './source_add.dart';
 import './source_feed.dart';
 
 class Sources extends StatelessWidget {
-  final PagingController<int, Source> controller =
+  final PagingController<int, Source> _controller =
       PagingController(firstPageKey: 0);
-
-  Sources({Key key}) : super(key: key);
 
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
@@ -37,7 +35,7 @@ class Sources extends StatelessWidget {
       try {
         var repository = context.read<Repository>();
         await repository.addSource(source);
-        controller.refresh();
+        _controller.refresh();
         await repository.fetchSource(source);
       } catch (err) {
         print("Error adding a new source: $err");
@@ -58,7 +56,7 @@ class Sources extends StatelessWidget {
           ),
         ],
         body: SourceLazyList(
-          controller: controller,
+          controller: _controller,
           onRequest: repository.getSources,
           onTap: (source) => _goToSourceFeed(context, source),
           onRemove: (source) => repository.removeSource(source),

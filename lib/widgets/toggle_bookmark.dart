@@ -5,12 +5,11 @@ import '../models/article.dart';
 import '../services/repository.dart';
 
 class ToggleBookmark<T> extends StatefulWidget {
-  final Article article;
+  final Article _article;
 
-  ToggleBookmark({
-    Key key,
-    this.article,
-  }) : super(key: key);
+  ToggleBookmark({Key key, Article article})
+      : _article = article,
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ToggleBookmarkState<T>();
@@ -22,14 +21,14 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
   @override
   initState() {
     super.initState();
-    _isBookmarked = widget.article.isBookmarked;
+    _isBookmarked = widget._article.isBookmarked;
   }
 
-  Future toggleBookmark(BuildContext context) async {
+  Future _toggleBookmark(BuildContext context) async {
     var repository = context.read<Repository>();
 
     try {
-      var isBookmarked = await repository.toggleBookmark(widget.article.guid);
+      var isBookmarked = await repository.toggleBookmark(widget._article.guid);
 
       setState(() {
         _isBookmarked = isBookmarked;
@@ -47,7 +46,7 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
 
     return IconButton(
       icon: icon,
-      onPressed: () => toggleBookmark(context),
+      onPressed: () => _toggleBookmark(context),
     );
   }
 }

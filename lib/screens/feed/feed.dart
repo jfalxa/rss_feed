@@ -16,41 +16,41 @@ class Feed extends StatefulWidget {
 
 // class Feed extends StatelessWidget {
 class _FeedState extends State<Feed> {
-  bool showBackToTop = false;
+  bool _showBackToTop = false;
 
-  final ScrollController scrollController = ScrollController();
-  final PagingController<int, Article> pagingController =
+  final ScrollController _scrollController = ScrollController();
+  final PagingController<int, Article> _pagingController =
       PagingController(firstPageKey: 0);
 
   @override
   initState() {
     super.initState();
 
-    scrollController.addListener(() {
-      var position = scrollController.position.pixels;
-      var max = scrollController.position.maxScrollExtent;
+    _scrollController.addListener(() {
+      var position = _scrollController.position.pixels;
+      var max = _scrollController.position.maxScrollExtent;
 
-      if (!showBackToTop && position >= max) {
+      if (!_showBackToTop && position >= max) {
         setState(() {
-          showBackToTop = true;
+          _showBackToTop = true;
         });
-      } else if (showBackToTop && position < max) {
+      } else if (_showBackToTop && position < max) {
         setState(() {
-          showBackToTop = false;
+          _showBackToTop = false;
         });
       }
     });
   }
 
-  void backToTop() {
-    scrollController.animateTo(
+  void _backToTop() {
+    _scrollController.animateTo(
       0,
       duration: Duration(milliseconds: 100),
       curve: Curves.linear,
     );
   }
 
-  void goToArticleSearch(BuildContext context) async {
+  void _goToArticleSearch(BuildContext context) async {
     await showSearch(
       context: context,
       delegate: FeedSearch(),
@@ -63,22 +63,22 @@ class _FeedState extends State<Feed> {
 
     return Scaffold(
       body: NestedScrollView(
-        controller: scrollController,
+        controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           TopBar(
             title: 'Feed',
-            onSearch: () => goToArticleSearch(context),
+            onSearch: () => _goToArticleSearch(context),
           ),
         ],
         body: ArticleRefreshLazyList(
-          controller: pagingController,
+          controller: _pagingController,
           onRequest: repository.getArticles,
           onRefresh: repository.fetchAllSources,
         ),
       ),
       floatingActionButton: BackToTop(
-        show: showBackToTop,
-        onPressed: backToTop,
+        show: _showBackToTop,
+        onPressed: _backToTop,
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterFloat,

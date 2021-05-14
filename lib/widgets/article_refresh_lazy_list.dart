@@ -5,21 +5,24 @@ import '../models/article.dart';
 import './article_lazy_list.dart';
 
 class ArticleRefreshLazyList extends StatelessWidget {
-  final PagingController<int, Article> controller;
-  final Future<List<Article>> Function(int, int) onRequest;
-  final Future Function() onRefresh;
+  final PagingController<int, Article> _controller;
+  final Future<List<Article>> Function(int, int) _onRequest;
+  final Future Function() _onRefresh;
 
   ArticleRefreshLazyList({
     Key key,
-    this.controller,
-    this.onRequest,
-    this.onRefresh,
-  }) : super(key: key);
+    PagingController<int, Article> controller,
+    Future<List<Article>> Function(int, int) onRequest,
+    Future Function() onRefresh,
+  })  : _controller = controller,
+        _onRequest = onRequest,
+        _onRefresh = onRefresh,
+        super(key: key);
 
   Future refreshList() async {
     try {
-      await onRefresh();
-      controller.refresh();
+      await _onRefresh();
+      _controller.refresh();
     } catch (err) {
       print("Error refreshing articles: $err");
     }
@@ -30,8 +33,8 @@ class ArticleRefreshLazyList extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: refreshList,
       child: ArticleLazyList(
-        controller: controller,
-        onRequest: onRequest,
+        controller: _controller,
+        onRequest: _onRequest,
       ),
     );
   }
