@@ -5,7 +5,6 @@ import 'package:webfeed/webfeed.dart';
 import './source_article.dart';
 
 final String tArticle = 'article';
-
 final String cGuid = 'guid';
 final String cTitle = 'title';
 final String cLink = 'link';
@@ -19,8 +18,8 @@ var formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
 DateTime parseDate(String dateString) {
   try {
     return formatter.parse(dateString);
-  } catch (error) {
-    print('DATE PARSING ERROR: $error');
+  } catch (err) {
+    print('Error parsing date: $err');
   }
 
   return DateTime.now();
@@ -123,12 +122,21 @@ class Article {
   }
 
   static Future addBookmark(Database db, Article a) async {
-    return db.update(tArticle, {cIsBookmarked: 1},
-        where: '$cGuid = ?', whereArgs: [a.guid]);
+    return db.update(
+      tArticle,
+      {cIsBookmarked: 1},
+      where: '$cGuid = ?',
+      whereArgs: [a.guid],
+    );
   }
 
   static Future<Article> getArticle(Database db, String guid) async {
-    var articles = await db.query(tArticle, where: "$cGuid = ?", whereArgs: [guid]);
+    var articles = await db.query(
+      tArticle,
+      where: "$cGuid = ?",
+      whereArgs: [guid],
+    );
+
     return articles.length == 1 ? Article.fromMap(articles[0]) : null;
   }
 
@@ -149,11 +157,13 @@ class Article {
 
   static Future<List<Article>> getBookmarks(
       Database db, int limit, int offset) async {
-    final bookmarkedArticles = await db.query(tArticle,
-        where: '$cIsBookmarked = 1',
-        orderBy: '$cDate DESC',
-        limit: limit,
-        offset: offset);
+    final bookmarkedArticles = await db.query(
+      tArticle,
+      where: '$cIsBookmarked = 1',
+      orderBy: '$cDate DESC',
+      limit: limit,
+      offset: offset,
+    );
 
     return bookmarkedArticles.map((a) => Article.fromMap(a)).toList();
   }
@@ -205,7 +215,11 @@ class Article {
   }
 
   static Future removeBookmark(Database db, Article a) async {
-    return db.update(tArticle, {cIsBookmarked: 0},
-        where: '$cGuid = ?', whereArgs: [a.guid]);
+    return db.update(
+      tArticle,
+      {cIsBookmarked: 0},
+      where: '$cGuid = ?',
+      whereArgs: [a.guid],
+    );
   }
 }

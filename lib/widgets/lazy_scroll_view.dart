@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import './separator.dart';
-
-import 'dart:developer' as dev;
-
 class LazyScrollView<T> extends StatefulWidget {
   final int limit;
   final PagingController<int, T> controller;
@@ -33,9 +29,6 @@ class _LazyScrollViewState<T> extends State<LazyScrollView<T>> {
         final items = await widget.onRequest(widget.limit, offset);
         final isLastPage = items.length < widget.limit;
 
-        dev.log(
-            "${items.length} loaded ($offset:${widget.limit}), ${widget.onRequest}");
-
         if (isLastPage) {
           widget.controller.appendLastPage(items);
         } else {
@@ -51,7 +44,8 @@ class _LazyScrollViewState<T> extends State<LazyScrollView<T>> {
   Widget build(BuildContext context) {
     return PagedListView<int, T>.separated(
       pagingController: widget.controller,
-      separatorBuilder: separatorBuilder,
+      separatorBuilder: (context, index) =>
+          Divider(height: 1, indent: 16, endIndent: 16),
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: widget.itemBuilder,
       ),

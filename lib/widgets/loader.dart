@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
 
 class Loader<T> extends StatelessWidget {
-  final Future _future;
-  final Widget Function(BuildContext, T) _builder;
+  final Future future;
+  final String error;
+  final Widget Function(BuildContext, T) builder;
 
-  Loader(
-      {Key key,
-      @required Future future,
-      @required Widget Function(BuildContext, T) builder,
-      String error,
-      Function onRefresh})
-      : _future = future,
-        _builder = builder,
-        super(key: key);
+  Loader({Key key, @required this.future, @required this.builder, this.error})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<T>(
-      future: _future,
+      future: future,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return _builder(context, snapshot.data);
+          return builder(context, snapshot.data);
         } else if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
+          print("Error while loading: ${snapshot.error}");
+          return Center(child: Text(error));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else {

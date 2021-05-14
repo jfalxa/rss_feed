@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/source.dart';
 import '../../services/repository.dart';
 import '../../widgets/top_bar.dart';
-import '../../widgets/source_list.dart';
+import '../../widgets/source_lazy_list.dart';
 import './source_search.dart';
 import './source_add.dart';
 import './source_feed.dart';
@@ -40,7 +40,7 @@ class Sources extends StatelessWidget {
         controller.refresh();
         await repository.fetchSource(source);
       } catch (err) {
-        print("Error when adding a new source: $err");
+        print("Error adding a new source: $err");
       }
     }
   }
@@ -57,7 +57,7 @@ class Sources extends StatelessWidget {
             onSearch: () => _goToSourceSearch(context),
           ),
         ],
-        body: LazySourceList(
+        body: SourceLazyList(
           controller: controller,
           onRequest: repository.getSources,
           onTap: (source) => _goToSourceFeed(context, source),

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../../models/source.dart';
 import '../../models/article.dart';
 import '../../services/repository.dart';
-import '../../widgets/top_bar.dart';
-import '../../widgets/article_list.dart';
+import '../../widgets/pop_top_bar.dart';
+import '../../widgets/article_refresh_lazy_list.dart';
 import './source_feed_search.dart';
 
 class SourceFeed extends StatelessWidget {
@@ -34,7 +34,7 @@ class SourceFeed extends StatelessWidget {
             onSearch: () => _goToSourceFeedSearch(context, source),
           )
         ],
-        body: RefreshArticleList(
+        body: ArticleRefreshLazyList(
           controller: controller,
           onRefresh: () => repository.fetchSource(source),
           onRequest: (l, o) => repository.getSourceArticles(source, l, o),

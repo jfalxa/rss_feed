@@ -1,7 +1,9 @@
-import 'dart:convert' as convert;
+import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:webfeed/webfeed.dart';
 
 import '../models/source.dart';
+import '../models/article.dart';
 
 Future<String> resolveRedirects(String url) async {
   var redirectUrl = url;
@@ -30,9 +32,9 @@ Future<String> resolveRedirects(String url) async {
   return null;
 }
 
-class Feedly {
+class Scraper {
   static final feedRx = RegExp(r'rss|xml');
-  static final root = 'https://cloud.feedly.com/v3';
+  static final search = 'https://cloud.feedly.com/v3/search/feeds';
 
   static Source toSource(Map<String, dynamic> json) {
     var url = json['website'].contains(feedRx)
@@ -51,9 +53,9 @@ class Feedly {
   static Future<List<Source>> searchSources(String query) async {
     if (query == '') return Future.value([]);
 
-    var url = Uri.parse('$root/search/feeds?query=$query');
+    var url = Uri.parse('$search?query=$query');
     var response = await http.get(url);
-    var json = convert.jsonDecode(response.body);
+    var json = jsonDecode(response.body);
 
     var results = List<Map<String, dynamic>>.from(json['results']);
     var sources = results.map(toSource).toList();
@@ -68,7 +70,36 @@ class Feedly {
     return sources;
   }
 
-  static Future<Source> getSource(String url) async {
-    return searchSources(url).then((list) => list.first);
+  static Future<List<Article>> fetchSource(Source s) async {
+    String xml = '';
+    RssFeed rssFeed;
+    AtomFeed atomFeed;
+
+    var url = Uri.parse(s.url);
+    var response = await http.get(url);
+
+    xml = utf8.decode(response.bodyBytes);
+
+    try {
+      rssFeed = RssFeed.parse(xml);
+    } catch (err) {
+      rssFeed = null;
+    }
+
+    try {
+      atomFeed = AtomFeed.parse(xml);
+    } catch (err) {
+      atomFeed = null;
+    }
+
+    List<Article> articles = [];
+
+    if (rssFeed != null) {
+      articles = rssFeed.items.map((a) => Article.fromRss(a)).toList();
+    } else if (atomFeed != null) {
+      articles = atomFeed.items.map((a) => Article.fromAtom(a)).toList();
+    }
+
+    return articles;
   }
 }

@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/source.dart';
 import '../../services/repository.dart';
-import '../../widgets/loader.dart';
-import '../../widgets/source_list.dart';
+import '../../widgets/source_lazy_list.dart';
 import '../../widgets/search.dart';
 import './source_feed.dart';
 
@@ -17,13 +16,11 @@ class SourceSearch extends Search<Source> {
   Widget buildResults(BuildContext context) {
     var repository = context.read<Repository>();
 
-    return Loader<List<Source>>(
-      future: repository.findSources(this.query),
-      error: "Error searching for sources",
-      builder: (context, sources) => SourceList(
-        sources: sources,
-        onTap: (source) => _goToSourceFeed(context, source),
-      ),
+    return SourceLazyList(
+      controller: controller,
+      onRequest: (l, o) => repository.findSources(query, l, o),
+      onTap: (source) => _goToSourceFeed(context, source),
+      onRemove: (source) => repository.removeSource(source),
     );
   }
 }

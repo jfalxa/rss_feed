@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/article.dart';
 import '../../models/source.dart';
 import '../../services/repository.dart';
-import '../../widgets/article_list.dart';
+import '../../widgets/article_lazy_list.dart';
 import '../../widgets/search.dart';
 
 class SourceFeedSearch extends Search<Article> {
@@ -16,7 +16,7 @@ class SourceFeedSearch extends Search<Article> {
   Widget buildResults(BuildContext context) {
     var repository = context.read<Repository>();
 
-    return LazyArticleList(
+    return ArticleLazyList(
       controller: controller,
       onRequest: (l, o) => repository.findSourceArticles(source, query, l, o),
     );

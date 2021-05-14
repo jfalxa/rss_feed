@@ -4,7 +4,6 @@ import './source.dart' hide cTitle;
 import './article.dart';
 
 final String tSourceAndArticle = 'source_and_article';
-
 final String cSourceUrl = 'source_url';
 final String cArticleGuid = 'article_guid';
 

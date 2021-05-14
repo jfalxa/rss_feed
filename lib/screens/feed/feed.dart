@@ -6,7 +6,7 @@ import '../../models/article.dart';
 import '../../services/repository.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/top_bar.dart';
-import '../../widgets/article_list.dart';
+import '../../widgets/article_refresh_lazy_list.dart';
 import './feed_search.dart';
 
 class Feed extends StatefulWidget {
@@ -70,7 +70,7 @@ class _FeedState extends State<Feed> {
             onSearch: () => goToArticleSearch(context),
           ),
         ],
-        body: RefreshArticleList(
+        body: ArticleRefreshLazyList(
           controller: pagingController,
           onRequest: repository.getArticles,
           onRefresh: repository.fetchAllSources,

@@ -1,25 +1,14 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
-import 'package:webfeed/webfeed.dart';
 
 import '../models/article.dart';
 import '../models/source.dart';
 import '../models/source_article.dart';
+import './scraper.dart';
 
 class Repository {
   static Database _db;
 
-  Future<Database> get db async {
-    if (_db == null) {
-      _db = await initDatabase();
-    }
-
-    return _db;
-  }
-
-  Future<Database> initDatabase() {
+  static Future<Database> initDatabase() {
     return openDatabase(
       'feed.db',
       version: 1,
@@ -29,6 +18,14 @@ class Repository {
         await SourceAndArticle.createTable(tx);
       }),
     );
+  }
+
+  Future<Database> get db async {
+    if (_db == null) {
+      _db = await initDatabase();
+    }
+
+    return _db;
   }
 
   Future addSource(Source s) async {
@@ -50,38 +47,59 @@ class Repository {
     return Article.getArticle(await db, guid);
   }
 
-  Future<List<Article>> getArticles([int limit, int offset]) async {
+  Future<List<Article>> getArticles(int limit, int offset) async {
     return Article.getArticles(await db, limit, offset);
   }
 
-  Future<List<Article>> getSourceArticles(Source s,
-      [int limit, int offset]) async {
+  Future<List<Article>> getSourceArticles(
+    Source s,
+    int limit,
+    int offset,
+  ) async {
     return SourceAndArticle.getSourceArticles(await db, s, limit, offset);
   }
 
-  Future<List<Article>> getBookmarks([int limit, int offset]) async {
+  Future<List<Article>> getBookmarks(int limit, int offset) async {
     return Article.getBookmarks(await db, limit, offset);
   }
 
-  Future<List<Source>> findSources(String query,
-      [int limit, int offset]) async {
+  Future<List<Source>> findSources(
+    String query,
+    int limit,
+    int offset,
+  ) async {
     return Source.findSources(await db, query, limit, offset);
   }
 
-  Future<List<Article>> findArticles(String query,
-      [int limit, int offset]) async {
+  Future<List<Article>> findArticles(
+    String query,
+    int limit,
+    int offset,
+  ) async {
     return Article.findArticles(await db, query, limit, offset);
   }
 
-  Future<List<Article>> findBookmarks(String query,
-      [int limit, int offset]) async {
+  Future<List<Article>> findBookmarks(
+    String query,
+    int limit,
+    int offset,
+  ) async {
     return Article.findBookmarks(await db, query, limit, offset);
   }
 
-  Future<List<Article>> findSourceArticles(Source s, String query,
-      [int limit, int offset]) async {
+  Future<List<Article>> findSourceArticles(
+    Source source,
+    String query,
+    int limit,
+    int offset,
+  ) async {
     return SourceAndArticle.findSourceArticles(
-        await db, s, query, limit, offset);
+      await db,
+      source,
+      query,
+      limit,
+      offset,
+    );
   }
 
   Future removeSource(Source s) async {
@@ -104,44 +122,13 @@ class Repository {
     return !article.isBookmarked;
   }
 
+  Future<List<Source>> searchSources(String query) {
+    return Scraper.searchSources(query);
+  }
+
   Future fetchSource(Source s) async {
-    String xml = '';
-    RssFeed rssFeed;
-    AtomFeed atomFeed;
-
-    try {
-      var url = Uri.parse(s.url);
-      var response = await http.get(url);
-
-      xml = utf8.decode(response.bodyBytes);
-    } catch (err) {
-      print("Error reading source at ${s.url}: $err");
-    }
-
-    try {
-      rssFeed = RssFeed.parse(xml);
-    } catch (err) {
-      rssFeed = null;
-    }
-
-    try {
-      atomFeed = AtomFeed.parse(xml);
-    } catch (err) {
-      atomFeed = null;
-    }
-
-    try {
-      List<Article> articles = [];
-      if (rssFeed != null) {
-        articles = rssFeed.items.map((a) => Article.fromRss(a)).toList();
-      } else if (atomFeed != null) {
-        articles = atomFeed.items.map((a) => Article.fromAtom(a)).toList();
-      }
-
-      await addSourceArticles(s, articles);
-    } catch (err) {
-      print("Error adding articles to database: $err");
-    }
+    var articles = await Scraper.fetchSource(s);
+    await addSourceArticles(s, articles);
   }
 
   Future fetchAllSources() async {

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../../models/article.dart';
 import '../../services/repository.dart';
 import '../../widgets/top_bar.dart';
-import '../../widgets/article_list.dart';
-import 'bookmark_search.dart';
+import '../../widgets/article_lazy_list.dart';
+import './bookmark_search.dart';
 
 class Bookmarks extends StatelessWidget {
   final PagingController<int, Article> controller =
@@ -32,7 +32,7 @@ class Bookmarks extends StatelessWidget {
           onSearch: () => _goToBookmarkSearch(context),
         ),
       ],
-      body: LazyArticleList(
+      body: ArticleLazyList(
         controller: controller,
         onRequest: repository.getBookmarks,
       ),
