@@ -41,12 +41,10 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
 
   @override
   Widget build(BuildContext context) {
-    var icon = _isBookmarked
-        ? Icon(Icons.bookmark, color: Colors.black87)
-        : Icon(Icons.bookmark_border, color: Colors.black38);
+    var icon = _isBookmarked ? Icons.bookmark : Icons.bookmark_border;
 
     return IconButton(
-      icon: icon,
+      icon: Icon(icon),
       onPressed: () => _toggleBookmark(context),
     );
   }

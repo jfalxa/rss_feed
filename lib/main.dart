@@ -1,73 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import './services/preferences.dart';
 import './services/repository.dart';
-import './widgets/nav_bar.dart';
-import './screens/feed/feed.dart';
-import './screens/bookmarks/bookmarks.dart';
-import './screens/sources/sources.dart';
 import './screens/sources/source_feed.dart';
 import './screens/settings/settings.dart';
-
-class App extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  static final _nav = [
-    () => Feed(),
-    () => Sources(),
-    () => Bookmarks(),
-  ];
-
-  int _navIndex = 0;
-
-  void _navigate(int index) {
-    if (index != _navIndex) {
-      setState(() {
-        _navIndex = index;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: _nav[_navIndex](),
-      ),
-      bottomNavigationBar: NavBar(
-        index: _navIndex,
-        onTap: _navigate,
-      ),
-    );
-  }
-}
+import './screens/app.dart';
+import './themes.dart';
 
 class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var prefs = context.watch<Preferences>();
+    var dark = prefs.useDarkMode;
+
     return MaterialApp(
       title: 'RSS Feed',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       initialRoute: '/',
       routes: {
         '/': (context) => App(),
-        Settings.routeName: (context) => Settings(),
-        SourceFeed.routeName: (context) => SourceFeed()
+        SourceFeed.routeName: (context) => SourceFeed(),
+        SettingsControls.routeName: (context) => SettingsControls(),
       },
     );
   }
 }
 
 void main() {
-  runApp(Provider(
-    create: (context) => Repository(),
-    child: Main(),
-  ));
+  runApp(
+    Provider(
+      create: (context) => Repository(),
+      child: ChangeNotifierProvider(
+        create: (context) => Preferences(),
+        child: Main(),
+      ),
+    ),
+  );
+
+  Preferences.setSystemStyle();
 }

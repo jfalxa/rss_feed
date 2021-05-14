@@ -18,10 +18,7 @@ class TopBar extends StatelessWidget {
       title: Text(_title),
       leading: _onSearch == null ? null : SearchIcon(onSearch: _onSearch),
       actions: [Menu()],
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      textTheme: Theme.of(context).textTheme,
-      actionsIconTheme: Theme.of(context).iconTheme,
+      backwardsCompatibility: false,
     );
   }
 }

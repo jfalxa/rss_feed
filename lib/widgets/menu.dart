@@ -11,7 +11,7 @@ class Menu extends StatelessWidget {
       ],
       onSelected: (index) {
         if (index == 0) {
-          Navigator.pushNamed(context, Settings.routeName);
+          Navigator.pushNamed(context, SettingsControls.routeName);
         }
       },
     );

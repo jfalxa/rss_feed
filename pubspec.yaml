@@ -13,6 +13,7 @@ dependencies:
   infinite_scroll_pagination: ^3.0.1
   intl: ^0.17.0
   provider: ^5.0.0
+  shared_preferences: ^2.0.5
   sqflite: ^2.0.0+3
   timeago: ^3.0.2
   url_launcher: ^6.0.3
@@ -27,7 +28,7 @@ dev_dependencies:
 
 flutter_icons:
   android: "launcher_icon"
-  image_path: "assets/icons/newspaper.png"
+  image_path: "assets/icons/scroll.png"
 
 flutter:
   uses-material-design: true

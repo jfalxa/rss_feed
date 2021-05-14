@@ -8,7 +8,6 @@ abstract class Search<T> extends SearchDelegate<T> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.arrow_back),
-      color: Colors.black87,
       onPressed: () => close(context, null),
     );
   }
@@ -18,7 +17,6 @@ abstract class Search<T> extends SearchDelegate<T> {
     return [
       IconButton(
         icon: Icon(Icons.clear),
-        color: Colors.black87,
         onPressed: () {
           query = '';
         },

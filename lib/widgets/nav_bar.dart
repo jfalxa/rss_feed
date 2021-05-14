@@ -14,7 +14,6 @@ class NavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: _index,
       onTap: _onTap,
-      backgroundColor: Colors.white,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.rss_feed),

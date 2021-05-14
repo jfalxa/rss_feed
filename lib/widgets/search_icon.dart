@@ -10,10 +10,7 @@ class SearchIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(
-        Icons.search,
-        color: Colors.black87,
-      ),
+      icon: Icon(Icons.search),
       onPressed: _onSearch,
     );
   }

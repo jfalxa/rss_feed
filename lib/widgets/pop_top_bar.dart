@@ -17,13 +17,10 @@ class PopTopBar extends StatelessWidget {
       title: Text(_title),
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
-        color: Colors.black87,
         onPressed: () => Navigator.pop(context),
       ),
       actions: _onSearch == null ? [] : [SearchIcon(onSearch: _onSearch)],
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      textTheme: Theme.of(context).textTheme,
+      backwardsCompatibility: false,
     );
   }
 }
