@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/source.dart';
 import '../../models/article.dart';
 import '../../services/repository.dart';
+import '../../widgets/back_to_top.dart';
 import '../../widgets/pop_top_bar.dart';
 import '../../widgets/article_refresh_lazy_list.dart';
 import './source_feed_search.dart';
@@ -27,19 +28,15 @@ class SourceFeed extends StatelessWidget {
     var repository = context.read<Repository>();
     Source source = ModalRoute.of(context).settings.arguments;
 
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          PopTopBar(
-            title: source.title,
-            onSearch: () => _goToSourceFeedSearch(context, source),
-          )
-        ],
-        body: ArticleRefreshLazyList(
-          controller: _controller,
-          onRefresh: () => repository.fetchSource(source),
-          onRequest: (l, o) => repository.getSourceArticles(source, l, o),
-        ),
+    return BackToTop(
+      header: PopTopBar(
+        title: source.title,
+        onSearch: () => _goToSourceFeedSearch(context, source),
+      ),
+      body: ArticleRefreshLazyList(
+        controller: _controller,
+        onRefresh: () => repository.fetchSource(source),
+        onRequest: (l, o) => repository.getSourceArticles(source, l, o),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/article.dart';
 import '../../services/repository.dart';
+import '../../widgets/back_to_top.dart';
 import '../../widgets/top_bar.dart';
 import '../../widgets/article_lazy_list.dart';
 import './bookmark_search.dart';
@@ -25,13 +26,11 @@ class Bookmarks extends StatelessWidget {
   Widget build(BuildContext context) {
     var repository = context.read<Repository>();
 
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        TopBar(
-          title: 'Bookmarks',
-          onSearch: () => _goToBookmarkSearch(context),
-        ),
-      ],
+    return BackToTop(
+      header: TopBar(
+        title: 'Bookmarks',
+        onSearch: () => _goToBookmarkSearch(context),
+      ),
       body: ArticleLazyList(
         controller: _controller,
         onRequest: repository.getBookmarks,

@@ -9,46 +9,9 @@ import '../../widgets/top_bar.dart';
 import '../../widgets/article_refresh_lazy_list.dart';
 import './feed_search.dart';
 
-class Feed extends StatefulWidget {
-  @override
-  _FeedState createState() => _FeedState();
-}
-
-// class Feed extends StatelessWidget {
-class _FeedState extends State<Feed> {
-  bool _showBackToTop = false;
-
-  final ScrollController _scrollController = ScrollController();
+class Feed extends StatelessWidget {
   final PagingController<int, Article> _pagingController =
       PagingController(firstPageKey: 0);
-
-  @override
-  initState() {
-    super.initState();
-
-    _scrollController.addListener(() {
-      var position = _scrollController.position.pixels;
-      var max = _scrollController.position.maxScrollExtent;
-
-      if (!_showBackToTop && position >= max) {
-        setState(() {
-          _showBackToTop = true;
-        });
-      } else if (_showBackToTop && position < max) {
-        setState(() {
-          _showBackToTop = false;
-        });
-      }
-    });
-  }
-
-  void _backToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: Duration(milliseconds: 100),
-      curve: Curves.linear,
-    );
-  }
 
   void _goToArticleSearch(BuildContext context) async {
     await showSearch(
@@ -61,27 +24,16 @@ class _FeedState extends State<Feed> {
   Widget build(BuildContext context) {
     var repository = context.read<Repository>();
 
-    return Scaffold(
-      body: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          TopBar(
-            title: 'Feed',
-            onSearch: () => _goToArticleSearch(context),
-          ),
-        ],
-        body: ArticleRefreshLazyList(
-          controller: _pagingController,
-          onRequest: repository.getArticles,
-          onRefresh: repository.fetchAllSources,
-        ),
+    return BackToTop(
+      header: TopBar(
+        title: 'Feed',
+        onSearch: () => _goToArticleSearch(context),
       ),
-      floatingActionButton: BackToTop(
-        show: _showBackToTop,
-        onPressed: _backToTop,
+      body: ArticleRefreshLazyList(
+        controller: _pagingController,
+        onRequest: repository.getArticles,
+        onRefresh: repository.fetchAllSources,
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
     );
   }
 }
