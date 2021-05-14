@@ -24,14 +24,9 @@ class SourceLazyList extends StatelessWidget {
         _onRemove = onRemove,
         super(key: key);
 
-  // immediately remove source from list to avoid bugs with Dismissible widget
   _removeSource(Source s) async {
-    try {
-      await _onRemove(s);
-      _controller.refresh();
-    } catch (err) {
-      print("Error removing source: $err");
-    }
+    await _onRemove(s);
+    _controller.refresh();
   }
 
   @override

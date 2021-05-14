@@ -26,6 +26,14 @@ class SourceListItem extends StatelessWidget {
     );
   }
 
+  void _removeSource() {
+    try {
+      _onRemove(_source);
+    } catch (err) {
+      print("Error removing source: $err");
+    }
+  }
+
   Widget _buildDismissBackground(BuildContext context, bool isMain) {
     return Container(
       alignment: isMain ? Alignment.centerLeft : Alignment.centerRight,
@@ -107,7 +115,7 @@ class SourceListItem extends StatelessWidget {
       background: _buildDismissBackground(context, true),
       secondaryBackground: _buildDismissBackground(context, false),
       confirmDismiss: (direction) => _askRemoveSource(context),
-      onDismissed: (direction) => _onRemove(_source),
+      onDismissed: (direction) => _removeSource(),
       child: _buildItem(context),
     );
   }

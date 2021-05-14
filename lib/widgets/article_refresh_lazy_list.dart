@@ -20,12 +20,8 @@ class ArticleRefreshLazyList extends StatelessWidget {
         super(key: key);
 
   Future refreshList() async {
-    try {
-      await _onRefresh();
-      _controller.refresh();
-    } catch (err) {
-      print("Error refreshing articles: $err");
-    }
+    await _onRefresh();
+    _controller.refresh();
   }
 
   @override

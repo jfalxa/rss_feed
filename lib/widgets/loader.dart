@@ -23,7 +23,6 @@ class Loader<T> extends StatelessWidget {
         if (snapshot.hasData) {
           return _builder(context, snapshot.data);
         } else if (snapshot.hasError) {
-          print("Error while loading: ${snapshot.error}");
           return Center(child: Text(_error));
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());

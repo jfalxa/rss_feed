@@ -38,7 +38,7 @@ class Sources extends StatelessWidget {
         _controller.refresh();
         await repository.fetchSource(source);
       } catch (err) {
-        print("Error adding a new source: $err");
+        print("Error adding source: $err");
       }
     }
   }
