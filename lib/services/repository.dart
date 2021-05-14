@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import '../models/article.dart';
 import '../models/source.dart';
 import '../models/source_article.dart';
+import '../models/settings.dart';
 import './scraper.dart';
 
 class Repository {
@@ -16,6 +17,7 @@ class Repository {
         await Source.createTable(tx);
         await Article.createTable(tx);
         await SourceAndArticle.createTable(tx);
+        await Settings.createTable(tx);
       }),
     );
   }
@@ -134,5 +136,17 @@ class Repository {
   Future fetchAllSources() async {
     var sources = await getSources();
     await Future.wait(sources.map(fetchSource));
+  }
+
+  Future<Settings> getSettings() async {
+    return Settings.getSettings(await db);
+  }
+
+  Future<bool> toggleUseExternalApps(bool value) async {
+    return Settings.toggleUseExternalApps(await db, value);
+  }
+
+  Future<bool> toggleUseDarkMode(bool value) async {
+    return Settings.toggleUseDarkMode(await db, value);
   }
 }

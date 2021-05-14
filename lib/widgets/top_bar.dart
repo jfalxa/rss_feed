@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './search_icon.dart';
+import './menu.dart';
 
 class TopBar extends StatelessWidget {
   final String _title;
@@ -15,16 +16,8 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       title: Text(_title),
-      leading: SearchIcon(onSearch: _onSearch),
-      actions: [
-        PopupMenuButton(
-          itemBuilder: (context) => <PopupMenuEntry>[
-            PopupMenuItem(
-              child: Text('Settings'),
-            ),
-          ],
-        )
-      ],
+      leading: _onSearch == null ? null : SearchIcon(onSearch: _onSearch),
+      actions: [Menu()],
       centerTitle: true,
       backgroundColor: Colors.white,
       textTheme: Theme.of(context).textTheme,
