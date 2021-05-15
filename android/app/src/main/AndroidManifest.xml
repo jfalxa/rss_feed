@@ -1,6 +1,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.rss_feed">
+    package="com.omuyo.rss_feed">
 
   <uses-permission android:name="android.permission.INTERNET" />
 

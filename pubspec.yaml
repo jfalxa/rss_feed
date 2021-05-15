@@ -1,5 +1,5 @@
 name: rss_feed
-description: RSS feed reader
+description: RSS and Atom feed reader
 
 publish_to: "none"
 
