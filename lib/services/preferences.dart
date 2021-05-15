@@ -12,24 +12,36 @@ class Preferences extends ChangeNotifier {
   }
 
   init() async {
-    var prefs = await SharedPreferences.getInstance();
-    useExternalApps = prefs.getBool("use-external-apps") ?? true;
-    useDarkMode = prefs.getBool("use-dark-mode") ?? false;
-    notifyListeners();
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      useExternalApps = prefs.getBool("use-external-apps") ?? true;
+      useDarkMode = prefs.getBool("use-dark-mode") ?? false;
+      notifyListeners();
+    } catch (err) {
+      print("Error reading preferences: $err");
+    }
   }
 
   toggleUseExternalApps(bool value) async {
-    var prefs = await SharedPreferences.getInstance();
-    useExternalApps = value ?? !useExternalApps;
-    await prefs.setBool('use-external-apps', useExternalApps);
-    notifyListeners();
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      useExternalApps = value;
+      await prefs.setBool('use-external-apps', useExternalApps);
+      notifyListeners();
+    } catch (err) {
+      print("Error toggling use-external-apps: $err");
+    }
   }
 
   toggleUseDarkMode(bool value) async {
-    var prefs = await SharedPreferences.getInstance();
-    useDarkMode = value ?? !useDarkMode;
-    await prefs.setBool('use-dark-mode', useDarkMode);
-    notifyListeners();
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      useDarkMode = value;
+      await prefs.setBool('use-dark-mode', useDarkMode);
+      notifyListeners();
+    } catch (err) {
+      print("Error toggling use-dark-mode: $err");
+    }
   }
 
   setSystemStyle() {
