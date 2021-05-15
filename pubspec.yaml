@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   http: ^0.13.3
@@ -35,3 +35,4 @@ flutter:
 
   assets:
     - assets/images/dummy-image.jpg
+    - assets/images/dummy-image-dark.jpg
