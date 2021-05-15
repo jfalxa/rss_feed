@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
-import 'package:rss_feed/widgets/toggle_bookmark.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/article.dart';
+import '../services/preferences.dart';
 import './toggle_bookmark.dart';
 
 var dateFormat = DateFormat('d/M/y');
@@ -18,8 +19,14 @@ class ArticleListItem extends StatelessWidget {
         super(key: key);
 
   void _goToArticle(BuildContext context) async {
+    var prefs = context.read<Preferences>();
+
     if (await canLaunch(_article.link)) {
-      await launch(_article.link);
+      await launch(
+        _article.link,
+        forceWebView: !prefs.useExternalApps,
+        enableJavaScript: true,
+      );
     } else {
       throw 'Could not launch ${_article.link}';
     }
