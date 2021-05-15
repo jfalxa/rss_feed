@@ -29,55 +29,52 @@ class Article {
   String guid;
   String title;
   String link;
-  String image;
+  String? image;
   String description;
   DateTime date;
   bool isBookmarked = false;
 
   Article({
-    this.guid,
-    this.title,
-    this.link,
-    this.image,
-    this.description,
-    this.date,
+    required this.guid,
+    required this.title,
+    required this.link,
+    required this.image,
+    required this.description,
+    required this.date,
   });
 
-  Article.fromMap(Map<String, dynamic> map) {
-    guid = map[cGuid];
-    title = map[cTitle];
-    link = map[cLink];
-    image = map[cImage];
-    description = map[cDescription];
-    date = DateTime.parse(map[cDate]);
-    isBookmarked = map[cIsBookmarked] == 1;
-  }
+  Article.fromMap(Map<String, dynamic> map)
+      : guid = map[cGuid],
+        title = map[cTitle],
+        link = map[cLink],
+        image = map[cImage],
+        description = map[cDescription],
+        date = DateTime.parse(map[cDate]),
+        isBookmarked = map[cIsBookmarked] == 1;
 
-  Article.fromRss(RssItem item) {
-    link = item.link;
-    guid = item.guid ?? link;
-    title = item.title;
-    date = item.pubDate;
-    description = item.description;
-
-    if (item.media.thumbnails.length > 0) {
-      image = item.media.thumbnails[0].url;
-    } else if (item.media.contents.length > 0) {
-      image = item.media.contents[0].url;
+  Article.fromRss(RssItem item)
+      : link = item.link ?? '',
+        guid = item.guid ?? item.link ?? '',
+        title = item.title ?? '',
+        description = item.description ?? '',
+        date = item.pubDate ?? DateTime.now() {
+    if (item.media?.thumbnails?.isNotEmpty ?? false) {
+      image = item.media?.thumbnails?[0].url;
+    } else if (item.media?.contents?.isNotEmpty ?? false) {
+      image = item.media?.contents?[0].url;
     }
   }
 
-  Article.fromAtom(AtomItem item) {
-    link = item.links[0].href;
-    guid = item.id ?? link;
-    title = item.title;
-    date = parseDate(item.published);
-    description = item.summary;
-
-    if (item.media.thumbnails.length > 0) {
-      image = item.media.thumbnails[0].url;
-    } else if (item.media.contents.length > 0) {
-      image = item.media.contents[0].url;
+  Article.fromAtom(AtomItem item)
+      : link = item.links?[0].href ?? '',
+        guid = item.id ?? item.links?[0].href ?? '',
+        title = item.title ?? '',
+        date = parseDate(item.published ?? ''),
+        description = item.summary ?? '' {
+    if (item.media?.thumbnails?.isNotEmpty ?? false) {
+      image = item.media?.thumbnails?[0].url;
+    } else if (item.media?.contents?.isNotEmpty ?? false) {
+      image = item.media?.contents?[0].url;
     }
   }
 
@@ -130,7 +127,7 @@ class Article {
     );
   }
 
-  static Future<Article> getArticle(Database db, String guid) async {
+  static Future<Article?> getArticle(Database db, String guid) async {
     var articles = await db.query(
       tArticle,
       where: "$cGuid = ?",

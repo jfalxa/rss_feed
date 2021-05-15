@@ -4,7 +4,7 @@ class BackToTop extends StatefulWidget {
   final Widget _header;
   final Widget _body;
 
-  BackToTop({Key key, Widget header, Widget body})
+  BackToTop({Key? key, required Widget header, required Widget body})
       : _header = header,
         _body = body,
         super(key: key);
@@ -59,6 +59,7 @@ class _BackToTopState extends State<BackToTop> {
         opacity: _show ? 1 : 0,
         duration: Duration(milliseconds: 300),
         child: FloatingActionButton(
+          heroTag: "back-to-top",
           mini: true,
           child: Icon(Icons.arrow_upward),
           onPressed: _backToTop,

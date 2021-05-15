@@ -8,12 +8,12 @@ class LazyScrollView<T> extends StatefulWidget {
   final Widget Function(BuildContext, T, int) _itemBuilder;
 
   LazyScrollView({
-    Key key,
+    Key? key,
     int limit = 10,
-    PagingController<int, T> controller,
-    Future<List<T>> Function(int, int) onRequest,
-    Widget Function(BuildContext, T, int) itemBuilder,
-  })  : _limit = limit,
+    required PagingController<int, T> controller,
+    required Future<List<T>> Function(int, int) onRequest,
+    required Widget Function(BuildContext, T, int) itemBuilder,
+  })   : _limit = limit,
         _controller = controller,
         _onRequest = onRequest,
         _itemBuilder = itemBuilder,

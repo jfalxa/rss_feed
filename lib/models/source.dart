@@ -11,24 +11,23 @@ class Source {
   String url;
   String title;
   String website;
-  String icon;
+  String? icon;
   String description;
 
   Source({
-    this.url,
-    this.title,
-    this.website,
-    this.icon,
-    this.description,
+    required this.url,
+    required this.title,
+    required this.website,
+    required this.icon,
+    required this.description,
   });
 
-  Source.fromMap(Map<String, dynamic> map) {
-    url = map[cUrl];
-    title = map[cTitle];
-    website = map[cWebsite];
-    icon = map[cIcon];
-    description = map[cDescription];
-  }
+  Source.fromMap(Map<String, dynamic> map)
+      : url = map[cUrl],
+        title = map[cTitle],
+        website = map[cWebsite],
+        icon = map[cIcon],
+        description = map[cDescription];
 
   Map<String, dynamic> toMap() {
     return {
@@ -59,8 +58,8 @@ class Source {
 
   static Future<List<Source>> getSources(
     Database db,
-    int limit,
-    int offset,
+    int? limit,
+    int? offset,
   ) async {
     final sources = await db.query(
       tSource,

@@ -4,9 +4,9 @@ import './search_icon.dart';
 
 class PopTopBar extends StatelessWidget {
   final String _title;
-  final Function _onSearch;
+  final void Function()? _onSearch;
 
-  PopTopBar({Key key, String title, Function onSearch})
+  PopTopBar({Key? key, required String title, void Function()? onSearch})
       : _title = title,
         _onSearch = onSearch,
         super(key: key);
@@ -19,7 +19,7 @@ class PopTopBar extends StatelessWidget {
         icon: Icon(Icons.arrow_back),
         onPressed: () => Navigator.pop(context),
       ),
-      actions: _onSearch == null ? [] : [SearchIcon(onSearch: _onSearch)],
+      actions: _onSearch != null ? [SearchIcon(onSearch: _onSearch!)] : null,
       backwardsCompatibility: false,
     );
   }

@@ -10,7 +10,7 @@ import '../../widgets/search.dart';
 class SourceFeedSearch extends Search<Article> {
   final Source _source;
 
-  SourceFeedSearch({@required Source source})
+  SourceFeedSearch({required Source source})
       : _source = source,
         super();
 

@@ -5,10 +5,13 @@ import './menu.dart';
 
 class TopBar extends StatelessWidget {
   final String _title;
-  final Function _onSearch;
+  final void Function()? _onSearch;
 
-  TopBar({Key key, String title, Function onSearch})
-      : _title = title,
+  TopBar({
+    Key? key,
+    required String title,
+    void Function()? onSearch,
+  })  : _title = title,
         _onSearch = onSearch,
         super(key: key);
 
@@ -16,7 +19,7 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       title: Text(_title),
-      leading: _onSearch == null ? null : SearchIcon(onSearch: _onSearch),
+      leading: _onSearch != null ? SearchIcon(onSearch: _onSearch!) : null,
       actions: [Menu()],
       backwardsCompatibility: false,
     );

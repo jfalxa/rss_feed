@@ -9,9 +9,20 @@ import '../../widgets/top_bar.dart';
 import '../../widgets/article_refresh_lazy_list.dart';
 import './feed_search.dart';
 
-class Feed extends StatelessWidget {
-  final PagingController<int, Article> _pagingController =
+class Feed extends StatefulWidget {
+  @override
+  _FeedState createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> {
+  final PagingController<int, Article> _controller =
       PagingController(firstPageKey: 0);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   void _goToArticleSearch(BuildContext context) async {
     await showSearch(
@@ -30,7 +41,7 @@ class Feed extends StatelessWidget {
         onSearch: () => _goToArticleSearch(context),
       ),
       body: ArticleRefreshLazyList(
-        controller: _pagingController,
+        controller: _controller,
         onRequest: repository.getArticles,
         onRefresh: repository.fetchAllSources,
       ),

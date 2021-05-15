@@ -8,6 +8,7 @@ class Preferences extends ChangeNotifier {
 
   Preferences() {
     init();
+    setSystemStyle();
   }
 
   init() async {
@@ -31,11 +32,13 @@ class Preferences extends ChangeNotifier {
     notifyListeners();
   }
 
-  static setSystemStyle() async {
-    var prefs = await SharedPreferences.getInstance();
-    var dark = prefs.getBool('use-dark-mode') ?? false;
-    var style = dark ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light;
-
-    SystemChrome.setSystemUIOverlayStyle(style);
+  setSystemStyle() {
+    addListener(() {
+      if (useDarkMode) {
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+      } else {
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+      }
+    });
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SearchIcon extends StatelessWidget {
-  final Function _onSearch;
+  final void Function() _onSearch;
 
-  SearchIcon({Key key, Function onSearch})
+  SearchIcon({Key? key, required void Function() onSearch})
       : _onSearch = onSearch,
         super(key: key);
 

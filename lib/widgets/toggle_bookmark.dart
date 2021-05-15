@@ -7,7 +7,7 @@ import '../services/repository.dart';
 class ToggleBookmark<T> extends StatefulWidget {
   final Article _article;
 
-  ToggleBookmark({Key key, Article article})
+  ToggleBookmark({Key? key, required Article article})
       : _article = article,
         super(key: key);
 
@@ -16,7 +16,7 @@ class ToggleBookmark<T> extends StatefulWidget {
 }
 
 class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
-  bool _isBookmarked;
+  bool _isBookmarked = false;
 
   @override
   initState() {

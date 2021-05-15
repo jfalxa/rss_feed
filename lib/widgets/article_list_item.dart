@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rss_feed/widgets/article_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,7 +15,7 @@ var dateFormat = DateFormat('d/M/y');
 class ArticleListItem extends StatelessWidget {
   final Article _article;
 
-  ArticleListItem({Key key, Article article})
+  ArticleListItem({Key? key, required Article article})
       : _article = article,
         super(key: key);
 
@@ -28,7 +29,7 @@ class ArticleListItem extends StatelessWidget {
         enableJavaScript: true,
       );
     } else {
-      throw 'Could not launch ${_article.link}';
+      print('Error launching ${_article.link}');
     }
   }
 
@@ -72,18 +73,7 @@ class ArticleListItem extends StatelessWidget {
                   margin: EdgeInsets.only(left: 16.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    child: _article.image == null
-                        ? Image.asset(
-                            'assets/images/dummy-image.jpg',
-                            width: 72.0,
-                            height: 72.0,
-                          )
-                        : Image.network(
-                            _article.image,
-                            width: 72.0,
-                            height: 72.0,
-                            fit: BoxFit.cover,
-                          ),
+                    child: ArticleImage(url: _article.image),
                   ),
                 ),
               ],

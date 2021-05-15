@@ -10,9 +10,20 @@ import './source_search.dart';
 import './source_add.dart';
 import './source_feed.dart';
 
-class Sources extends StatelessWidget {
+class Sources extends StatefulWidget {
+  @override
+  _SourcesState createState() => _SourcesState();
+}
+
+class _SourcesState extends State<Sources> {
   final PagingController<int, Source> _controller =
       PagingController(firstPageKey: 0);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   void _goToSourceFeed(BuildContext context, Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
@@ -26,7 +37,7 @@ class Sources extends StatelessWidget {
   }
 
   void _goToSourceApiSearch(BuildContext context) async {
-    final Source source = await showSearch<Source>(
+    final source = await showSearch<Source?>(
       context: context,
       delegate: SourceAdd(),
     );

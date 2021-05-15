@@ -13,12 +13,12 @@ class SourceLazyList extends StatelessWidget {
   final Function(Source) _onRemove;
 
   SourceLazyList({
-    Key key,
-    PagingController<int, Source> controller,
-    Future<List<Source>> Function(int, int) onRequest,
-    Function(Source) onTap,
-    Function(Source) onRemove,
-  })  : _controller = controller,
+    Key? key,
+    required PagingController<int, Source> controller,
+    required Future<List<Source>> Function(int, int) onRequest,
+    required Function(Source) onTap,
+    required Function(Source) onRemove,
+  })   : _controller = controller,
         _onRequest = onRequest,
         _onTap = onTap,
         _onRemove = onRemove,

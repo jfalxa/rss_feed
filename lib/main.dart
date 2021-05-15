@@ -1,13 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import './services/preferences.dart';
 import './services/repository.dart';
+import './widgets/nav_bar.dart';
+import './screens/feed/feed.dart';
+import './screens/bookmarks/bookmarks.dart';
+import './screens/sources/sources.dart';
 import './screens/sources/source_feed.dart';
 import './screens/settings/settings.dart';
-import './screens/app.dart';
 import './themes.dart';
+
+class App extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  static final _nav = [
+    () => Feed(),
+    () => Sources(),
+    () => Bookmarks(),
+  ];
+
+  int _navIndex = 0;
+
+  void _navigate(int index) {
+    setState(() {
+      _navIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      primary: false,
+      body: AnimatedSwitcher(
+        duration: Duration(milliseconds: 100),
+        child: _nav[_navIndex](),
+      ),
+      bottomNavigationBar: NavBar(
+        index: _navIndex,
+        onTap: _navigate,
+      ),
+    );
+  }
+}
 
 class Main extends StatelessWidget {
   @override
@@ -40,6 +78,4 @@ void main() {
       ),
     ),
   );
-
-  Preferences.setSystemStyle();
 }

@@ -10,11 +10,11 @@ class ArticleRefreshLazyList extends StatelessWidget {
   final Future Function() _onRefresh;
 
   ArticleRefreshLazyList({
-    Key key,
-    PagingController<int, Article> controller,
-    Future<List<Article>> Function(int, int) onRequest,
-    Future Function() onRefresh,
-  })  : _controller = controller,
+    Key? key,
+    required PagingController<int, Article> controller,
+    required Future<List<Article>> Function(int, int) onRequest,
+    required Future Function() onRefresh,
+  })   : _controller = controller,
         _onRequest = onRequest,
         _onRefresh = onRefresh,
         super(key: key);

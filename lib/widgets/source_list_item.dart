@@ -6,20 +6,20 @@ import '../models/source.dart';
 class SourceListItem extends StatelessWidget {
   final Source _source;
   final Function(Source) _onTap;
-  final Function(Source) _onRemove;
+  final Function(Source)? _onRemove;
 
   SourceListItem({
-    Key key,
-    Source source,
-    Function(Source) onTap,
-    Function(Source) onRemove,
+    Key? key,
+    required Source source,
+    required Function(Source) onTap,
+    Function(Source)? onRemove,
   })  : _source = source,
         _onTap = onTap,
         _onRemove = onRemove,
         super(key: key);
 
-  Future<bool> _askRemoveSource(BuildContext context) {
-    return showDialog(
+  Future<bool?> _askRemoveSource(BuildContext context) {
+    return showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: _buildAlert,
@@ -28,7 +28,9 @@ class SourceListItem extends StatelessWidget {
 
   void _removeSource() {
     try {
-      _onRemove(_source);
+      if (_onRemove != null) {
+        _onRemove!(_source);
+      }
     } catch (err) {
       print("Error removing source: $err");
     }
@@ -66,7 +68,7 @@ class SourceListItem extends StatelessWidget {
 
   Widget _buildItem(BuildContext context) {
     var image = _source.icon != null
-        ? CircleAvatar(backgroundImage: NetworkImage(_source.icon))
+        ? CircleAvatar(backgroundImage: NetworkImage(_source.icon!))
         : CircleAvatar(child: Text(_source.title[0].toUpperCase()));
 
     return InkWell(

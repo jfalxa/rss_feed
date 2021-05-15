@@ -5,7 +5,7 @@ import 'package:webfeed/webfeed.dart';
 import '../models/source.dart';
 import '../models/article.dart';
 
-Future<String> resolveRedirects(String url) async {
+Future<String?> resolveRedirects(String url) async {
   var redirectUrl = url;
 
   try {
@@ -16,7 +16,7 @@ Future<String> resolveRedirects(String url) async {
     var response = await client.send(request);
 
     while (response.isRedirect) {
-      redirectUrl = response.headers['location'];
+      redirectUrl = response.headers['location'] ?? '';
 
       var request = http.Request('GET', Uri.parse(redirectUrl))
         ..followRedirects = false;
@@ -61,19 +61,19 @@ class Scraper {
     var sources = results.map(_toSource).toList();
 
     var resolving = sources.map((s) async {
-      s.url = await resolveRedirects(s.url);
+      s.url = await resolveRedirects(s.url) ?? '';
     });
 
     await Future.wait(resolving);
-    sources.removeWhere((s) => s.url == null);
+    sources.removeWhere((s) => s.url == '');
 
     return sources;
   }
 
   static Future<List<Article>> fetchSource(Source s) async {
     String xml = '';
-    RssFeed rssFeed;
-    AtomFeed atomFeed;
+    RssFeed? rssFeed;
+    AtomFeed? atomFeed;
 
     var url = Uri.parse(s.url);
     var response = await http.get(url);
@@ -95,9 +95,9 @@ class Scraper {
     List<Article> articles = [];
 
     if (rssFeed != null) {
-      articles = rssFeed.items.map((a) => Article.fromRss(a)).toList();
+      articles = rssFeed.items?.map((a) => Article.fromRss(a)).toList() ?? [];
     } else if (atomFeed != null) {
-      articles = atomFeed.items.map((a) => Article.fromAtom(a)).toList();
+      articles = atomFeed.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
     }
 
     return articles;

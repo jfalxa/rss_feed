@@ -7,8 +7,11 @@ class SourceList extends StatelessWidget {
   final List<Source> _sources;
   final Function(Source) _onTap;
 
-  SourceList({Key key, List<Source> sources, Function(Source) onTap})
-      : _sources = sources,
+  SourceList({
+    Key? key,
+    required List<Source> sources,
+    required Function(Source) onTap,
+  })   : _sources = sources,
         _onTap = onTap,
         super(key: key);
 

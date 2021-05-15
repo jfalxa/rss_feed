@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
   final int _index;
-  final Function _onTap;
+  final Function(int) _onTap;
 
-  NavBar({Key key, int index, Function onTap})
+  NavBar({Key? key, required int index, required Function(int) onTap})
       : _index = index,
         _onTap = onTap,
         super(key: key);

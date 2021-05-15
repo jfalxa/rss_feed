@@ -10,11 +10,22 @@ import '../../widgets/pop_top_bar.dart';
 import '../../widgets/article_refresh_lazy_list.dart';
 import './source_feed_search.dart';
 
-class SourceFeed extends StatelessWidget {
+class SourceFeed extends StatefulWidget {
   static final String routeName = '/source-feed';
 
+  @override
+  _SourceFeedState createState() => _SourceFeedState();
+}
+
+class _SourceFeedState extends State<SourceFeed> {
   final PagingController<int, Article> _controller =
       PagingController(firstPageKey: 0);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   void _goToSourceFeedSearch(BuildContext context, Source source) async {
     await showSearch(
@@ -25,8 +36,8 @@ class SourceFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var repository = context.read<Repository>();
-    Source source = ModalRoute.of(context).settings.arguments;
+    final repository = context.read<Repository>();
+    final source = ModalRoute.of(context)!.settings.arguments as Source;
 
     return BackToTop(
       header: PopTopBar(

@@ -6,7 +6,7 @@ import '../models/source_article.dart';
 import './scraper.dart';
 
 class Repository {
-  static Database _db;
+  Database? _db;
 
   static Future<Database> _initDatabase() {
     return openDatabase(
@@ -25,7 +25,7 @@ class Repository {
       _db = await _initDatabase();
     }
 
-    return _db;
+    return _db!;
   }
 
   Future addSource(Source s) async {
@@ -39,11 +39,11 @@ class Repository {
     });
   }
 
-  Future<List<Source>> getSources([int limit, int offset]) async {
+  Future<List<Source>> getSources([int? limit, int? offset]) async {
     return Source.getSources(await db, limit, offset);
   }
 
-  Future<Article> getArticle(String guid) async {
+  Future<Article?> getArticle(String guid) async {
     return Article.getArticle(await db, guid);
   }
 
@@ -111,7 +111,11 @@ class Repository {
   }
 
   Future<bool> toggleBookmark(String guid) async {
-    Article article = await getArticle(guid);
+    Article? article = await getArticle(guid);
+
+    if (article == null) {
+      return false;
+    }
 
     if (article.isBookmarked) {
       await Article.removeBookmark(await db, article);

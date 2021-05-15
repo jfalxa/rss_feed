@@ -9,11 +9,20 @@ import '../../widgets/top_bar.dart';
 import '../../widgets/article_lazy_list.dart';
 import './bookmark_search.dart';
 
-class Bookmarks extends StatelessWidget {
+class Bookmarks extends StatefulWidget {
+  @override
+  _BookmarksState createState() => _BookmarksState();
+}
+
+class _BookmarksState extends State<Bookmarks> {
   final PagingController<int, Article> _controller =
       PagingController(firstPageKey: 0);
 
-  Bookmarks({Key key}) : super(key: key);
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   void _goToBookmarkSearch(BuildContext context) async {
     await showSearch(
