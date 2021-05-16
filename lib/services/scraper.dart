@@ -5,6 +5,13 @@ import 'package:webfeed/webfeed.dart';
 import '../models/source.dart';
 import '../models/article.dart';
 
+class Feed {
+  Source? source;
+  List<Article>? articles;
+
+  Feed({this.source, this.articles});
+}
+
 Future<String?> resolveRedirects(String url) async {
   var redirectUrl = url;
 
@@ -50,8 +57,46 @@ class Scraper {
     );
   }
 
+  static Future<Feed> fetchFeed(String query) async {
+    var f = Feed();
+
+    RssFeed? rss;
+    AtomFeed? atom;
+
+    var url = Uri.parse(query);
+    var response = await http.get(url);
+    var xml = utf8.decode(response.bodyBytes);
+
+    try {
+      rss = RssFeed.parse(xml);
+    } catch (err) {
+      rss = null;
+    }
+
+    try {
+      atom = AtomFeed.parse(xml);
+    } catch (err) {
+      atom = null;
+    }
+
+    if (rss != null) {
+      f.source = Source.fromRss(rss);
+      f.articles = rss.items?.map((a) => Article.fromRss(a)).toList() ?? [];
+    } else if (atom != null) {
+      f.source = Source.fromAtom(atom);
+      f.articles = atom.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
+    }
+
+    return f;
+  }
+
   static Future<List<Source>> searchSources(String query) async {
     if (query == '') return Future.value([]);
+
+    try {
+      var feed = await fetchFeed(query);
+      if (feed.source != null) return [feed.source!];
+    } catch (err) {/* move on */}
 
     var url = Uri.parse('$_search?query=$query');
     var response = await http.get(url);
@@ -65,41 +110,8 @@ class Scraper {
     });
 
     await Future.wait(resolving);
-    sources.removeWhere((s) => s.url == '');
+    sources.removeWhere((s) => s.url.isEmpty);
 
     return sources;
-  }
-
-  static Future<List<Article>> fetchSource(Source s) async {
-    String xml = '';
-    RssFeed? rssFeed;
-    AtomFeed? atomFeed;
-
-    var url = Uri.parse(s.url);
-    var response = await http.get(url);
-
-    xml = utf8.decode(response.bodyBytes);
-
-    try {
-      rssFeed = RssFeed.parse(xml);
-    } catch (err) {
-      rssFeed = null;
-    }
-
-    try {
-      atomFeed = AtomFeed.parse(xml);
-    } catch (err) {
-      atomFeed = null;
-    }
-
-    List<Article> articles = [];
-
-    if (rssFeed != null) {
-      articles = rssFeed.items?.map((a) => Article.fromRss(a)).toList() ?? [];
-    } else if (atomFeed != null) {
-      articles = atomFeed.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
-    }
-
-    return articles;
   }
 }

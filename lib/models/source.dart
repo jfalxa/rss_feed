@@ -1,4 +1,5 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:webfeed/webfeed.dart';
 
 final String tSource = 'source';
 final String cUrl = 'url';
@@ -28,6 +29,22 @@ class Source {
         website = map[cWebsite],
         icon = map[cIcon],
         description = map[cDescription];
+
+  Source.fromRss(RssFeed rss)
+      : website = '',
+        url = rss.link ?? '',
+        title = rss.title ?? '',
+        description = rss.description ?? '' {
+    icon = rss.image?.url;
+  }
+
+  Source.fromAtom(AtomFeed atom)
+      : website = '',
+        url = atom.links?[0].href ?? '',
+        title = atom.title ?? '',
+        description = atom.subtitle ?? '' {
+    icon = atom.icon;
+  }
 
   Map<String, dynamic> toMap() {
     return {
