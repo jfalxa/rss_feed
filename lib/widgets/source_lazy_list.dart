@@ -11,6 +11,7 @@ class SourceLazyList extends StatelessWidget {
   final Future<List<Source>> Function(int, int) _onRequest;
   final Function(Source) _onTap;
   final Function(Source) _onRemove;
+  final Widget Function(BuildContext) _indicatorBuilder;
 
   SourceLazyList({
     Key? key,
@@ -18,10 +19,12 @@ class SourceLazyList extends StatelessWidget {
     required Future<List<Source>> Function(int, int) onRequest,
     required Function(Source) onTap,
     required Function(Source) onRemove,
+    required Widget Function(BuildContext) indicatorBuilder,
   })   : _controller = controller,
         _onRequest = onRequest,
         _onTap = onTap,
         _onRemove = onRemove,
+        _indicatorBuilder = indicatorBuilder,
         super(key: key);
 
   _removeSource(Source s) async {
@@ -34,6 +37,7 @@ class SourceLazyList extends StatelessWidget {
     return LazyScrollView<Source>(
       controller: _controller,
       onRequest: _onRequest,
+      indicatorBuilder: _indicatorBuilder,
       itemBuilder: (context, item, i) => SourceListItem(
         source: item,
         onTap: _onTap,

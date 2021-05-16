@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/article.dart';
 import '../../services/repository.dart';
+import '../../widgets/empty_indicator.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/top_bar.dart';
 import '../../widgets/article_lazy_list.dart';
@@ -43,6 +44,12 @@ class _BookmarksState extends State<Bookmarks> {
       body: ArticleLazyList(
         controller: _controller,
         onRequest: repository.getBookmarks,
+        indicatorBuilder: (context) => EmptyIndicator(
+          icon: Icons.bookmark_border,
+          title: 'No bookmarks found.',
+          message:
+              'Try adding some by tapping the bookmark icon on your feeds\' articles.',
+        ),
       ),
     );
   }

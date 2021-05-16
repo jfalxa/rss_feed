@@ -7,6 +7,7 @@ import '../../models/article.dart';
 import '../../services/repository.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/pop_top_bar.dart';
+import '../../widgets/empty_indicator.dart';
 import '../../widgets/article_refresh_lazy_list.dart';
 import './source_feed_search.dart';
 
@@ -48,6 +49,11 @@ class _SourceFeedState extends State<SourceFeed> {
         controller: _controller,
         onRefresh: () => repository.fetchSource(source),
         onRequest: (l, o) => repository.getSourceArticles(source, l, o),
+        indicatorBuilder: (context) => EmptyIndicator(
+          icon: Icons.menu_book,
+          title: 'No article found.',
+          message: 'Try pulling to refresh the feed.',
+        ),
       ),
     );
   }

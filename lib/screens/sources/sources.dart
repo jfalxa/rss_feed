@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/source.dart';
 import '../../services/repository.dart';
 import '../../widgets/top_bar.dart';
+import '../../widgets/empty_indicator.dart';
 import '../../widgets/source_lazy_list.dart';
 import './source_search.dart';
 import './source_add.dart';
@@ -71,6 +72,11 @@ class _SourcesState extends State<Sources> {
           onRequest: repository.getSources,
           onTap: (source) => _goToSourceFeed(context, source),
           onRemove: (source) => repository.removeSource(source),
+          indicatorBuilder: (context) => EmptyIndicator(
+            icon: Icons.menu_book,
+            title: 'No source found.',
+            message: 'You can tap the + button to add a new source.',
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

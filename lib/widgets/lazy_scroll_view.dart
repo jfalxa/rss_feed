@@ -6,6 +6,7 @@ class LazyScrollView<T> extends StatefulWidget {
   final PagingController<int, T> _controller;
   final Future<List<T>> Function(int, int) _onRequest;
   final Widget Function(BuildContext, T, int) _itemBuilder;
+  final Widget Function(BuildContext) _indicatorBuilder;
 
   LazyScrollView({
     Key? key,
@@ -13,10 +14,12 @@ class LazyScrollView<T> extends StatefulWidget {
     required PagingController<int, T> controller,
     required Future<List<T>> Function(int, int) onRequest,
     required Widget Function(BuildContext, T, int) itemBuilder,
+    required Widget Function(BuildContext) indicatorBuilder,
   })   : _limit = limit,
         _controller = controller,
         _onRequest = onRequest,
         _itemBuilder = itemBuilder,
+        _indicatorBuilder = indicatorBuilder,
         super(key: key);
 
   @override
@@ -53,6 +56,7 @@ class _LazyScrollViewState<T> extends State<LazyScrollView<T>> {
           Divider(height: 1, indent: 16, endIndent: 16),
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: widget._itemBuilder,
+        noItemsFoundIndicatorBuilder: widget._indicatorBuilder,
       ),
     );
   }

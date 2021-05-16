@@ -5,6 +5,7 @@ import '../../models/source.dart';
 import '../../services/repository.dart';
 import '../../widgets/source_lazy_list.dart';
 import '../../widgets/search.dart';
+import '../../widgets/empty_indicator.dart';
 import './source_feed.dart';
 
 class SourceSearch extends Search<Source> {
@@ -21,6 +22,7 @@ class SourceSearch extends Search<Source> {
       onRequest: (l, o) => repository.findSources(query, l, o),
       onTap: (source) => _goToSourceFeed(context, source),
       onRemove: (source) => repository.removeSource(source),
+      indicatorBuilder: (context) => EmptyIndicator(title: 'No source found.'),
     );
   }
 }

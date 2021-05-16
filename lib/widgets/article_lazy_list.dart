@@ -8,13 +8,16 @@ import './article_list_item.dart';
 class ArticleLazyList extends StatelessWidget {
   final PagingController<int, Article> _controller;
   final Future<List<Article>> Function(int, int) _onRequest;
+  final Widget Function(BuildContext) _indicatorBuilder;
 
   ArticleLazyList({
     Key? key,
     required PagingController<int, Article> controller,
     required Future<List<Article>> Function(int, int) onRequest,
+    required Widget Function(BuildContext) indicatorBuilder,
   })   : _controller = controller,
         _onRequest = onRequest,
+        _indicatorBuilder = indicatorBuilder,
         super(key: key);
 
   @override
@@ -23,6 +26,7 @@ class ArticleLazyList extends StatelessWidget {
       controller: _controller,
       onRequest: _onRequest,
       itemBuilder: (context, article, i) => ArticleListItem(article: article),
+      indicatorBuilder: _indicatorBuilder,
     );
   }
 }
