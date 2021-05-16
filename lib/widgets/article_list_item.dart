@@ -24,10 +24,9 @@ class ArticleListItem extends StatelessWidget {
     Clipboard.setData(ClipboardData(text: _article.link));
 
     final snackbar = SnackBar(
-      content: Text("Link copied!"),
+      content: Text("Link copied!", textAlign: TextAlign.center),
+      width: 108,
       duration: const Duration(milliseconds: 1500),
-      width: 280.0,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       behavior: SnackBarBehavior.floating,
     );
 
