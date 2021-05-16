@@ -13,25 +13,23 @@ class Feed {
 }
 
 Future<String?> resolveRedirects(String url) async {
-  var redirectUrl = url;
-
   try {
-    final client = http.Client();
-    final request = http.Request('GET', Uri.parse(redirectUrl))
-      ..followRedirects = false;
+    var redirectUrl = url;
+    var uri = Uri.parse(redirectUrl)..replace(scheme: 'https');
 
+    final client = http.Client();
+    final request = http.Request('GET', uri)..followRedirects = false;
     var response = await client.send(request);
 
     while (response.isRedirect) {
       redirectUrl = response.headers['location'] ?? '';
+      uri = Uri.parse(redirectUrl)..replace(scheme: 'https');
 
-      var request = http.Request('GET', Uri.parse(redirectUrl))
-        ..followRedirects = false;
-
+      var request = http.Request('GET', uri)..followRedirects = false;
       response = await client.send(request);
     }
 
-    return redirectUrl;
+    return uri.toString();
   } catch (error) {
     print('Error redirecting feed: $error');
   }
