@@ -39,6 +39,12 @@ class _BackToTopState extends State<BackToTop> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   void _backToTop() {
     _controller.animateTo(
       0,
