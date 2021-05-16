@@ -59,7 +59,7 @@ class _BackToTopState extends State<BackToTop> {
         opacity: _show ? 1 : 0,
         duration: Duration(milliseconds: 300),
         child: FloatingActionButton(
-          heroTag: "back-to-top",
+          heroTag: 'back-to-top',
           mini: true,
           child: Icon(Icons.arrow_upward),
           onPressed: _backToTop,

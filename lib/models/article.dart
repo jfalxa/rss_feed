@@ -130,7 +130,7 @@ class Article {
   static Future<Article?> getArticle(Database db, String guid) async {
     var articles = await db.query(
       tArticle,
-      where: "$cGuid = ?",
+      where: '$cGuid = ?',
       whereArgs: [guid],
     );
 

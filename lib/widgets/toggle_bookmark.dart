@@ -35,7 +35,7 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
         });
       }
     } catch (err) {
-      print("Error bookmarking article: $err");
+      print('Error bookmarking article: $err');
     }
   }
 

@@ -14,11 +14,11 @@ class Preferences extends ChangeNotifier {
   init() async {
     try {
       var prefs = await SharedPreferences.getInstance();
-      useExternalApps = prefs.getBool("use-external-apps") ?? true;
-      useDarkMode = prefs.getBool("use-dark-mode") ?? false;
+      useExternalApps = prefs.getBool('use-external-apps') ?? true;
+      useDarkMode = prefs.getBool('use-dark-mode') ?? false;
       notifyListeners();
     } catch (err) {
-      print("Error reading preferences: $err");
+      print('Error reading preferences: $err');
     }
   }
 
@@ -29,7 +29,7 @@ class Preferences extends ChangeNotifier {
       await prefs.setBool('use-external-apps', useExternalApps);
       notifyListeners();
     } catch (err) {
-      print("Error toggling use-external-apps: $err");
+      print('Error toggling use-external-apps: $err');
     }
   }
 
@@ -40,7 +40,7 @@ class Preferences extends ChangeNotifier {
       await prefs.setBool('use-dark-mode', useDarkMode);
       notifyListeners();
     } catch (err) {
-      print("Error toggling use-dark-mode: $err");
+      print('Error toggling use-dark-mode: $err');
     }
   }
 
