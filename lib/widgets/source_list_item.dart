@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 import '../models/source.dart';
 
@@ -32,8 +33,22 @@ class SourceListItem extends StatelessWidget {
         _onRemove!(_source);
       }
     } catch (err) {
-      print("Error removing source: $err");
+      print('Error removing source: $err');
     }
+  }
+
+  void _copyLink(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: _source.url));
+
+    final snackbar = SnackBar(
+      content: Text("Link copied!"),
+      duration: const Duration(milliseconds: 1500),
+      width: 280.0,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      behavior: SnackBarBehavior.floating,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   Widget _buildDismissBackground(BuildContext context, bool isMain) {
@@ -73,6 +88,7 @@ class SourceListItem extends StatelessWidget {
 
     return InkWell(
       onTap: () => _onTap(_source),
+      onLongPress: () => _copyLink(context),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Row(

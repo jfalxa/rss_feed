@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rss_feed/widgets/article_image.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/article.dart';
 import '../services/preferences.dart';
+import './article_image.dart';
 import './toggle_bookmark.dart';
 
 var dateFormat = DateFormat('d/M/y');
@@ -18,6 +19,20 @@ class ArticleListItem extends StatelessWidget {
   ArticleListItem({Key? key, required Article article})
       : _article = article,
         super(key: key);
+
+  void _copyLink(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: _article.link));
+
+    final snackbar = SnackBar(
+      content: Text("Link copied!"),
+      duration: const Duration(milliseconds: 1500),
+      width: 280.0,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      behavior: SnackBarBehavior.floating,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
 
   void _goToArticle(BuildContext context) async {
     var prefs = context.read<Preferences>();
@@ -43,6 +58,7 @@ class ArticleListItem extends StatelessWidget {
 
     return InkWell(
       onTap: () => _goToArticle(context),
+      onLongPress: () => _copyLink(context),
       child: Container(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
         child: Column(
