@@ -29,11 +29,9 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
       var repository = context.read<Repository>();
       var isBookmarked = await repository.toggleBookmark(widget._article.guid);
 
-      if (isBookmarked != _isBookmarked) {
-        setState(() {
-          _isBookmarked = isBookmarked;
-        });
-      }
+      setState(() {
+        _isBookmarked = isBookmarked;
+      });
     } catch (err) {
       print('Error bookmarking article: $err');
     }
@@ -43,9 +41,12 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
   Widget build(BuildContext context) {
     var icon = _isBookmarked ? Icons.bookmark : Icons.bookmark_border;
 
-    return IconButton(
-      icon: Icon(icon),
-      onPressed: () => _toggleBookmark(context),
+    return Opacity(
+      opacity: _isBookmarked ? 1 : 0.5,
+      child: IconButton(
+        icon: Icon(icon),
+        onPressed: () => _toggleBookmark(context),
+      ),
     );
   }
 }
