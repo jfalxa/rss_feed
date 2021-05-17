@@ -132,7 +132,7 @@ class Repository {
 
   Future fetchSource(Source s) async {
     var feed = await Scraper.fetchFeed(s.url);
-    await addSourceArticles(s, feed.articles ?? []);
+    if (feed != null) await addSourceArticles(s, feed.articles);
   }
 
   Future fetchAllSources() async {

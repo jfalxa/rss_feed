@@ -12,8 +12,8 @@ class Source {
   String url;
   String title;
   String website;
-  String? icon;
   String description;
+  String? icon;
 
   Source({
     required this.url,
@@ -30,17 +30,17 @@ class Source {
         icon = map[cIcon],
         description = map[cDescription];
 
-  Source.fromRss(RssFeed rss)
+  Source.fromRss(RssFeed rss, [String? url])
       : website = '',
-        url = rss.link ?? '',
+        url = url ?? rss.link ?? '',
         title = rss.title ?? '',
         description = rss.description ?? '' {
     icon = rss.image?.url;
   }
 
-  Source.fromAtom(AtomFeed atom)
+  Source.fromAtom(AtomFeed atom, [String? url])
       : website = '',
-        url = atom.links?[0].href ?? '',
+        url = url ?? atom.links?[0].href ?? '',
         title = atom.title ?? '',
         description = atom.subtitle ?? '' {
     icon = atom.icon;

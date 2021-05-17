@@ -6,16 +6,16 @@ import '../models/source.dart';
 import '../models/article.dart';
 
 class Feed {
-  Source? source;
-  List<Article>? articles;
+  Source source;
+  List<Article> articles;
 
-  Feed({this.source, this.articles});
+  Feed({required this.source, required this.articles});
 }
 
 Future<String?> resolveRedirects(String url) async {
   try {
     var redirectUrl = url;
-    var uri = Uri.parse(redirectUrl)..replace(scheme: 'https');
+    var uri = Uri.parse(redirectUrl).replace(scheme: 'https');
 
     final client = http.Client();
     final request = http.Request('GET', uri)..followRedirects = false;
@@ -23,7 +23,7 @@ Future<String?> resolveRedirects(String url) async {
 
     while (response.isRedirect) {
       redirectUrl = response.headers['location'] ?? '';
-      uri = Uri.parse(redirectUrl)..replace(scheme: 'https');
+      uri = Uri.parse(redirectUrl).replace(scheme: 'https');
 
       var request = http.Request('GET', uri)..followRedirects = false;
       response = await client.send(request);
@@ -55,37 +55,35 @@ class Scraper {
     );
   }
 
-  static Future<Feed> fetchFeed(String query) async {
-    var f = Feed();
-
-    RssFeed? rss;
-    AtomFeed? atom;
-
-    var url = Uri.parse(query);
-    var response = await http.get(url);
-    var xml = utf8.decode(response.bodyBytes);
-
+  static Feed? parseRss(String xml, String url) {
     try {
-      rss = RssFeed.parse(xml);
+      var rss = RssFeed.parse(xml);
+      var source = Source.fromRss(rss, url);
+      var articles = rss.items?.map((a) => Article.fromRss(a)).toList() ?? [];
+      return Feed(source: source, articles: articles);
     } catch (err) {
-      rss = null;
+      return null;
     }
+  }
 
+  static Feed? parseAtom(String xml, String url) {
     try {
-      atom = AtomFeed.parse(xml);
+      var atom = AtomFeed.parse(xml);
+      var source = Source.fromAtom(atom, url);
+      var articles = atom.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
+      return Feed(source: source, articles: articles);
     } catch (err) {
-      atom = null;
+      return null;
     }
+  }
 
-    if (rss != null) {
-      f.source = Source.fromRss(rss);
-      f.articles = rss.items?.map((a) => Article.fromRss(a)).toList() ?? [];
-    } else if (atom != null) {
-      f.source = Source.fromAtom(atom);
-      f.articles = atom.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
-    }
+  static Future<Feed?> fetchFeed(String query) async {
+    final uri = Uri.parse(query);
+    final url = uri.toString();
+    final response = await http.get(uri);
+    final xml = utf8.decode(response.bodyBytes);
 
-    return f;
+    return parseRss(xml, url) ?? parseAtom(xml, url) ?? null;
   }
 
   static Future<List<Source>> searchSources(String query) async {
@@ -93,7 +91,7 @@ class Scraper {
 
     try {
       var feed = await fetchFeed(query);
-      if (feed.source != null) return [feed.source!];
+      if (feed != null) return [feed.source];
     } catch (err) {/* move on */}
 
     var url = Uri.parse('$_search?query=$query');
