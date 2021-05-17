@@ -13,14 +13,16 @@ final String cImage = 'image';
 final String cDate = 'date';
 final String cIsBookmarked = 'is_bookmarked';
 
-var formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
+final formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
 
 DateTime parseDate(String dateString) {
   try {
+    return DateTime.parse(dateString);
+  } catch (err) {}
+
+  try {
     return formatter.parse(dateString);
-  } catch (err) {
-    print('Error parsing date: $err');
-  }
+  } catch (err) {}
 
   return DateTime.now();
 }
