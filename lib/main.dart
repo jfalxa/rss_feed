@@ -9,7 +9,23 @@ import './screens/bookmarks/bookmarks.dart';
 import './screens/sources/sources.dart';
 import './screens/sources/source_feed.dart';
 import './screens/settings/settings.dart';
-import './themes.dart';
+
+final lightTheme = ThemeData(
+  brightness: Brightness.light,
+  appBarTheme: AppBarTheme(
+    centerTitle: true,
+    backgroundColor: Colors.white,
+    foregroundColor: Colors.black,
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: Colors.white,
+  ),
+);
+
+final darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  appBarTheme: AppBarTheme(centerTitle: true),
+);
 
 class App extends StatefulWidget {
   @override
