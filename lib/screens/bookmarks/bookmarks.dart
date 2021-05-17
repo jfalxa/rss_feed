@@ -21,8 +21,8 @@ class _BookmarksState extends State<Bookmarks> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   void _goToBookmarkSearch(BuildContext context) async {

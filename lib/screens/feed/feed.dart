@@ -21,8 +21,8 @@ class _FeedState extends State<Feed> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   void _goToArticleSearch(BuildContext context) async {

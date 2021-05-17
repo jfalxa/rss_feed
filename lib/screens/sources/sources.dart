@@ -22,8 +22,8 @@ class _SourcesState extends State<Sources> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   void _goToSourceFeed(BuildContext context, Source source) {
