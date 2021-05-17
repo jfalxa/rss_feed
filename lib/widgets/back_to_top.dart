@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BackToTop extends StatefulWidget {
-  final Widget _header;
-  final Widget _body;
+  final Widget Function(BuildContext, ScrollController) _builder;
 
-  BackToTop({Key? key, required Widget header, required Widget body})
-      : _header = header,
-        _body = body,
+  BackToTop({
+    Key? key,
+    required Widget Function(BuildContext, ScrollController) builder,
+  })   : _builder = builder,
         super(key: key);
 
   @override
@@ -56,11 +56,7 @@ class _BackToTopState extends State<BackToTop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        controller: _controller,
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [widget._header],
-        body: widget._body,
-      ),
+      body: widget._builder(context, _controller),
       floatingActionButton: AnimatedOpacity(
         opacity: _show ? 1 : 0,
         duration: Duration(milliseconds: 300),

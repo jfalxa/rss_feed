@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/source.dart';
 import '../../services/repository.dart';
 import '../../widgets/top_bar.dart';
+import '../../widgets/back_to_top.dart';
 import '../../widgets/empty_indicator.dart';
 import '../../widgets/source_lazy_list.dart';
 import './source_search.dart';
@@ -60,22 +61,25 @@ class _SourcesState extends State<Sources> {
     var repository = context.read<Repository>();
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          TopBar(
-            title: 'Sources',
-            onSearch: () => _goToSourceSearch(context),
-          ),
-        ],
-        body: SourceLazyList(
-          controller: _controller,
-          onRequest: repository.getSources,
-          onTap: (source) => _goToSourceFeed(context, source),
-          onRemove: (source) => repository.removeSource(source),
-          indicatorBuilder: (context) => EmptyIndicator(
-            icon: Icons.menu_book,
-            title: 'No source found.',
-            message: 'You can tap the + button to add a new source.',
+      body: BackToTop(
+        builder: (context, controller) => NestedScrollView(
+          controller: controller,
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            TopBar(
+              title: 'Sources',
+              onSearch: () => _goToSourceSearch(context),
+            ),
+          ],
+          body: SourceLazyList(
+            controller: _controller,
+            onRequest: repository.getSources,
+            onTap: (source) => _goToSourceFeed(context, source),
+            onRemove: (source) => repository.removeSource(source),
+            indicatorBuilder: (context) => EmptyIndicator(
+              icon: Icons.menu_book,
+              title: 'No source found.',
+              message: 'You can tap the + button to add a new source.',
+            ),
           ),
         ),
       ),

@@ -41,18 +41,23 @@ class _SourceFeedState extends State<SourceFeed> {
     final source = ModalRoute.of(context)!.settings.arguments as Source;
 
     return BackToTop(
-      header: PopTopBar(
-        title: source.title,
-        onSearch: () => _goToSourceFeedSearch(context, source),
-      ),
-      body: ArticleRefreshLazyList(
-        controller: _controller,
-        onRefresh: () => repository.fetchSource(source),
-        onRequest: (l, o) => repository.getSourceArticles(source, l, o),
-        indicatorBuilder: (context) => EmptyIndicator(
-          icon: Icons.menu_book,
-          title: 'No article found.',
-          message: 'Try pulling to refresh the feed.',
+      builder: (context, controller) => NestedScrollView(
+        controller: controller,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          PopTopBar(
+            title: source.title,
+            onSearch: () => _goToSourceFeedSearch(context, source),
+          )
+        ],
+        body: ArticleRefreshLazyList(
+          controller: _controller,
+          onRefresh: () => repository.fetchSource(source),
+          onRequest: (l, o) => repository.getSourceArticles(source, l, o),
+          indicatorBuilder: (context) => EmptyIndicator(
+            icon: Icons.menu_book,
+            title: 'No article found.',
+            message: 'Try pulling to refresh the feed.',
+          ),
         ),
       ),
     );

@@ -37,18 +37,23 @@ class _FeedState extends State<Feed> {
     var repository = context.read<Repository>();
 
     return BackToTop(
-      header: TopBar(
-        title: 'Feed',
-        onSearch: () => _goToArticleSearch(context),
-      ),
-      body: ArticleRefreshLazyList(
-        controller: _controller,
-        onRequest: repository.getArticles,
-        onRefresh: repository.fetchAllSources,
-        indicatorBuilder: (context) => EmptyIndicator(
-          icon: Icons.rss_feed,
-          title: 'No article found.',
-          message: 'Try adding some sources or pulling to refresh the feed.',
+      builder: (context, controller) => NestedScrollView(
+        controller: controller,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          TopBar(
+            title: 'Feed',
+            onSearch: () => _goToArticleSearch(context),
+          ),
+        ],
+        body: ArticleRefreshLazyList(
+          controller: _controller,
+          onRequest: repository.getArticles,
+          onRefresh: repository.fetchAllSources,
+          indicatorBuilder: (context) => EmptyIndicator(
+            icon: Icons.rss_feed,
+            title: 'No article found.',
+            message: 'Try adding some sources or pulling to refresh the feed.',
+          ),
         ),
       ),
     );

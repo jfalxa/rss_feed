@@ -37,18 +37,23 @@ class _BookmarksState extends State<Bookmarks> {
     var repository = context.read<Repository>();
 
     return BackToTop(
-      header: TopBar(
-        title: 'Bookmarks',
-        onSearch: () => _goToBookmarkSearch(context),
-      ),
-      body: ArticleLazyList(
-        controller: _controller,
-        onRequest: repository.getBookmarks,
-        indicatorBuilder: (context) => EmptyIndicator(
-          icon: Icons.bookmark_border,
-          title: 'No bookmarks found.',
-          message:
-              'Try adding some by tapping the bookmark icon on your feeds\' articles.',
+      builder: (context, controller) => NestedScrollView(
+        controller: controller,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          TopBar(
+            title: 'Bookmarks',
+            onSearch: () => _goToBookmarkSearch(context),
+          ),
+        ],
+        body: ArticleLazyList(
+          controller: _controller,
+          onRequest: repository.getBookmarks,
+          indicatorBuilder: (context) => EmptyIndicator(
+            icon: Icons.bookmark_border,
+            title: 'No bookmarks found.',
+            message:
+                'Try adding some by tapping the bookmark icon on your feeds\' articles.',
+          ),
         ),
       ),
     );
