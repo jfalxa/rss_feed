@@ -24,13 +24,8 @@ class _SourceFeedState extends State<SourceFeed> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
-  }
-
-  Future _refreshFeed(Repository repository, Source source) async {
-    await repository.fetchSource(source);
-    _controller.refresh();
+    super.dispose();
   }
 
   void _goToSourceFeedSearch(BuildContext context, Source source) async {
@@ -52,7 +47,7 @@ class _SourceFeedState extends State<SourceFeed> {
       ),
       body: ArticleRefreshLazyList(
         controller: _controller,
-        onRefresh: () => _refreshFeed(repository, source),
+        onRefresh: () => repository.fetchSource(source),
         onRequest: (l, o) => repository.getSourceArticles(source, l, o),
         indicatorBuilder: (context) => EmptyIndicator(
           icon: Icons.menu_book,
