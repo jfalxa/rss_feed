@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../models/source.dart';
 import '../../models/article.dart';
-import '../../services/repository.dart';
+import '../../services/database.dart';
+import '../../services/scraper.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/pop_top_bar.dart';
 import '../../widgets/empty_indicator.dart';
@@ -28,36 +29,58 @@ class _SourceFeedState extends State<SourceFeed> {
     super.dispose();
   }
 
-  void _goToSourceFeedSearch(BuildContext context, Source source) async {
+  Source _getSource() {
+    return ModalRoute.of(context)!.settings.arguments as Source;
+  }
+
+  Future<List<Article>> _getSourceArticles(int limit, int offset) {
+    final source = _getSource();
+    final database = context.read<Database>();
+    return database.getSourceArticles(source, limit, offset);
+  }
+
+  Future _fetchSource() async {
+    final source = _getSource();
+
+    final database = context.read<Database>();
+    final scraper = context.read<Scraper>();
+
+    final feed = await scraper.fetch(source.url);
+    if (feed != null) await database.refreshSource(source, feed.articles);
+  }
+
+  void _goToSourceFeedSearch() async {
+    final source = _getSource();
+
     await showSearch(
       context: context,
       delegate: SourceFeedSearch(source: source),
     );
   }
 
+  Widget _buildEmpty(BuildContext context) {
+    return EmptyIndicator(
+      icon: Icons.menu_book,
+      title: 'No article found.',
+      message: 'Try pulling to refresh the feed.',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final repository = context.read<Repository>();
-    final source = ModalRoute.of(context)!.settings.arguments as Source;
+    final source = _getSource();
 
     return BackToTop(
       builder: (context, controller) => NestedScrollView(
         controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          PopTopBar(
-            title: source.title,
-            onSearch: () => _goToSourceFeedSearch(context, source),
-          )
+          PopTopBar(title: source.title, onSearch: _goToSourceFeedSearch),
         ],
         body: ArticleRefreshLazyList(
           controller: _controller,
-          onRefresh: () => repository.fetchSource(source),
-          onRequest: (l, o) => repository.getSourceArticles(source, l, o),
-          indicatorBuilder: (context) => EmptyIndicator(
-            icon: Icons.menu_book,
-            title: 'No article found.',
-            message: 'Try pulling to refresh the feed.',
-          ),
+          onRefresh: _fetchSource,
+          onRequest: _getSourceArticles,
+          emptyBuilder: _buildEmpty,
         ),
       ),
     );

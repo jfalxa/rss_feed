@@ -8,18 +8,18 @@ class ArticleRefreshLazyList extends StatelessWidget {
   final PagingController<int, Article> _controller;
   final Future<List<Article>> Function(int, int) _onRequest;
   final Future Function() _onRefresh;
-  final Widget Function(BuildContext) _indicatorBuilder;
+  final Widget Function(BuildContext) _emptyBuilder;
 
   ArticleRefreshLazyList({
     Key? key,
     required PagingController<int, Article> controller,
     required Future<List<Article>> Function(int, int) onRequest,
     required Future Function() onRefresh,
-    required Widget Function(BuildContext) indicatorBuilder,
+    required Widget Function(BuildContext) emptyBuilder,
   })   : _controller = controller,
         _onRequest = onRequest,
         _onRefresh = onRefresh,
-        _indicatorBuilder = indicatorBuilder,
+        _emptyBuilder = emptyBuilder,
         super(key: key);
 
   Future refreshList() async {
@@ -34,7 +34,7 @@ class ArticleRefreshLazyList extends StatelessWidget {
       child: ArticleLazyList(
         controller: _controller,
         onRequest: _onRequest,
-        indicatorBuilder: _indicatorBuilder,
+        emptyBuilder: _emptyBuilder,
       ),
     );
   }

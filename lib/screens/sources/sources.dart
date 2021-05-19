@@ -3,7 +3,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/source.dart';
-import '../../services/repository.dart';
+import '../../services/database.dart';
+import '../../services/scraper.dart';
 import '../../widgets/top_bar.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/empty_indicator.dart';
@@ -27,18 +28,28 @@ class _SourcesState extends State<Sources> {
     super.dispose();
   }
 
-  void _goToSourceFeed(BuildContext context, Source source) {
+  Future<List<Source>> _getSources(int limit, int offset) {
+    final database = context.read<Database>();
+    return database.getSources(limit, offset);
+  }
+
+  void _removeSource(Source source) async {
+    final database = context.read<Database>();
+    await database.forgetSource(source);
+  }
+
+  void _goToSourceFeed(Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
   }
 
-  void _goToSourceSearch(BuildContext context) async {
+  void _goToSourceSearch() async {
     await showSearch(
       context: context,
       delegate: SourceSearch(),
     );
   }
 
-  void _goToSourceApiSearch(BuildContext context) async {
+  void _goToSourceApiSearch() async {
     final source = await showSearch<Source?>(
       context: context,
       delegate: SourceAdd(),
@@ -46,46 +57,47 @@ class _SourcesState extends State<Sources> {
 
     if (source != null) {
       try {
-        var repository = context.read<Repository>();
-        await repository.addSource(source);
+        final database = context.read<Database>();
+        final scraper = context.read<Scraper>();
+        await database.addSource(source);
         _controller.refresh();
-        await repository.fetchSource(source);
+        final feed = await scraper.fetch(source.url);
+        if (feed != null) await database.refreshSource(source, feed.articles);
       } catch (err) {
         print('Error adding source: $err');
       }
     }
   }
 
+  Widget _buildEmpty(BuildContext context) {
+    return EmptyIndicator(
+      icon: Icons.menu_book,
+      title: 'No source found.',
+      message: 'You can tap the + button to add a new source.',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var repository = context.read<Repository>();
-
     return Scaffold(
       body: BackToTop(
         builder: (context, controller) => NestedScrollView(
           controller: controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            TopBar(
-              title: 'Sources',
-              onSearch: () => _goToSourceSearch(context),
-            ),
+            TopBar(title: 'Sources', onSearch: _goToSourceSearch),
           ],
           body: SourceLazyList(
             controller: _controller,
-            onRequest: repository.getSources,
-            onTap: (source) => _goToSourceFeed(context, source),
-            onRemove: (source) => repository.removeSource(source),
-            indicatorBuilder: (context) => EmptyIndicator(
-              icon: Icons.menu_book,
-              title: 'No source found.',
-              message: 'You can tap the + button to add a new source.',
-            ),
+            onRequest: _getSources,
+            onTap: _goToSourceFeed,
+            onRemove: _removeSource,
+            emptyBuilder: _buildEmpty,
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => _goToSourceApiSearch(context),
+        onPressed: _goToSourceApiSearch,
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/article.dart';
-import '../services/repository.dart';
+import '../services/database.dart';
 
 class ToggleBookmark<T> extends StatefulWidget {
   final Article _article;
@@ -26,8 +26,8 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
 
   Future _toggleBookmark(BuildContext context) async {
     try {
-      var repository = context.read<Repository>();
-      var isBookmarked = await repository.toggleBookmark(widget._article.guid);
+      final database = context.read<Database>();
+      var isBookmarked = await database.toggleBookmark(widget._article.guid);
 
       setState(() {
         _isBookmarked = isBookmarked;

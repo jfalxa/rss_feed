@@ -11,20 +11,20 @@ class SourceLazyList extends StatelessWidget {
   final Future<List<Source>> Function(int, int) _onRequest;
   final Function(Source) _onTap;
   final Function(Source) _onRemove;
-  final Widget Function(BuildContext) _indicatorBuilder;
+  final Widget Function(BuildContext) _emptyBuilder;
 
   SourceLazyList({
     Key? key,
     required PagingController<int, Source> controller,
     required Future<List<Source>> Function(int, int) onRequest,
-    required Function(Source) onTap,
-    required Function(Source) onRemove,
-    required Widget Function(BuildContext) indicatorBuilder,
+    required void Function(Source) onTap,
+    required void Function(Source) onRemove,
+    required Widget Function(BuildContext) emptyBuilder,
   })   : _controller = controller,
         _onRequest = onRequest,
         _onTap = onTap,
         _onRemove = onRemove,
-        _indicatorBuilder = indicatorBuilder,
+        _emptyBuilder = emptyBuilder,
         super(key: key);
 
   _removeSource(Source s) async {
@@ -37,7 +37,7 @@ class SourceLazyList extends StatelessWidget {
     return LazyScrollView<Source>(
       controller: _controller,
       onRequest: _onRequest,
-      indicatorBuilder: _indicatorBuilder,
+      emptyBuilder: _emptyBuilder,
       itemBuilder: (context, item, i) => SourceListItem(
         source: item,
         onTap: _onTap,

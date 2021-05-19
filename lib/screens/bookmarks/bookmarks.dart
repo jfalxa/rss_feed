@@ -3,7 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/article.dart';
-import '../../services/repository.dart';
+import '../../services/database.dart';
 import '../../widgets/empty_indicator.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/top_bar.dart';
@@ -25,35 +25,38 @@ class _BookmarksState extends State<Bookmarks> {
     super.dispose();
   }
 
-  void _goToBookmarkSearch(BuildContext context) async {
+  void _goToBookmarkSearch() async {
     await showSearch(
       context: context,
       delegate: BookmarkSearch(),
     );
   }
 
+  Future<List<Article>> _getBookmarks(int limit, int offset) {
+    final database = context.read<Database>();
+    return database.getBookmarks(limit, offset);
+  }
+
+  Widget _buildEmpty(BuildContext context) {
+    return EmptyIndicator(
+      icon: Icons.bookmark_border,
+      title: 'No bookmarks found.',
+      message: 'Try adding some by tapping the bookmark icon on articles.',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var repository = context.read<Repository>();
-
     return BackToTop(
       builder: (context, controller) => NestedScrollView(
         controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          TopBar(
-            title: 'Bookmarks',
-            onSearch: () => _goToBookmarkSearch(context),
-          ),
+          TopBar(title: 'Bookmarks', onSearch: _goToBookmarkSearch),
         ],
         body: ArticleLazyList(
           controller: _controller,
-          onRequest: repository.getBookmarks,
-          indicatorBuilder: (context) => EmptyIndicator(
-            icon: Icons.bookmark_border,
-            title: 'No bookmarks found.',
-            message:
-                'Try adding some by tapping the bookmark icon on your feeds\' articles.',
-          ),
+          onRequest: _getBookmarks,
+          emptyBuilder: _buildEmpty,
         ),
       ),
     );

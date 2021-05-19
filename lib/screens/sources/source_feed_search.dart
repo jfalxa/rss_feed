@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/article.dart';
 import '../../models/source.dart';
-import '../../services/repository.dart';
+import '../../services/database.dart';
 import '../../widgets/empty_indicator.dart';
 import '../../widgets/article_lazy_list.dart';
 import '../../widgets/search.dart';
@@ -17,12 +17,12 @@ class SourceFeedSearch extends Search<Article> {
 
   @override
   Widget buildResults(BuildContext context) {
-    var repository = context.read<Repository>();
+    final database = context.read<Database>();
 
     return ArticleLazyList(
       controller: controller,
-      onRequest: (l, o) => repository.findSourceArticles(_source, query, l, o),
-      indicatorBuilder: (context) => EmptyIndicator(title: 'No article found.'),
+      onRequest: (l, o) => database.findSourceArticles(_source, query, l, o),
+      emptyBuilder: (context) => EmptyIndicator(title: 'No article found.'),
     );
   }
 }

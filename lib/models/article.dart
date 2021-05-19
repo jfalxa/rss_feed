@@ -1,31 +1,15 @@
-import 'package:intl/intl.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:webfeed/webfeed.dart';
 
-import './source_article.dart';
+import '../services/scraper.dart';
 
 final String tArticle = 'article';
-final String cGuid = 'guid';
-final String cTitle = 'title';
-final String cLink = 'link';
-final String cDescription = 'description';
-final String cImage = 'image';
-final String cDate = 'date';
-final String cIsBookmarked = 'is_bookmarked';
-
-final formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
-
-DateTime parseDate(String dateString) {
-  try {
-    return DateTime.parse(dateString);
-  } catch (err) {}
-
-  try {
-    return formatter.parse(dateString);
-  } catch (err) {}
-
-  return DateTime.now();
-}
+final String cArticleGuid = 'guid';
+final String cArticleLink = 'link';
+final String cArticleTitle = 'title';
+final String cArticleDescription = 'description';
+final String cArticleImage = 'image';
+final String cArticleDate = 'date';
+final String cArticleIsBookmarked = 'is_bookmarked';
 
 class Article {
   String guid;
@@ -46,13 +30,13 @@ class Article {
   });
 
   Article.fromMap(Map<String, dynamic> map)
-      : guid = map[cGuid],
-        title = map[cTitle],
-        link = map[cLink],
-        image = map[cImage],
-        description = map[cDescription],
-        date = DateTime.parse(map[cDate]),
-        isBookmarked = map[cIsBookmarked] == 1;
+      : guid = map[cArticleGuid],
+        title = map[cArticleTitle],
+        link = map[cArticleLink],
+        image = map[cArticleImage],
+        description = map[cArticleDescription],
+        date = DateTime.parse(map[cArticleDate]),
+        isBookmarked = map[cArticleIsBookmarked] == 1;
 
   Article.fromRss(RssItem item)
       : link = item.link ?? '',
@@ -82,143 +66,13 @@ class Article {
 
   Map<String, dynamic> toMap() {
     return {
-      cGuid: guid,
-      cTitle: title,
-      cLink: link,
-      cImage: image,
-      cDescription: description,
-      cDate: date.toIso8601String(),
-      cIsBookmarked: isBookmarked ? 1 : 0
+      cArticleGuid: guid,
+      cArticleTitle: title,
+      cArticleLink: link,
+      cArticleImage: image,
+      cArticleDescription: description,
+      cArticleDate: date.toIso8601String(),
+      cArticleIsBookmarked: isBookmarked ? 1 : 0
     };
-  }
-
-  static Future createTable(Transaction tx) {
-    return tx.execute('''
-      CREATE TABLE $tArticle (
-        $cGuid TEXT PRIMARY KEY,
-        $cTitle TEXT,
-        $cLink TEXT,
-        $cDescription TEXT,
-        $cImage TEXT,
-        $cDate TEXT,
-        $cIsBookmarked INTEGER
-      )
-    ''');
-  }
-
-  static Future addArticles(Transaction tx, List<Article> al) {
-    var batch = tx.batch();
-
-    al.forEach(
-      (a) => batch.insert(
-        tArticle,
-        a.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.ignore,
-      ),
-    );
-
-    return batch.commit();
-  }
-
-  static Future addBookmark(Database db, Article a) async {
-    return db.update(
-      tArticle,
-      {cIsBookmarked: 1},
-      where: '$cGuid = ?',
-      whereArgs: [a.guid],
-    );
-  }
-
-  static Future<Article?> getArticle(Database db, String guid) async {
-    var articles = await db.query(
-      tArticle,
-      where: '$cGuid = ?',
-      whereArgs: [guid],
-    );
-
-    return articles.length == 1 ? Article.fromMap(articles[0]) : null;
-  }
-
-  static Future<List<Article>> getArticles(
-    Database db,
-    int limit,
-    int offset,
-  ) async {
-    final articles = await db.query(
-      tArticle,
-      orderBy: '$cDate DESC',
-      limit: limit,
-      offset: offset,
-    );
-
-    return articles.map((a) => Article.fromMap(a)).toList();
-  }
-
-  static Future<List<Article>> getBookmarks(
-      Database db, int limit, int offset) async {
-    final bookmarkedArticles = await db.query(
-      tArticle,
-      where: '$cIsBookmarked = 1',
-      orderBy: '$cDate DESC',
-      limit: limit,
-      offset: offset,
-    );
-
-    return bookmarkedArticles.map((a) => Article.fromMap(a)).toList();
-  }
-
-  static Future<List<Article>> findArticles(
-    Database db,
-    String query,
-    int limit,
-    int offset,
-  ) async {
-    final foundArticles = await db.query(
-      tArticle,
-      where: '$cTitle LIKE ?',
-      whereArgs: ['%$query%'],
-      orderBy: '$cDate DESC',
-      limit: limit,
-      offset: offset,
-    );
-
-    return foundArticles.map((a) => Article.fromMap(a)).toList();
-  }
-
-  static Future<List<Article>> findBookmarks(
-    Database db,
-    String query,
-    int limit,
-    int offset,
-  ) async {
-    final foundArticles = await db.query(
-      tArticle,
-      where: '$cTitle LIKE ? AND $cIsBookmarked = 1',
-      whereArgs: ['%$query%'],
-      orderBy: '$cDate DESC',
-      limit: limit,
-      offset: offset,
-    );
-
-    return foundArticles.map((a) => Article.fromMap(a)).toList();
-  }
-
-  static Future removeOrphans(Transaction tx) {
-    return tx.rawDelete('''
-      DELETE FROM $tArticle
-      WHERE $cGuid NOT IN (
-        SELECT $cArticleGuid
-        FROM $tSourceAndArticle
-      )
-    ''');
-  }
-
-  static Future removeBookmark(Database db, Article a) async {
-    return db.update(
-      tArticle,
-      {cIsBookmarked: 0},
-      where: '$cGuid = ?',
-      whereArgs: [a.guid],
-    );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './services/database.dart';
 import './services/preferences.dart';
-import './services/repository.dart';
+import './services/scraper.dart';
 import './widgets/nav_bar.dart';
 import './screens/feed/feed.dart';
 import './screens/bookmarks/bookmarks.dart';
@@ -66,12 +67,14 @@ class _AppState extends State<App> {
 class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.watch<Database>(); // rebuild when database is ready
+
     var prefs = context.watch<Preferences>();
-    var dark = prefs.useDarkMode;
+    var themeMode = prefs.useDarkMode ? ThemeMode.dark : ThemeMode.light;
 
     return MaterialApp(
       title: 'RSS Feed',
-      themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+      themeMode: themeMode,
       theme: lightTheme,
       darkTheme: darkTheme,
       initialRoute: '/',
@@ -86,12 +89,13 @@ class Main extends StatelessWidget {
 
 void main() {
   runApp(
-    Provider(
-      create: (context) => Repository(),
-      child: ChangeNotifierProvider(
-        create: (context) => Preferences(),
-        child: Main(),
-      ),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => Database()),
+        ChangeNotifierProvider(create: (context) => Preferences()),
+        Provider(create: (context) => Scraper())
+      ],
+      child: Main(),
     ),
   );
 }

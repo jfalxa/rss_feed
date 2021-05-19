@@ -1,15 +1,30 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:webfeed/webfeed.dart';
 
 import '../models/source.dart';
 import '../models/article.dart';
 
-class Feed {
+class _Feed {
   Source source;
   List<Article> articles;
 
-  Feed({required this.source, required this.articles});
+  _Feed({required this.source, required this.articles});
+}
+
+final formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
+
+DateTime parseDate(String dateString) {
+  try {
+    return DateTime.parse(dateString);
+  } catch (err) {}
+
+  try {
+    return formatter.parse(dateString);
+  } catch (err) {}
+
+  return DateTime.now();
 }
 
 Future<String?> resolveRedirects(String url) async {
@@ -38,10 +53,10 @@ Future<String?> resolveRedirects(String url) async {
 }
 
 class Scraper {
-  static final _feedRx = RegExp(r'rss|xml');
-  static final _search = 'https://cloud.feedly.com/v3/search/feeds';
+  final _feedRx = RegExp(r'rss|xml');
+  final _search = 'https://cloud.feedly.com/v3/search/feeds';
 
-  static Source _toSource(Map<String, dynamic> json) {
+  Source _toSource(Map<String, dynamic> json) {
     var url = json['website'].contains(_feedRx)
         ? json['website']
         : json['feedId'].substring(5);
@@ -55,42 +70,39 @@ class Scraper {
     );
   }
 
-  static Feed? parseRss(String xml, String url) {
+  _Feed? parseRss(String xml, String url) {
     try {
       var rss = RssFeed.parse(xml);
       var source = Source.fromRss(rss, url);
       var articles = rss.items?.map((a) => Article.fromRss(a)).toList() ?? [];
-      return Feed(source: source, articles: articles);
+      return _Feed(source: source, articles: articles);
     } catch (err) {
       return null;
     }
   }
 
-  static Feed? parseAtom(String xml, String url) {
+  _Feed? parseAtom(String xml, String url) {
     try {
       var atom = AtomFeed.parse(xml);
       var source = Source.fromAtom(atom, url);
       var articles = atom.items?.map((a) => Article.fromAtom(a)).toList() ?? [];
-      return Feed(source: source, articles: articles);
+      return _Feed(source: source, articles: articles);
     } catch (err) {
       return null;
     }
   }
 
-  static Future<Feed?> fetchFeed(String query) async {
-    final uri = Uri.parse(query);
-    final url = uri.toString();
-    final response = await http.get(uri);
+  Future<_Feed?> fetch(String url) async {
+    final response = await http.get(Uri.parse(url));
     final xml = utf8.decode(response.bodyBytes);
-
     return parseRss(xml, url) ?? parseAtom(xml, url) ?? null;
   }
 
-  static Future<List<Source>> searchSources(String query) async {
+  Future<List<Source>> search(String query) async {
     if (query == '') return Future.value([]);
 
     try {
-      var feed = await fetchFeed(query);
+      var feed = await fetch(query);
       if (feed != null) return [feed.source];
     } catch (err) {/* move on */}
 
