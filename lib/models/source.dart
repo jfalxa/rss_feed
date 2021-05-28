@@ -1,3 +1,4 @@
+import 'package:sqflite/sqflite.dart';
 import 'package:webfeed/webfeed.dart';
 
 final String tSource = 'source';
@@ -53,5 +54,60 @@ class Source {
       cSourceIcon: icon,
       cSourceDescription: description,
     };
+  }
+}
+
+class SourceDao {
+  final Future<Database> db;
+
+  SourceDao({required this.db});
+
+  static Future createSourceTable(Transaction tx) {
+    return tx.execute('''
+      CREATE TABLE $tSource (
+        $cSourceUrl TEXT PRIMARY KEY,
+        $cSourceTitle TEXT,
+        $cSourceDescription TEXT,
+        $cSourceWebsite TEXT,
+        $cSourceIcon TEXT
+      )
+    ''');
+  }
+
+  Future addSource(Source source) async {
+    return (await db).insert(tSource, source.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.ignore);
+  }
+
+  Future<List<Source>> getSources([int? limit, int? offset]) async {
+    final sources = await (await db).query(
+      tSource,
+      orderBy: '$cSourceTitle',
+      limit: limit,
+      offset: offset,
+    );
+
+    return sources.map((source) => Source.fromMap(source)).toList();
+  }
+
+  Future<List<Source>> findSources(String query, int limit, int offset) async {
+    final foundSources = await (await db).query(
+      tSource,
+      where: '$cSourceTitle LIKE ?',
+      whereArgs: ['%$query%'],
+      orderBy: '$cSourceTitle',
+      limit: limit,
+      offset: offset,
+    );
+
+    return foundSources.map((source) => Source.fromMap(source)).toList();
+  }
+
+  Future removeSource(Source source, [Transaction? tx]) async {
+    return (tx ?? await db).delete(
+      tSource,
+      where: '$cSourceUrl = ?',
+      whereArgs: [source.url],
+    );
   }
 }

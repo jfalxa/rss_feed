@@ -3,7 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/article.dart';
-import '../../services/database.dart';
+import '../../services/repository.dart';
 import '../../widgets/empty_indicator.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/top_bar.dart';
@@ -32,11 +32,6 @@ class _BookmarksState extends State<Bookmarks> {
     );
   }
 
-  Future<List<Article>> _getBookmarks(int limit, int offset) {
-    final database = context.read<Database>();
-    return database.getBookmarks(limit, offset);
-  }
-
   Widget _buildEmpty(BuildContext context) {
     return EmptyIndicator(
       icon: Icons.bookmark_border,
@@ -47,15 +42,22 @@ class _BookmarksState extends State<Bookmarks> {
 
   @override
   Widget build(BuildContext context) {
+    final repository = context.read<Repository>();
+    _controller.refresh();
+
     return BackToTop(
+      heroTag: "bookmarks",
       builder: (context, controller) => NestedScrollView(
         controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          TopBar(title: 'Bookmarks', onSearch: _goToBookmarkSearch),
+          TopBar(
+            title: 'Bookmarks',
+            onSearch: _goToBookmarkSearch,
+          ),
         ],
         body: ArticleLazyList(
           controller: _controller,
-          onRequest: _getBookmarks,
+          onRequest: repository.getBookmarks,
           emptyBuilder: _buildEmpty,
         ),
       ),

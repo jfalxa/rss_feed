@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/source.dart';
 import '../../models/article.dart';
-import '../../services/database.dart';
-import '../../services/scraper.dart';
+import '../../services/repository.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/pop_top_bar.dart';
 import '../../widgets/empty_indicator.dart';
@@ -29,29 +28,7 @@ class _SourceFeedState extends State<SourceFeed> {
     super.dispose();
   }
 
-  Source _getSource() {
-    return ModalRoute.of(context)!.settings.arguments as Source;
-  }
-
-  Future<List<Article>> _getSourceArticles(int limit, int offset) {
-    final source = _getSource();
-    final database = context.read<Database>();
-    return database.getSourceArticles(source, limit, offset);
-  }
-
-  Future _fetchSource() async {
-    final source = _getSource();
-
-    final database = context.read<Database>();
-    final scraper = context.read<Scraper>();
-
-    final feed = await scraper.fetch(source.url);
-    if (feed != null) await database.refreshSource(source, feed.articles);
-  }
-
-  void _goToSourceFeedSearch() async {
-    final source = _getSource();
-
+  void _goToSourceFeedSearch(Source source) async {
     await showSearch(
       context: context,
       delegate: SourceFeedSearch(source: source),
@@ -68,18 +45,25 @@ class _SourceFeedState extends State<SourceFeed> {
 
   @override
   Widget build(BuildContext context) {
-    final source = _getSource();
+    final repository = context.read<Repository>();
+    final source = ModalRoute.of(context)!.settings.arguments as Source;
+
+    _controller.refresh();
 
     return BackToTop(
+      heroTag: "sourcefeed",
       builder: (context, controller) => NestedScrollView(
         controller: controller,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          PopTopBar(title: source.title, onSearch: _goToSourceFeedSearch),
+          PopTopBar(
+            title: source.title,
+            onSearch: () => _goToSourceFeedSearch(source),
+          ),
         ],
         body: ArticleRefreshLazyList(
           controller: _controller,
-          onRefresh: _fetchSource,
-          onRequest: _getSourceArticles,
+          onRefresh: () => repository.fetchSource(source),
+          onRequest: (l, o) => repository.getSourceArticles(source, l, o),
           emptyBuilder: _buildEmpty,
         ),
       ),

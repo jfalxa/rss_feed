@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/article.dart';
-import '../services/database.dart';
+import '../services/repository.dart';
 
 class ToggleBookmark<T> extends StatefulWidget {
   final Article _article;
@@ -24,10 +24,13 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
     _isBookmarked = widget._article.isBookmarked;
   }
 
-  Future _toggleBookmark(BuildContext context) async {
+  Future _toggleBookmark() async {
     try {
-      final database = context.read<Database>();
-      var isBookmarked = await database.toggleBookmark(widget._article.guid);
+      final isBookmarked = !_isBookmarked;
+
+      await context
+          .read<Repository>()
+          .toggleBookmark(widget._article, isBookmarked);
 
       setState(() {
         _isBookmarked = isBookmarked;
@@ -45,7 +48,7 @@ class _ToggleBookmarkState<T> extends State<ToggleBookmark<T>> {
       opacity: _isBookmarked ? 1 : 0.5,
       child: IconButton(
         icon: Icon(icon),
-        onPressed: () => _toggleBookmark(context),
+        onPressed: _toggleBookmark,
       ),
     );
   }

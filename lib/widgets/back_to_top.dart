@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BackToTop extends StatefulWidget {
+  final String _heroTag;
   final Widget Function(BuildContext, ScrollController) _builder;
 
   BackToTop({
     Key? key,
+    required String heroTag,
     required Widget Function(BuildContext, ScrollController) builder,
-  })   : _builder = builder,
+  })   : _heroTag = heroTag,
+        _builder = builder,
         super(key: key);
 
   @override
@@ -61,7 +64,7 @@ class _BackToTopState extends State<BackToTop> {
         opacity: _show ? 1 : 0,
         duration: Duration(milliseconds: 300),
         child: FloatingActionButton(
-          heroTag: 'back-to-top',
+          heroTag: widget._heroTag,
           mini: true,
           child: Icon(Icons.arrow_upward),
           onPressed: _backToTop,

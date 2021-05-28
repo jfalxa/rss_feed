@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './services/database.dart';
+import 'services/repository.dart';
 import './services/preferences.dart';
-import './services/scraper.dart';
 import './widgets/nav_bar.dart';
 import './screens/feed/feed.dart';
 import './screens/bookmarks/bookmarks.dart';
@@ -34,12 +33,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  static final _nav = [
-    () => Feed(),
-    () => Sources(),
-    () => Bookmarks(),
-  ];
-
   int _navIndex = 0;
 
   void _navigate(int index) {
@@ -52,9 +45,13 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       primary: false,
-      body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 100),
-        child: _nav[_navIndex](),
+      body: IndexedStack(
+        index: _navIndex,
+        children: [
+          Feed(),
+          Sources(),
+          Bookmarks(),
+        ],
       ),
       bottomNavigationBar: NavBar(
         index: _navIndex,
@@ -67,10 +64,8 @@ class _AppState extends State<App> {
 class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.watch<Database>(); // rebuild when database is ready
-
-    var prefs = context.watch<Preferences>();
-    var themeMode = prefs.useDarkMode ? ThemeMode.dark : ThemeMode.light;
+    final prefs = context.watch<Preferences>(); // rebuild when prefs change
+    final themeMode = prefs.useDarkMode ? ThemeMode.dark : ThemeMode.light;
 
     return MaterialApp(
       title: 'RSS Feed',
@@ -91,9 +86,8 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => Database()),
+        Provider(create: (context) => Repository()),
         ChangeNotifierProvider(create: (context) => Preferences()),
-        Provider(create: (context) => Scraper())
       ],
       child: Main(),
     ),

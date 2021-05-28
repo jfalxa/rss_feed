@@ -3,8 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/source.dart';
-import '../../services/database.dart';
-import '../../services/scraper.dart';
+import '../../services/repository.dart';
 import '../../widgets/top_bar.dart';
 import '../../widgets/back_to_top.dart';
 import '../../widgets/empty_indicator.dart';
@@ -28,16 +27,6 @@ class _SourcesState extends State<Sources> {
     super.dispose();
   }
 
-  Future<List<Source>> _getSources(int limit, int offset) {
-    final database = context.read<Database>();
-    return database.getSources(limit, offset);
-  }
-
-  void _removeSource(Source source) async {
-    final database = context.read<Database>();
-    await database.forgetSource(source);
-  }
-
   void _goToSourceFeed(Source source) {
     Navigator.pushNamed(context, SourceFeed.routeName, arguments: source);
   }
@@ -49,7 +38,7 @@ class _SourcesState extends State<Sources> {
     );
   }
 
-  void _goToSourceApiSearch() async {
+  void _goToSourceAdd() async {
     final source = await showSearch<Source?>(
       context: context,
       delegate: SourceAdd(),
@@ -57,12 +46,8 @@ class _SourcesState extends State<Sources> {
 
     if (source != null) {
       try {
-        final database = context.read<Database>();
-        final scraper = context.read<Scraper>();
-        await database.addSource(source);
+        await context.read<Repository>().createSource(source);
         _controller.refresh();
-        final feed = await scraper.fetch(source.url);
-        if (feed != null) await database.refreshSource(source, feed.articles);
       } catch (err) {
         print('Error adding source: $err');
       }
@@ -79,25 +64,32 @@ class _SourcesState extends State<Sources> {
 
   @override
   Widget build(BuildContext context) {
+    final repository = context.read<Repository>();
+    _controller.refresh();
+
     return Scaffold(
       body: BackToTop(
+        heroTag: "sources",
         builder: (context, controller) => NestedScrollView(
           controller: controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            TopBar(title: 'Sources', onSearch: _goToSourceSearch),
+            TopBar(
+              title: 'Sources',
+              onSearch: _goToSourceSearch,
+            ),
           ],
           body: SourceLazyList(
             controller: _controller,
-            onRequest: _getSources,
             onTap: _goToSourceFeed,
-            onRemove: _removeSource,
+            onRequest: repository.getSources,
+            onRemove: repository.forgetSource,
             emptyBuilder: _buildEmpty,
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _goToSourceApiSearch,
+        onPressed: _goToSourceAdd,
       ),
     );
   }
